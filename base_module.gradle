@@ -1,0 +1,64 @@
+//业务模块的通用配置
+apply plugin: 'com.alibaba.arouter'
+apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'maven'
+
+def componentName = project.getName()
+//config.gradle文件merge[]不包含的组件可以独立运行
+def isRunAlone = !rootProject.ext.merge.contains(componentName)
+if (isRunAlone) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+//        if (isRunAlone) {
+//            applicationId rootProject.ext.organization + "." + componentName
+//            multiDexEnabled true
+//        }
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+        resourcePrefix componentName + "_"
+        resValue "string", componentName + "_module_name", project.getName()
+        vectorDrawables.useSupportLibrary = true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
+
+        compileOptions {
+            targetCompatibility JavaVersion.VERSION_1_8
+            sourceCompatibility JavaVersion.VERSION_1_8
+        }
+    }
+
+//    if (isRunAlone) {
+//        sourceSets {
+//            main {
+//                manifest.srcFile 'src/main/runalone/AndroidManifest.xml'
+//                java.srcDirs = ['src/main/java', 'src/main/runalone/java']
+//                res.srcDirs = ['src/main/res', 'src/main/runalone/res']
+//            }
+//        }
+//    }
+
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //公共模块
+    implementation project(':base')
+}

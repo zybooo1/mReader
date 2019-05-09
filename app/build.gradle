@@ -1,0 +1,105 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.butterknife'
+apply from: "../base_compiler.gradle"
+
+//获取编译时间
+static def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
+
+//当前版本号
+def currentVersionCode = getVersionCode()
+def currentVersionName = getVersionName()
+
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.zyb.mreader"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode currentVersionCode
+        versionName currentVersionName
+        testInstrumentationRunner rootProject.ext.dependencies["androidJUnitRunner"]
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+
+        //设置支持的SO库架构
+        ndk {
+//            abiFilters 'armeabi' , 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            abiFilters 'armeabi-v7a'
+        }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    /*GreenDao*/
+    greendao {
+        //数据库版本，数据库升级使用到 {@link OpenHelper#onUpgrade}
+        schemaVersion rootProject.ext.databaseVersion
+    }
+
+    //自定义apk文件名
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "APP_${variant.versionCode}_${variant.versionName}-${releaseTime()}.apk"
+        }
+    }
+
+    //支持Java8
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    // 依赖 libs 目录下所有 Jar 包
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    // 公共模块
+    implementation project(':base')
+    // 阅读模块
+    implementation project(':reader')
+}
+
+//获取自增版本号
+def getVersionCode() {
+    def versionFile = file('version.properties')
+
+    if (versionFile.exists()) {
+        def Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionFile))
+        def versionCode = versionProps['VERSION_CODE'].toInteger()
+        println('Current version code is ' + versionCode.toString())
+        return versionCode
+    } else {
+        throw new GradleException("Could not find version.properties!")
+    }
+}
+//获取版本名
+def getVersionName() {
+    def currentVersionName = getVersionCode().toString();
+    def versionNameSize = currentVersionName.size();
+    if (versionNameSize >= 3) {
+        return currentVersionName.getAt(0..versionNameSize - 3) + "." + currentVersionName.getAt(versionNameSize - 2) + "." + currentVersionName.getAt(versionNameSize - 1)
+    } else {
+        throw new GradleException("Version Code Can not Less than 100,Check version.properties And /app/build.gradle")
+    }
+}
+

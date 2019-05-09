@@ -1,0 +1,21 @@
+<resources>
+    <string name="base_confirm">确定</string>
+    <string name="base_cancel">取消</string>
+    <string name="base_select_hint">请选择</string>
+
+    <string name="base_pay_title">请输入支付密码</string>
+
+    <string name="base_address_title">选择地区</string>
+
+    <string name="base_date_year">年</string>
+    <string name="base_date_month">月</string>
+    <string name="base_date_day">日</string>
+
+    <!-- 信息-->
+    <string name="msg_error_time_out">连接超时</string>
+    <string name="msg_error_unknown">发生了些意想不到的错误</string>
+    <string name="msg_error_404">404 Not Found</string>
+    <string name="msg_error_server">服务器发生了错误</string>
+    <string name="msg_error_too_fast">操作过于频繁，请稍后再试</string>
+    <string name="msg_loading">加载中…</string>
+</resources>

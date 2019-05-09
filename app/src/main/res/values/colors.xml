@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#ffffff</color>
+    <color name="window_bg">#f6f6f6</color>
+    <color name="touch_bg">#303c3f41</color>
+
+    <color name="book_item_bg">#ffffff</color>
+    <color name="book_item_fill">#edeef0</color>
+
+</resources>

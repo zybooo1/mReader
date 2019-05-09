@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/add_book"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/svg_book_shelf"
+        android:title="添加书籍" />
+</menu>

@@ -1,0 +1,106 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+apply from: "../base_compiler.gradle"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+        testInstrumentationRunner rootProject.ext.dependencies["androidJUnitRunner"]
+        vectorDrawables.useSupportLibrary = true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
+    }
+
+
+    /*GreenDao*/
+    greendao {
+        //数据库版本，数据库升级使用到 {@link OpenHelper#onUpgrade}
+        schemaVersion rootProject.ext.databaseVersion
+    }
+
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation rootProject.ext.dependencies["test-runner"]
+    androidTestImplementation rootProject.ext.dependencies["test-espresso"]
+    //base ui
+    api rootProject.ext.dependencies["appcompat-v7"]
+    api rootProject.ext.dependencies["design"]
+    api rootProject.ext.dependencies["cardview-v7"]
+    api rootProject.ext.dependencies["recyclerview-v7"]
+    api rootProject.ext.dependencies["constraintlayout"]
+    api rootProject.ext.dependencies["statusbarutil"]
+    api rootProject.ext.dependencies["immersionbar"]
+    api rootProject.ext.dependencies["titlebar"]
+    api rootProject.ext.dependencies["base-rcv-helper"]
+    api rootProject.ext.dependencies["smartrefresh"]
+    api rootProject.ext.dependencies["smartrefreshHeader"]
+    api rootProject.ext.dependencies["swipebacklayout"]
+    api rootProject.ext.dependencies["VectorCompatTextView"]
+    //test
+    testImplementation rootProject.ext.dependencies["junit"]
+    //other
+    api rootProject.ext.dependencies["multidex"]
+    api rootProject.ext.dependencies["crashreport"]
+    api rootProject.ext.dependencies["nativecrashreport"]
+    api rootProject.ext.dependencies["xxpermissions"]
+    api rootProject.ext.dependencies["toast-util"]
+    api rootProject.ext.dependencies["greendao"]
+    api rootProject.ext.dependencies["EventBus"]
+    api rootProject.ext.dependencies["EasyLVAdapter"]
+    //json
+    api rootProject.ext.dependencies["gson"]
+    //network
+    api rootProject.ext.dependencies["retrofit"]
+    api rootProject.ext.dependencies["retrofit-converter-gson"]
+    api rootProject.ext.dependencies["retrofit-adapter-rxjava2"]
+    api rootProject.ext.dependencies["okhttp"]
+    api rootProject.ext.dependencies["okhttp-logging-interceptor"]
+    api rootProject.ext.dependencies["okdownload"]
+    api rootProject.ext.dependencies["okdownload_sqlite"]
+    api rootProject.ext.dependencies["okdownload_okhttp"]
+    //image
+    api rootProject.ext.dependencies["circleimageview"]
+    api rootProject.ext.dependencies["BigImageViewPager"]
+    api rootProject.ext.dependencies["luban"]
+    api rootProject.ext.dependencies["glide"]
+    api rootProject.ext.dependencies["glide-loader-okhttp3"]
+    annotationProcessor rootProject.ext.dependencies["glide-compiler"]
+    //rx
+    api rootProject.ext.dependencies["rxjava"]
+    api rootProject.ext.dependencies["rxandroid"]
+    api rootProject.ext.dependencies["rxdownload"]
+    api rootProject.ext.dependencies["rxpermissions2"]
+    //di
+    api rootProject.ext.dependencies["dagger2"]
+    api rootProject.ext.dependencies["butterknife"]
+    annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
+    api rootProject.ext.dependencies["router"]
+}
+
+//解决支持库版本不兼容问题
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion "28.0.0"
+            }
+        }
+    }
+}

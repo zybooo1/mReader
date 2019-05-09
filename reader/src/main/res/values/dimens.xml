@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--read-->
+    <dimen name="wy.read.text.bottom">12dp</dimen>
+
+    <!-- Common -->
+    <dimen name="wy.padding.large">16dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+</resources>

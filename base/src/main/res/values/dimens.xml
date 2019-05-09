@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="book_border">4dp</dimen>
+    <dimen name="page_border">2dp</dimen>
+    <dimen name="book_padding">15dp</dimen>
+
+    <!-- 按钮的圆角大小-->
+
+    <dimen name="base_line_size">1px</dimen>
+
+    <dimen name="base_message_width">280dp</dimen>
+    <dimen name="base_message_round_size">15dp</dimen>
+
+    <dimen name="base_menu_item_height">48dp</dimen>
+    <dimen name="base_menu_round_size">12dp</dimen>
+    <dimen name="space_10">5dp</dimen>
+    <dimen name="space_20">10dp</dimen>
+    <dimen name="space_30">15dp</dimen>
+
+
+</resources>

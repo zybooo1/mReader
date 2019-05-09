@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zyb.base">
+
+    <application>
+        <activity
+            android:name=".x5.TBSFileViewActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".widget.WebActivity" />
+    </application>
+</manifest>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/touch_bg"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:paddingBottom="15dp"
+    android:paddingLeft="20dp"
+    android:paddingTop="15dp"
+    android:paddingRight="10dp">
+
+    <ImageView
+        app:srcCompat="@drawable/svg_book_shelf"
+        android:layout_width="48dp"
+        android:layout_marginEnd="10dp"
+        android:layout_height="48dp" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingRight="15dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_marginEnd="30dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingBottom="5dp"
+            android:text="文件夹文件夹文件夹文件夹文件夹文件夹文件夹文件夹文件夹文件夹文件夹文件夹文件夹文件夹文件夹"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_size"
+            android:layout_marginEnd="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingBottom="5dp"
+            android:text="2226516513516525612321133216521323213222265165135165256123211332165213232132"
+            android:textSize="13sp" />
+    </LinearLayout>
+</LinearLayout>

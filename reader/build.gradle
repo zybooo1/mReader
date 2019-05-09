@@ -1,0 +1,18 @@
+apply from: "../base_module.gradle"
+apply from: "../base_compiler.gradle"
+
+android{
+    dataBinding {
+        enabled = true
+    }
+}
+/*GreenDao*/
+greendao {
+    //数据库版本，数据库升级使用到 {@link OpenHelper#onUpgrade}
+    schemaVersion rootProject.ext.databaseVersion
+}
+
+dependencies {
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34'
+
+}

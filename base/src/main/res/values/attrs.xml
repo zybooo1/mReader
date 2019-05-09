@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <declare-styleable name="SwitchButton" tools:ignore="ResourceName">
+        <!-- 是否选中 -->
+        <attr name="android:checked" />
+        <!-- 是否禁用 -->
+        <attr name="android:enabled" />
+    </declare-styleable>
+    <declare-styleable name="AlignTextView">
+        <attr name="alignOnlyOneLine" format="boolean"/>
+    </declare-styleable>
+    <declare-styleable name="RoundButton">
+        <!-- 背景色 -->
+        <attr name="btnSolidColor" format="color"/>
+        <!-- 边框色 -->
+        <attr name="btnStrokeColor" format="color"/>
+        <!-- 边框厚度 -->
+        <attr name="btnStrokeWidth" format="dimension"/>
+        <!-- 边框虚线长度 -->
+        <attr name="btnStrokeDashWidth" format="dimension"/>
+        <!-- 边框虚线间隙 -->
+        <attr name="btnStrokeDashGap" format="dimension"/>
+        <!-- 圆角半径，stadium 表示半径为 min(height,width) / 2-->
+        <attr name="btnCornerRadius" format="dimension">
+            <enum name="stadium" value="-1"/>
+        </attr>
+        <!-- 自动计算按下(pressed)状态颜色的系数, 值为0时不自动计算 -->
+        <attr name="btnPressedRatio" format="float"/>
+    </declare-styleable>
+    <declare-styleable name="LoopView">
+        <attr name="lineColor" format="color" />
+        <attr name="topBottomTextColor" format="color" />
+        <attr name="centerTextColor" format="color" />
+        <attr name="textSize" format="dimension" />
+        <attr name="canLoop" format="boolean" />
+        <attr name="initPosition" format="integer" />
+        <attr name="drawItemCount" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CircularProgressDrawable">
+        <attr name="cpd_padding" format="reference|dimension" />
+        <attr name="cpd_initialAngle" format="reference|integer" />
+        <attr name="cpd_maxSweepAngle" format="reference|integer" />
+        <attr name="cpd_minSweepAngle" format="reference|integer" />
+        <attr name="cpd_strokeSize" format="reference|dimension" />
+        <attr name="cpd_strokeColor" format="reference|color" />
+        <attr name="cpd_strokeSecondaryColor" format="reference|color" />
+        <attr name="cpd_strokeColors" format="reference" />
+        <attr name="cpd_reverse" format="boolean" />
+        <attr name="cpd_rotateDuration" format="reference|integer" />
+        <attr name="cpd_transformDuration" format="reference|integer" />
+        <attr name="cpd_keepDuration" format="reference|integer" />
+        <attr name="cpd_transformInterpolator" format="reference" />
+        <attr name="cpd_inAnimDuration" format="reference|integer" />
+        <attr name="cpd_outAnimDuration" format="reference|integer" />
+        <attr name="cpd_inStepColors" format="reference" />
+        <attr name="cpd_inStepPercent" format="float" />
+        <attr name="pv_progressMode" />
+    </declare-styleable>
+
+    <declare-styleable name="ArcView">
+        <attr name="arcHeight" format="dimension"/>
+        <attr name="bgColor" format="color"/>
+    </declare-styleable>
+</resources>

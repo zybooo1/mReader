@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">微Yue电子书</string>
+
+    <!--read-->
+    <string name="wy.read.setting">设置</string>
+    '
+    <string name="wy.read.category">目录</string>
+
+    <!--mode-->
+    <string name="wy.mode.night">夜间</string>
+    <string name="wy.mode.morning">日间</string>
+
+</resources>

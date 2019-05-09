@@ -1,0 +1,10 @@
+apply plugin: 'org.greenrobot.greendao'
+//通用注解编译配置
+android {
+    dependencies {
+        annotationProcessor rootProject.ext.dependencies["dagger2-compiler"]
+        annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
+        annotationProcessor rootProject.ext.dependencies["router-compiler"]
+        annotationProcessor rootProject.ext.dependencies["glide-compiler"]
+    }
+}

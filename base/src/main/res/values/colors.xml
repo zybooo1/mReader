@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3c3f41</color>
+    <color name="colorPrimaryDark">#3c3f41</color>
+    <!--<color name="colorAccent">#499C54</color>-->
+    <color name="colorAccent">#E91E63</color>
+    <color name="textColorTitle">#333333</color>
+    <color name="textColorTitleRight">#757575</color>
+
+    <!-- 按钮按压时的颜色 -->
+    <!-- 按钮禁用时的颜色 -->
+    <!-- 分割线的颜色 -->
+    <color name="colorLine">#ECECEC</color>
+    <color name="touch_bg">#20000000</color>
+
+    <color name="book_loading_background">#00ffffff</color>
+    <color name="book_loading_book">#cdcdcd</color>
+    <color name="book_loading_page">#ffffff</color>
+
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="black">#FF000000</color>
+    <color name="black40">#66000000</color>
+
+
+    <color name="gray80">#333333</color>
+    <color name="gray40">#999999</color>
+    <color name="gray5">#f2f2f2</color>
+
+
+    <!-- 灰色 -->
+    <!-- 红色 -->
+    <color name="red">#FF0000</color>
+    <!-- 金色 -->
+    <!-- 黄色 -->
+    <!-- 绿色 -->
+    <!-- 蓝色 -->
+    <!-- 紫色 -->
+    <!-- 粉色 -->
+    <!-- 橙色 -->
+    <color name="orange">#FFA500</color>
+
+
+    <color name="base_dialog_bg">#ffffff</color>
+    <color name="base_dialog_bg_press">#f0f0f0</color>
+
+    <color name="base_dialog_confirm">#007aff</color>
+    <color name="base_dialog_cancel">#f44336</color>
+
+    <color name="base_dialog_line">#2c000000</color>
+
+</resources>
