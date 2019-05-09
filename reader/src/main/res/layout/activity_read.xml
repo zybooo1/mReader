@@ -16,7 +16,7 @@
             android:id="@+id/read_abl_top_menu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_19"
+            android:background="@color/colorPrimary"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -44,34 +44,6 @@
 
             </RelativeLayout>
 
-            <!--<android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="?attr/actionBarSize"
-                android:theme="@style/Theme.ToolBar.Menu">
-
-                &lt;!&ndash;<RelativeLayout
-                    android:layout_width="120dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="right"
-                    android:background="@color/color_19">
-
-                    <TextView
-                        android:visibility="gone"
-                        android:id="@+id/read_tv_brief"
-                        style="@style/WY.Theme.TextAppearance.Read.TopMenu"
-                        android:layout_alignParentRight="true"
-                        android:text="@string/wy.read.brief"/>
-
-                    <TextView
-                        android:visibility="gone"
-                        android:id="@+id/read_tv_community"
-                        style="@style/WY.Theme.TextAppearance.Read.TopMenu"
-                        android:layout_toLeftOf="@id/read_tv_brief"
-                        android:text="@string/wy.read.community"/>
-                </RelativeLayout>&ndash;&gt;
-            </android.support.v7.widget.Toolbar>-->
         </android.support.design.widget.AppBarLayout>
 
         <!--阅读页面-->
@@ -107,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/color_19"
+            android:background="@color/colorPrimary"
             android:clickable="true"
             android:orientation="vertical"
             android:visibility="gone"
