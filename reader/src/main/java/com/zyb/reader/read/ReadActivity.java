@@ -10,7 +10,6 @@ import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
@@ -26,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.zyb.base.base.activity.MVPActivity;
+import com.zyb.base.di.component.AppComponent;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.QMUIViewHelper;
 import com.zyb.reader.R;
@@ -34,12 +35,14 @@ import com.zyb.reader.db.entity.BookChapterBean;
 import com.zyb.reader.db.entity.CollBookBean;
 import com.zyb.reader.db.helper.BookChapterHelper;
 import com.zyb.reader.base.bean.BookChaptersBean;
+import com.zyb.reader.di.component.DaggerActivityComponent;
+import com.zyb.reader.di.module.ActivityModule;
+import com.zyb.reader.di.module.ApiModule;
 import com.zyb.reader.utils.BrightnessUtils;
 import com.zyb.reader.utils.ReadSettingManager;
 import com.zyb.reader.utils.StatusBarUtils;
 import com.zyb.reader.utils.StringUtils;
 import com.zyb.reader.read.adapter.ReadCategoryAdapter;
-import com.zyb.reader.base.BaseActivity;
 import com.zyb.reader.widget.dialog.ReadSettingDialog;
 import com.zyb.reader.widget.page.NetPageLoader;
 import com.zyb.reader.widget.page.PageLoader;
@@ -55,7 +58,7 @@ import butterknife.OnClick;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class ReadActivity extends BaseActivity implements IBookChapters {
+public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadContract.View {
     private static final int ANIM_HIDE_DURATION = 200;
     private static final int ANIM_SHOW_DURATION = 400;
     @BindView(R2.id.tv_toolbar_title)
@@ -115,7 +118,6 @@ public class ReadActivity extends BaseActivity implements IBookChapters {
     private String mBookId;
     ReadCategoryAdapter mReadCategoryAdapter;
     List<TxtChapter> mTxtChapters = new ArrayList<>();
-    private VMBookContentInfo mVmContentInfo;
     List<BookChapterBean> bookChapterList = new ArrayList<>();
 
 
@@ -167,16 +169,18 @@ public class ReadActivity extends BaseActivity implements IBookChapters {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mVmContentInfo = new VMBookContentInfo(mContext, this);
-        setBinddingView(R.layout.activity_read, NO_BINDDING, mVmContentInfo);
+    protected int getLayoutId() {
+        return R.layout.activity_read;
+    }
 
+    @Override
+    protected int getTitleBarId() {
+        return 0;
     }
 
     @Override
     protected void initView() {
-        super.initView();
+
         mCollBook = (CollBookBean) getIntent().getSerializableExtra(EXTRA_COLL_BOOK);
         isCollected = getIntent().getBooleanExtra(EXTRA_IS_COLLECTED, false);
         isNightMode = ReadSettingManager.getInstance().isNightMode();
@@ -237,7 +241,7 @@ public class ReadActivity extends BaseActivity implements IBookChapters {
 
             @Override
             public void onLoadChapter(List<TxtChapter> chapters, int pos) {
-                mVmContentInfo.loadContent(mBookId, chapters);
+                mPresenter.loadContent(mBookId, chapters);
                 setCategorySelect(mPageLoader.getChapterPos());
 
                 if (mPageLoader.getPageStatus() == NetPageLoader.STATUS_LOADING
@@ -328,12 +332,14 @@ public class ReadActivity extends BaseActivity implements IBookChapters {
         });
     }
 
-    private void initData() {
+    @Override
+    protected void initData() {
         mPageLoader.openBook(mCollBook);
     }
 
+
     private void setCategory() {
-        mRvReadCategory.setLayoutManager(new LinearLayoutManager(mContext));
+        mRvReadCategory.setLayoutManager(new LinearLayoutManager(this));
         mReadCategoryAdapter = new ReadCategoryAdapter(mTxtChapters);
         mRvReadCategory.setAdapter(mReadCategoryAdapter);
 
@@ -484,17 +490,7 @@ public class ReadActivity extends BaseActivity implements IBookChapters {
     }
 
 
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void stopLoading() {
-
-    }
-
-    @Override
+    // TODO: 2019/5/9
     public void bookChapters(BookChaptersBean bookChaptersBean) {
         bookChapterList.clear();
         for (BookChaptersBean.ChatpterBean bean : bookChaptersBean.getChapters()) {
@@ -636,5 +632,15 @@ public class ReadActivity extends BaseActivity implements IBookChapters {
         super.onDestroy();
         unregisterReceiver(mReceiver);
         mPageLoader.closeBook();
+    }
+
+    @Override
+    protected void setupActivityComponent(AppComponent appComponent) {
+        DaggerActivityComponent.builder()
+                .appComponent(appComponent)
+                .apiModule(new ApiModule())
+                .activityModule(new ActivityModule(this))
+                .build()
+                .inject(this);
     }
 }
