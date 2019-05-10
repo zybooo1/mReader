@@ -5,20 +5,17 @@ import android.content.SharedPreferences;
 
 import com.zyb.base.base.app.BaseApplication;
 
+import static com.zyb.base.utils.constant.Constants.BASE_SHARED_PREFERENCE;
 
-/**
- * Created by newbiechen on 17-4-16.
- */
 
 public class SharedPreUtils {
-    private static final String SHARED_NAME = "WeYue_SP";
     private static SharedPreUtils sInstance;
     private static SharedPreferences sharedReadable;
     private static SharedPreferences.Editor sharedWritable;
 
     private SharedPreUtils() {
         sharedReadable = BaseApplication.getInstance()
-                .getSharedPreferences(SHARED_NAME, Context.MODE_MULTI_PROCESS);
+                .getSharedPreferences(BASE_SHARED_PREFERENCE, Context.MODE_MULTI_PROCESS);
         sharedWritable = sharedReadable.edit();
     }
 

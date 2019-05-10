@@ -8,7 +8,6 @@ import java.util.Map;
 /**
  * 处理书籍的工具类
  */
-
 public class BookManager {
     private static final String TAG = "BookManager";
     private String chapterName;

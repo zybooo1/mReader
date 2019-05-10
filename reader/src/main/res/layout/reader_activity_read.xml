@@ -102,23 +102,26 @@
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp">
 
-                <TextView
+                <com.xw.repo.VectorCompatTextView
                     android:id="@+id/read_tv_category"
                     style="@style/WY.Theme.TextAppearance.Read.BottomMenu.Button"
-                    android:drawableTop="@mipmap/read_menu_category"
+                    app:drawableTopCompat="@drawable/svg_list_menu"
+                    app:tintDrawableInTextColor="true"
                     android:text="@string/wy.read.category" />
 
-                <TextView
+                <com.xw.repo.VectorCompatTextView
                     android:id="@+id/read_tv_night_mode"
                     style="@style/WY.Theme.TextAppearance.Read.BottomMenu.Button"
-                    android:drawableTop="@mipmap/read_menu_night"
+                    app:drawableTopCompat="@drawable/svg_night"
+                    app:tintDrawableInTextColor="true"
                     android:text="@string/wy.mode.night" />
 
 
-                <TextView
+                <com.xw.repo.VectorCompatTextView
                     android:id="@+id/read_tv_setting"
                     style="@style/WY.Theme.TextAppearance.Read.BottomMenu.Button"
-                    android:drawableTop="@mipmap/read_menu_font"
+                    app:drawableTopCompat="@drawable/svg_font"
+                    app:tintDrawableInTextColor="true"
                     android:text="@string/wy.read.setting" />
             </LinearLayout>
         </LinearLayout>

@@ -10,14 +10,12 @@ import com.zyb.reader.core.bean.ReadBgBean;
 import java.util.List;
 
 /**
- * Created by Liang_Lu on 2017/11/22.
  * 选择阅读背景
  */
-
 public class ReadBgAdapter extends BaseQuickAdapter<ReadBgBean, BaseViewHolder> {
 
     public ReadBgAdapter(@Nullable List<ReadBgBean> data) {
-        super(R.layout.item_read_bg, data);
+        super(R.layout.reader_item_read_bg, data);
     }
 
     @Override

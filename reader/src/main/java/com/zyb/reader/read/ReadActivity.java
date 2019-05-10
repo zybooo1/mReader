@@ -24,6 +24,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.hjq.bar.TitleBar;
+import com.xw.repo.VectorCompatTextView;
 import com.zyb.base.base.activity.MVPActivity;
 import com.zyb.base.di.component.AppComponent;
 import com.zyb.base.utils.LogUtil;
@@ -69,12 +70,8 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
     SeekBar mReadSbChapterProgress;
     @BindView(R2.id.read_tv_next_chapter)
     TextView mReadTvNextChapter;
-    @BindView(R2.id.read_tv_category)
-    TextView mReadTvCategory;
     @BindView(R2.id.read_tv_night_mode)
-    TextView mReadTvNightMode;
-    @BindView(R2.id.read_tv_setting)
-    TextView mReadTvSetting;
+    VectorCompatTextView mReadTvNightMode;
     @BindView(R2.id.read_ll_bottom_menu)
     LinearLayout mReadLlBottomMenu;
     @BindView(R2.id.rv_read_category)
@@ -157,7 +154,7 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_read;
+        return R.layout.reader_activity_read;
     }
 
     @Override
@@ -174,7 +171,7 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
 
         setTitle(mCollBook.getTitle());
         //获取页面加载器
-        mPageLoader = mPvReadPage.getPageLoader(mCollBook.isLocal());
+        mPageLoader = mPvReadPage.getPageLoader();
         mReadDlSlide.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         //更多设置dialog
         mSettingDialog = new ReadSettingDialog(this, mPageLoader);
@@ -335,11 +332,11 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
     private void toggleNightMode() {
         if (isNightMode) {
             mReadTvNightMode.setText(getString(R.string.wy_mode_morning));
-            Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.read_menu_morning);
+            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.svg_brightness_up);
             mReadTvNightMode.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
         } else {
             mReadTvNightMode.setText(getString(R.string.wy_mode_night));
-            Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.read_menu_night);
+            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.svg_night);
             mReadTvNightMode.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
         }
     }

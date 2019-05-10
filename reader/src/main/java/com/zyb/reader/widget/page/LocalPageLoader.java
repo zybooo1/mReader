@@ -10,7 +10,7 @@ import com.zyb.reader.db.entity.BookChapterBean;
 import com.zyb.reader.db.entity.CollBookBean;
 import com.zyb.reader.db.helper.CollBookHelper;
 import com.zyb.reader.utils.Charset;
-import com.zyb.reader.utils.FileUtils;
+import com.zyb.reader.utils.ReadUtils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -127,7 +127,7 @@ public class LocalPageLoader extends PageLoader {
     //采用的是随机读取
     private void loadBook(File bookFile) throws IOException {
         //获取文件编码
-        mCharset = FileUtils.getCharset(bookFile.getAbsolutePath());
+        mCharset = ReadUtils.getCharset(bookFile.getAbsolutePath());
         //查找章节，分配章节
         loadChapters();
     }

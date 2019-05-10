@@ -4,7 +4,6 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="color_cec29c">#CEC29C</color>
-    <color name="color_19">#191919</color>
     <color name="color_cb">#cbcbcb</color>
     <color name="color_de6014">#DE6014</color>
     <color name="color_fff_99">#99ffffff</color>
@@ -18,9 +17,10 @@
     <color name="color_d1cec5">#d1cec5</color>
     <color name="color_001c27">#001c27</color>
     <color name="color_ec4a48">#EC4A48</color>
-    <color name="color_black_23">#23000000</color>
+    <color name="color_black_23">#16000000</color>
     <color name="color_e3">#e3e3e3</color>
 
+    <color name="color_item_selected_bg">#22000000</color>
 
 
 </resources>

@@ -1,0 +1,56 @@
+<ScrollView android:layout_width="300dp"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="start"
+    android:background="@color/windowBackground"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@color/colorPrimary">
+
+            <ImageView
+                android:layout_marginLeft="20dp"
+                android:layout_centerInParent="true"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:srcCompat="@drawable/svg_logo2" />
+            <TextView
+                android:textColor="@color/white"
+                android:layout_margin="10dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="To be or not to be,that's a question."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/addBook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/touch_bg"
+            android:padding="15dp"
+            android:text="添加书籍"
+            android:textSize="16sp"
+            android:textColor="@color/gray80" />
+
+        <View style="@style/HorizontalSpaceStyle" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/touch_bg"
+            android:padding="15dp"
+            android:textSize="16sp"
+            android:text="意见反馈"
+            android:textColor="@color/gray80" />
+    </LinearLayout>
+</ScrollView>

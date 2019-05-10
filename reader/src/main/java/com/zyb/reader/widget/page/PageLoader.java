@@ -279,7 +279,7 @@ public abstract class PageLoader {
     //跳转到具体的页
     public void skipToPage(int pos) {
         mCurPage = getCurPage(pos);
-        if(mCurPage==null) return;
+        if (mCurPage == null) return;
         mPageView.refreshPage();
     }
 
@@ -648,7 +648,10 @@ public abstract class PageLoader {
         if (!isUpdate) {
             /****绘制背景****/
             canvas.drawColor(mPageBg);
-
+            // TODO: 2019/5/10
+//            Bitmap bitmap1 = BitmapFactory.decodeResource(BaseApplication.getInstance().getResources(), R.mipmap.theme_leather_bg);
+//            canvas.drawBitmap(bitmap1,0,0,null);
+//            canvas.drawBitmap(bitmap1,null,new RectF(0,0,mDisplayWidth,mDisplayHeight),null);
             /*****初始化标题的参数********/
             //需要注意的是:绘制text的y的起始点是text的基准线的位置，而不是从text的头部的位置
             float tipTop = tipMarginHeight - mTipPaint.getFontMetrics().top;
@@ -1071,7 +1074,7 @@ public abstract class PageLoader {
         if (mPageChangeListener != null) {
             mPageChangeListener.onPageChange(pos);
         }
-        if(mCurPageList.size()<pos+1)return null;
+        if (mCurPageList.size() < pos + 1) return null;
         return mCurPageList.get(pos);
     }
 

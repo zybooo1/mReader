@@ -5,10 +5,8 @@ import com.zyb.base.utils.CommonUtils;
 import com.zyb.reader.widget.page.PageView;
 
 /**
- * Created by newbiechen on 17-5-17.
  * 阅读器的配置管理
  */
-
 public class ReadSettingManager {
     public static final int TEXT_SIZE_SP_DEFAULT = 20;
     /*************实在想不出什么好记的命名方式。。******************/

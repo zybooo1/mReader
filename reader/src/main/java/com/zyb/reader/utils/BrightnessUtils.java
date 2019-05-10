@@ -10,10 +10,8 @@ import android.util.Log;
 import android.view.WindowManager;
 
 /**
- * Created by newbiechen on 17-5-19.
  * 调节亮度的工具类
  */
-
 public class BrightnessUtils {
     private static final String TAG = "BrightnessUtils";
 

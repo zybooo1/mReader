@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/selector_category_bg"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <com.xw.repo.VectorCompatTextView
+        android:id="@+id/category_tv_chapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="10dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:paddingTop="10dp"
+        android:textSize="16sp"
+        app:drawableCompatColor="@color/gray40"
+        app:drawableLeftCompat="@drawable/svg_dot"
+        tools:text="1.第一章 第一章第一章第一章第一章第一章第一章第一章第一章第一章第一章" />
+</LinearLayout>

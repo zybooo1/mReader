@@ -18,7 +18,7 @@
     android:layout_width="match_parent"
     android:layout_height="280dp"
     android:layout_alignParentBottom="true"
-    android:background="@color/color_19"
+    android:background="@color/colorReadMenu"
     android:clickable="true"
     android:orientation="vertical"
     android:paddingLeft="12dp"

@@ -40,7 +40,6 @@ import butterknife.ButterKnife;
 
 public class ReadSettingDialog extends Dialog {
     private static final String TAG = "ReadSettingDialog";
-    private static final int DEFAULT_TEXT_SIZE = 16;
 
     int[] colorBg = {R.color.color_cec29c, R.color.color_ccebcc,
             R.color.color_aaa, R.color.color_d1cec5, R.color.color_001c27};
@@ -100,7 +99,7 @@ public class ReadSettingDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_read_setting);
+        setContentView(R.layout.reader_dialog_read_setting);
         ButterKnife.bind(this);
         setUpWindow();
         initData();
@@ -285,7 +284,7 @@ public class ReadSettingDialog extends Dialog {
         mCbFontDefault.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
                     if (isChecked) {
-                        int fontSize = CommonUtils.dp2px(DEFAULT_TEXT_SIZE);
+                        int fontSize = CommonUtils.dp2px(ReadSettingManager.TEXT_SIZE_SP_DEFAULT);
                         mTvFont.setText(fontSize + "");
                         mPageLoader.setTextSize(fontSize);
                     }
