@@ -4,6 +4,7 @@ import android.os.Environment;
 
 
 import com.zyb.base.base.app.BaseApplication;
+import com.zyb.base.utils.CloseUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -126,7 +127,7 @@ public class FileUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
-            IOUtils.close(reader);
+            CloseUtils.closeIO(reader);
         }
         return sb.toString();
     }
@@ -256,7 +257,7 @@ public class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            IOUtils.close(bis);
+            CloseUtils.closeIO(bis);
         }
         return charset;
     }

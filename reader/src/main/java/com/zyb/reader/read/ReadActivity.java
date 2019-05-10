@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -40,8 +41,6 @@ import com.zyb.reader.di.module.ActivityModule;
 import com.zyb.reader.di.module.ApiModule;
 import com.zyb.reader.utils.BrightnessUtils;
 import com.zyb.reader.utils.ReadSettingManager;
-import com.zyb.reader.utils.StatusBarUtils;
-import com.zyb.reader.utils.StringUtils;
 import com.zyb.reader.read.adapter.ReadCategoryAdapter;
 import com.zyb.reader.widget.dialog.ReadSettingDialog;
 import com.zyb.reader.widget.page.NetPageLoader;
@@ -188,7 +187,6 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         mBookId = mCollBook.get_id();
 
         mTvToolbarTitle.setText(mCollBook.getTitle());
-        StatusBarUtils.transparencyBar(this);
         //获取页面加载器
 
         mPageLoader = mPvReadPage.getPageLoader(mCollBook.isLocal());
@@ -222,7 +220,9 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "keep bright");
         //隐藏StatusBar
         mPvReadPage.post(
-                () -> hideSystemBar()
+                () -> {
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
+                }
         );
 
         //初始化TopMenu
@@ -375,29 +375,13 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
 
     private void toggleNightMode() {
         if (isNightMode) {
-            mReadTvNightMode.setText(StringUtils.getString(R.string.wy_mode_morning));
+            mReadTvNightMode.setText(getString(R.string.wy_mode_morning));
             Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.read_menu_morning);
             mReadTvNightMode.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
         } else {
-            mReadTvNightMode.setText(StringUtils.getString(R.string.wy_mode_night));
+            mReadTvNightMode.setText(getString(R.string.wy_mode_night));
             Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.read_menu_night);
             mReadTvNightMode.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
-        }
-    }
-
-    private void showSystemBar() {
-        //显示
-        StatusBarUtils.showUnStableStatusBar(this);
-        if (isFullScreen) {
-            StatusBarUtils.showUnStableNavBar(this);
-        }
-    }
-
-    private void hideSystemBar() {
-        //隐藏
-        StatusBarUtils.hideStableStatusBar(this);
-        if (isFullScreen) {
-            StatusBarUtils.hideStableNavBar(this);
         }
     }
 
@@ -430,7 +414,7 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
      * @return 是否隐藏成功
      */
     private boolean hideReadMenu() {
-        hideSystemBar();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
         if (mReadAblTopMenu.getVisibility() == VISIBLE) {
             toggleMenu();
             return true;
@@ -450,11 +434,11 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
             mReadTvPageTip.setVisibility(GONE);
             QMUIViewHelper.slideOut(mReadAblTopMenu, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.BOTTOM_TO_TOP);
             QMUIViewHelper.slideOut(mReadLlBottomMenu, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
-            hideSystemBar();
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
         }else {
             QMUIViewHelper.slideIn(mReadAblTopMenu, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
             QMUIViewHelper.slideIn(mReadLlBottomMenu, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.BOTTOM_TO_TOP);
-            showSystemBar();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //显示状态栏
         }
     }
 

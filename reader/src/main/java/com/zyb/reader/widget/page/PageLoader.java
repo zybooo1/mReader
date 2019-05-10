@@ -12,17 +12,17 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 
 import com.hjq.toast.ToastUtils;
+import com.zyb.base.utils.CloseUtils;
 import com.zyb.base.utils.CommonUtils;
+import com.zyb.base.utils.RxUtil;
+import com.zyb.base.utils.TimeUtil;
 import com.zyb.reader.R;
 import com.zyb.reader.db.entity.BookChapterBean;
 import com.zyb.reader.db.entity.BookRecordBean;
 import com.zyb.reader.db.entity.CollBookBean;
 import com.zyb.reader.db.helper.BookRecordHelper;
-import com.zyb.reader.utils.Constant;
-import com.zyb.reader.utils.IOUtils;
 import com.zyb.reader.utils.ReadSettingManager;
-import com.zyb.reader.utils.RxUtils;
-import com.zyb.reader.utils.StringUtils;
+import com.zyb.reader.utils.ReadUtils;
 import com.zyb.base.base.app.BaseApplication;
 
 import java.io.BufferedReader;
@@ -279,6 +279,7 @@ public abstract class PageLoader {
     //跳转到具体的页
     public void skipToPage(int pos) {
         mCurPage = getCurPage(pos);
+        if(mCurPage==null) return;
         mPageView.refreshPage();
     }
 
@@ -530,7 +531,7 @@ public abstract class PageLoader {
                     paragraph = paragraph.replaceAll("\\s", "");
                     //如果只有换行符，那么就不执行
                     if (paragraph.equals("")) continue;
-                    paragraph = StringUtils.halfToFull("  " + paragraph + "\n");
+                    paragraph = ReadUtils.halfToFull("  " + paragraph + "\n");
                 } else {
                     //设置 title 的顶部间距
                     rHeight -= mTitlePara;
@@ -613,7 +614,7 @@ public abstract class PageLoader {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            IOUtils.close(br);
+            CloseUtils.closeIO(br);
         }
 
         //可能出现内容为空的情况
@@ -717,7 +718,7 @@ public abstract class PageLoader {
         /******绘制当前时间********/
         //底部的字显示的位置Y
         float y = mDisplayHeight - mTipPaint.getFontMetrics().bottom - tipMarginHeight;
-        String time = StringUtils.dateConvert(System.currentTimeMillis(), Constant.FORMAT_TIME);
+        String time = TimeUtil.parseHHmm(System.currentTimeMillis());
         float x = outFrameLeft - mTipPaint.measureText(time) - CommonUtils.dp2px(4);
         canvas.drawText(time, x, y, mTipPaint);
     }
@@ -1000,7 +1001,7 @@ public abstract class PageLoader {
             public void subscribe(ObservableEmitter<List<TxtPage>> e) throws Exception {
                 e.onNext(loadPageList(nextChapter));
             }
-        }).compose(RxUtils::toSimpleSingle).subscribe(new Observer<List<TxtPage>>() {
+        }).compose(RxUtil::toSimpleSingle).subscribe(new Observer<List<TxtPage>>() {
             @Override
             public void onSubscribe(Disposable d) {
                 mPreLoadDisp = d;
@@ -1070,6 +1071,7 @@ public abstract class PageLoader {
         if (mPageChangeListener != null) {
             mPageChangeListener.onPageChange(pos);
         }
+        if(mCurPageList.size()<pos+1)return null;
         return mCurPageList.get(pos);
     }
 

@@ -22,6 +22,7 @@ import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.LogUtil;
+import com.zyb.base.utils.TimeUtil;
 import com.zyb.base.widget.decoration.GridItemSpaceDecoration;
 import com.zyb.base.widget.dialog.MenuDialog;
 import com.zyb.mreader.R;
@@ -33,8 +34,6 @@ import com.zyb.mreader.module.addBook.AddBookActivity;
 import com.zyb.reader.db.entity.CollBookBean;
 import com.zyb.reader.db.helper.CollBookHelper;
 import com.zyb.reader.read.ReadActivity;
-import com.zyb.reader.utils.Constant;
-import com.zyb.reader.utils.StringUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -101,8 +100,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
         collBook.set_id(file.getAbsolutePath());
         collBook.setTitle(file.getName().replace(".txt", ""));
         collBook.setLastChapter("开始阅读");
-        collBook.setLastRead(StringUtils.
-                dateConvert(System.currentTimeMillis(), Constant.FORMAT_BOOK_DATE));
+        collBook.setLastRead(TimeUtil.parseDateTime(System.currentTimeMillis()));
         return collBook;
     }
 

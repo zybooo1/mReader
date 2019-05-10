@@ -2,16 +2,15 @@ package com.zyb.reader.widget.page;
 
 
 import com.hjq.toast.ToastUtils;
+import com.zyb.base.utils.CloseUtils;
+import com.zyb.base.utils.RxUtil;
+import com.zyb.base.utils.TimeUtil;
 import com.zyb.reader.db.entity.BookChapterBean;
 import com.zyb.reader.db.entity.CollBookBean;
 import com.zyb.reader.db.helper.CollBookHelper;
 import com.zyb.reader.base.bean.Void;
 import com.zyb.reader.utils.Charset;
-import com.zyb.reader.utils.Constant;
 import com.zyb.reader.utils.FileUtils;
-import com.zyb.reader.utils.IOUtils;
-import com.zyb.reader.utils.RxUtils;
-import com.zyb.reader.utils.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -98,7 +97,7 @@ public class LocalPageLoader extends PageLoader {
                 loadBook(mBookFile);
                 e.onSuccess(new Void());
             }
-        }).compose(RxUtils::toSimpleSingle)
+        }).compose(RxUtil::toSimpleSingle)
                 .subscribe(new SingleObserver<Void>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -307,7 +306,7 @@ public class LocalPageLoader extends PageLoader {
         }
 
         mChapterList = chapters;
-        IOUtils.close(bookStream);
+        CloseUtils.closeIO(bookStream);
 
         System.gc();
         System.runFinalization();
@@ -352,7 +351,7 @@ public class LocalPageLoader extends PageLoader {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            IOUtils.close(bookStream);
+            CloseUtils.closeIO(bookStream);
         }
 
         return new byte[0];
@@ -427,8 +426,7 @@ public class LocalPageLoader extends PageLoader {
             //表示当前CollBook已经阅读
             mCollBook.setUpdate(false);
             mCollBook.setLastChapter(mChapterList.get(mCurChapterPos).getTitle());
-            mCollBook.setLastRead(StringUtils.
-                    dateConvert(System.currentTimeMillis(), Constant.FORMAT_BOOK_DATE));
+            mCollBook.setLastRead(TimeUtil.parseDateTime(System.currentTimeMillis()));
             //直接更新
             CollBookHelper.getsInstance().saveBook(mCollBook);
         }

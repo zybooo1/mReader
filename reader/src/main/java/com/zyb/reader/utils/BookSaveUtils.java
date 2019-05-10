@@ -1,5 +1,7 @@
 package com.zyb.reader.utils;
 
+import com.zyb.base.utils.CloseUtils;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -42,7 +44,7 @@ public class BookSaveUtils {
             writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
-            IOUtils.close(writer);
+            CloseUtils.closeIO(writer);
         }
     }
 

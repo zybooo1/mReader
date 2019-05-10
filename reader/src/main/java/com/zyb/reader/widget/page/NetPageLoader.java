@@ -2,12 +2,12 @@ package com.zyb.reader.widget.page;
 
 import android.support.annotation.Nullable;
 
+import com.zyb.base.utils.TimeUtil;
 import com.zyb.reader.db.entity.BookChapterBean;
 import com.zyb.reader.db.entity.CollBookBean;
 import com.zyb.reader.db.helper.CollBookHelper;
 import com.zyb.reader.utils.Constant;
 import com.zyb.reader.utils.FileUtils;
-import com.zyb.reader.utils.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -195,8 +195,7 @@ public class NetPageLoader extends PageLoader{
         if (mCollBook != null && isBookOpen){
             //表示当前CollBook已经阅读
             mCollBook.setUpdate(false);
-            mCollBook.setLastRead(StringUtils.
-                    dateConvert(System.currentTimeMillis(), Constant.FORMAT_BOOK_DATE));
+            mCollBook.setLastRead(TimeUtil.parseDateTime(System.currentTimeMillis()));
             //直接更新
             CollBookHelper.getsInstance().saveBook(mCollBook);
 //            BookRepository.getInstance()
