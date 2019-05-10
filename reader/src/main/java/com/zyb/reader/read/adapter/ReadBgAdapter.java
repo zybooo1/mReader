@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.zyb.reader.R;
-import com.zyb.reader.base.bean.ReadBgBean;
+import com.zyb.reader.core.bean.ReadBgBean;
 
 import java.util.List;
 

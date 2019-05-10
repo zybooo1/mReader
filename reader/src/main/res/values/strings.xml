@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">微Yue电子书</string>
+    <string name="app_name">极简阅读</string>
 
     <!--read-->
     <string name="wy.read.setting">设置</string>

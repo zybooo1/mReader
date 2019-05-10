@@ -2,9 +2,9 @@ package com.zyb.reader.db.helper;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import com.zyb.base.base.app.BaseApplication;
 import com.zyb.reader.db.entity.DaoMaster;
 import com.zyb.reader.db.entity.DaoSession;
-import com.zyb.base.base.app.BaseApplication;
 
 
 /**

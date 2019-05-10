@@ -21,10 +21,10 @@ import android.widget.TextView;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.reader.R;
 import com.zyb.reader.R2;
-import com.zyb.reader.base.bean.ReadBgBean;
+import com.zyb.reader.core.bean.ReadBgBean;
+import com.zyb.reader.read.adapter.ReadBgAdapter;
 import com.zyb.reader.utils.BrightnessUtils;
 import com.zyb.reader.utils.ReadSettingManager;
-import com.zyb.reader.read.adapter.ReadBgAdapter;
 import com.zyb.reader.widget.page.PageLoader;
 import com.zyb.reader.widget.page.PageView;
 

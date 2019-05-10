@@ -1,4 +1,4 @@
-package com.zyb.reader.base.bean;
+package com.zyb.reader.core.bean;
 
 /**
  * Created by Liang_Lu on 2017/12/12.

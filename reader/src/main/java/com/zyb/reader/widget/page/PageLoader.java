@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 
 import com.hjq.toast.ToastUtils;
+import com.zyb.base.base.app.BaseApplication;
 import com.zyb.base.utils.CloseUtils;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.RxUtil;
@@ -23,7 +24,6 @@ import com.zyb.reader.db.entity.CollBookBean;
 import com.zyb.reader.db.helper.BookRecordHelper;
 import com.zyb.reader.utils.ReadSettingManager;
 import com.zyb.reader.utils.ReadUtils;
-import com.zyb.base.base.app.BaseApplication;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

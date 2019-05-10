@@ -1,6 +1,5 @@
 package com.zyb.reader.read;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -9,11 +8,9 @@ import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.provider.Settings;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,30 +23,30 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.hjq.bar.TitleBar;
 import com.zyb.base.base.activity.MVPActivity;
 import com.zyb.base.di.component.AppComponent;
-import com.zyb.base.utils.CommonUtils;
+import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.QMUIViewHelper;
+import com.zyb.base.widget.RoundButton;
+import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
 import com.zyb.reader.R;
 import com.zyb.reader.R2;
-import com.zyb.reader.db.entity.BookChapterBean;
 import com.zyb.reader.db.entity.CollBookBean;
-import com.zyb.reader.db.helper.BookChapterHelper;
-import com.zyb.reader.base.bean.BookChaptersBean;
 import com.zyb.reader.di.component.DaggerActivityComponent;
 import com.zyb.reader.di.module.ActivityModule;
 import com.zyb.reader.di.module.ApiModule;
+import com.zyb.reader.read.adapter.ReadCategoryAdapter;
 import com.zyb.reader.utils.BrightnessUtils;
 import com.zyb.reader.utils.ReadSettingManager;
-import com.zyb.reader.read.adapter.ReadCategoryAdapter;
 import com.zyb.reader.widget.dialog.ReadSettingDialog;
-import com.zyb.reader.widget.page.NetPageLoader;
 import com.zyb.reader.widget.page.PageLoader;
 import com.zyb.reader.widget.page.PageView;
 import com.zyb.reader.widget.page.TxtChapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -60,14 +57,12 @@ import static android.view.View.VISIBLE;
 public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadContract.View {
     private static final int ANIM_HIDE_DURATION = 200;
     private static final int ANIM_SHOW_DURATION = 400;
-    @BindView(R2.id.tv_toolbar_title)
-    TextView mTvToolbarTitle;
-    @BindView(R2.id.read_abl_top_menu)
-    AppBarLayout mReadAblTopMenu;
+    @BindView(R2.id.titleBar)
+    TitleBar titleBar;
     @BindView(R2.id.pv_read_page)
     PageView mPvReadPage;
     @BindView(R2.id.read_tv_page_tip)
-    TextView mReadTvPageTip;
+    RoundButton mReadTvPageTip;
     @BindView(R2.id.read_tv_pre_chapter)
     TextView mReadTvPreChapter;
     @BindView(R2.id.read_sb_chapter_progress)
@@ -86,7 +81,6 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
     RecyclerView mRvReadCategory;
     @BindView(R2.id.read_dl_slide)
     DrawerLayout mReadDlSlide;
-
 
     private static final String TAG = "ReadActivity";
     //注册 Brightness 的 uri
@@ -113,12 +107,8 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
     /***************params*****************/
     private boolean isCollected = false; //isFromSDCard
     private boolean isNightMode = false;
-    private boolean isFullScreen = false;
-    private String mBookId;
     ReadCategoryAdapter mReadCategoryAdapter;
     List<TxtChapter> mTxtChapters = new ArrayList<>();
-    List<BookChapterBean> bookChapterList = new ArrayList<>();
-
 
     // 接收电池信息和时间更新的广播
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -134,7 +124,6 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
             }
         }
     };
-
 
     //亮度调节监听
     //由于亮度调节没有 Broadcast 而是直接修改 ContentProvider 的。所以需要创建一个 Observer 来监听 ContentProvider 的变化情况。
@@ -166,7 +155,6 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         }
     };
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.activity_read;
@@ -174,7 +162,7 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
 
     @Override
     protected int getTitleBarId() {
-        return 0;
+        return R.id.titleBar;
     }
 
     @Override
@@ -183,22 +171,15 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         mCollBook = (CollBookBean) getIntent().getSerializableExtra(EXTRA_COLL_BOOK);
         isCollected = getIntent().getBooleanExtra(EXTRA_IS_COLLECTED, false);
         isNightMode = ReadSettingManager.getInstance().isNightMode();
-        isFullScreen = ReadSettingManager.getInstance().isFullScreen();
-        mBookId = mCollBook.get_id();
 
-        mTvToolbarTitle.setText(mCollBook.getTitle());
+        setTitle(mCollBook.getTitle());
         //获取页面加载器
-
         mPageLoader = mPvReadPage.getPageLoader(mCollBook.isLocal());
         mReadDlSlide.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-        initData();
-
         //更多设置dialog
         mSettingDialog = new ReadSettingDialog(this, mPageLoader);
 
         setCategory();
-
 
         toggleNightMode();
 
@@ -218,45 +199,22 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         //初始化屏幕常亮类
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "keep bright");
-        //隐藏StatusBar
-        mPvReadPage.post(
-                () -> {
-                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
-                }
-        );
-
-        //初始化TopMenu
-        initTopMenu();
-
-        //初始化BottomMenu
-        initBottomMenu();
-
 
         mPageLoader.setOnPageChangeListener(new PageLoader.OnPageChangeListener() {
             @Override
             public void onChapterChange(int pos) {
+                LogUtil.e("==========onChapterChange");
                 setCategorySelect(pos);
-
             }
 
             @Override
             public void onLoadChapter(List<TxtChapter> chapters, int pos) {
-                mPresenter.loadContent(mBookId, chapters);
-                setCategorySelect(mPageLoader.getChapterPos());
-
-                if (mPageLoader.getPageStatus() == NetPageLoader.STATUS_LOADING
-                        || mPageLoader.getPageStatus() == NetPageLoader.STATUS_ERROR) {
-                    //冻结使用
-                    mReadSbChapterProgress.setEnabled(false);
-                }
-
-                //隐藏提示
-                mReadTvPageTip.setVisibility(GONE);
-                mReadSbChapterProgress.setProgress(0);
+                LogUtil.e("==========onLoadChapter");
             }
 
             @Override
             public void onCategoryFinish(List<TxtChapter> chapters) {
+                LogUtil.e("==========onCategoryFinish");
                 mTxtChapters.clear();
                 mTxtChapters.addAll(chapters);
                 mReadCategoryAdapter.notifyDataSetChanged();
@@ -264,6 +222,7 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
 
             @Override
             public void onPageCountChange(int count) {
+                LogUtil.e("==========onPageCountChange");
                 mReadSbChapterProgress.setEnabled(true);
                 mReadSbChapterProgress.setMax(count - 1);
                 mReadSbChapterProgress.setProgress(0);
@@ -271,6 +230,7 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
 
             @Override
             public void onPageChange(int pos) {
+                LogUtil.e("==========onPageChange");
                 mReadSbChapterProgress.post(() -> {
                     mReadSbChapterProgress.setProgress(pos);
                 });
@@ -283,14 +243,14 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (mReadLlBottomMenu.getVisibility() == VISIBLE) {
                     //显示标题
-                    mReadTvPageTip.setText((progress + 1) + "/" + (mReadSbChapterProgress.getMax() + 1));
+                    mReadTvPageTip.setText(String.format(Locale.CHINA, "%d/%d",
+                            progress + 1, mReadSbChapterProgress.getMax() + 1));
                     mReadTvPageTip.setVisibility(VISIBLE);
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
@@ -340,6 +300,7 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
 
     private void setCategory() {
         mRvReadCategory.setLayoutManager(new LinearLayoutManager(this));
+        mRvReadCategory.addItemDecoration(new VerticalItemLineDecoration(this));
         mReadCategoryAdapter = new ReadCategoryAdapter(mTxtChapters);
         mRvReadCategory.setAdapter(mReadCategoryAdapter);
 
@@ -357,8 +318,6 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
 
     /**
      * 设置选中目录
-     *
-     * @param selectPos
      */
     private void setCategorySelect(int selectPos) {
         for (int i = 0; i < mTxtChapters.size(); i++) {
@@ -385,28 +344,6 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         }
     }
 
-    private void initTopMenu() {
-        if (Build.VERSION.SDK_INT >= 19) {
-            mReadAblTopMenu.setPadding(0, CommonUtils.getStatusBarHeight(this), 0, 0);
-        }
-    }
-
-    private void initBottomMenu() {
-        //判断是否全屏
-        // TODO: 2019/5/9
-//        if (ReadSettingManager.getInstance().isFullScreen()) {
-//            //还需要设置mBottomMenu的底部高度
-//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mReadLlBottomMenu.getLayoutParams();
-//            params.bottomMargin = CommonUtils.getNavigationBarHeight();
-//            mReadLlBottomMenu.setLayoutParams(params);
-//        } else {
-//            //设置mBottomMenu的底部距离
-//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mReadLlBottomMenu.getLayoutParams();
-//            params.bottomMargin = 0;
-//            mReadLlBottomMenu.setLayoutParams(params);
-//        }
-    }
-
 
     /**
      * 隐藏阅读界面的菜单显示
@@ -414,8 +351,7 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
      * @return 是否隐藏成功
      */
     private boolean hideReadMenu() {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
-        if (mReadAblTopMenu.getVisibility() == VISIBLE) {
+        if (titleBar.getVisibility() == VISIBLE) {
             toggleMenu();
             return true;
         } else if (mSettingDialog.isShowing()) {
@@ -430,21 +366,21 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
      * 默认是隐藏的
      */
     private void toggleMenu() {
-        if(mReadAblTopMenu.getVisibility() == View.VISIBLE){
+        if (titleBar.getVisibility() == View.VISIBLE) {
             mReadTvPageTip.setVisibility(GONE);
-            QMUIViewHelper.slideOut(mReadAblTopMenu, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.BOTTOM_TO_TOP);
+            QMUIViewHelper.slideOut(titleBar, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.BOTTOM_TO_TOP);
             QMUIViewHelper.slideOut(mReadLlBottomMenu, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
-        }else {
-            QMUIViewHelper.slideIn(mReadAblTopMenu, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
-            QMUIViewHelper.slideIn(mReadLlBottomMenu, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.BOTTOM_TO_TOP);
+        } else {
+            QMUIViewHelper.slideIn(titleBar, ANIM_SHOW_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
+            QMUIViewHelper.slideIn(mReadLlBottomMenu, ANIM_SHOW_DURATION, QMUIViewHelper.QMUIDirection.BOTTOM_TO_TOP);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //显示状态栏
         }
     }
 
 
     @OnClick({R2.id.read_tv_pre_chapter, R2.id.read_tv_next_chapter, R2.id.read_tv_category,
-            R2.id.read_tv_night_mode, R2.id.read_tv_setting, R2.id.tv_toolbar_title})
+            R2.id.read_tv_night_mode, R2.id.read_tv_setting})
     public void onViewClicked(View view) {
         int i = view.getId();
         if (i == R.id.read_tv_pre_chapter) {
@@ -458,68 +394,14 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
             //打开侧滑动栏
             mReadDlSlide.openDrawer(Gravity.START);
         } else if (i == R.id.read_tv_night_mode) {
-            if (isNightMode) {
-                isNightMode = false;
-            } else {
-                isNightMode = true;
-            }
+            isNightMode = !isNightMode;
             mPageLoader.setNightMode(isNightMode);
             toggleNightMode();
         } else if (i == R.id.read_tv_setting) {
             toggleMenu();
             mSettingDialog.show();
-        } else if (i == R.id.tv_toolbar_title) {
-            finish();
         }
     }
-
-
-    // TODO: 2019/5/9
-    public void bookChapters(BookChaptersBean bookChaptersBean) {
-        bookChapterList.clear();
-        for (BookChaptersBean.ChatpterBean bean : bookChaptersBean.getChapters()) {
-            BookChapterBean chapterBean = new BookChapterBean();
-            chapterBean.setBookId(bookChaptersBean.getBook());
-            chapterBean.setLink(bean.getLink());
-            chapterBean.setTitle(bean.getTitle());
-//            chapterBean.setTaskName("下载");
-            chapterBean.setUnreadble(bean.isRead());
-            bookChapterList.add(chapterBean);
-        }
-        mCollBook.setBookChapters(bookChapterList);
-
-        //如果是更新加载，那么重置PageLoader的Chapter
-        if (mCollBook.isUpdate() && isCollected) {
-            mPageLoader.setChapterList(bookChapterList);
-            //异步下载更新的内容存到数据库
-            //TODO
-            BookChapterHelper.getsInstance().saveBookChaptersWithAsync(bookChapterList);
-
-        } else {
-            mPageLoader.openBook(mCollBook);
-        }
-
-
-    }
-
-    @Override
-    public void finishChapters() {
-        if (mPageLoader.getPageStatus() == PageLoader.STATUS_LOADING) {
-            mPvReadPage.post(() -> {
-                mPageLoader.openChapter();
-            });
-        }
-        //当完成章节的时候，刷新列表
-        mReadCategoryAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void errorChapters() {
-        if (mPageLoader.getPageStatus() == PageLoader.STATUS_LOADING) {
-            mPageLoader.chapterError();
-        }
-    }
-
 
     //注册亮度观察者
     private void registerBrightObserver() {
@@ -553,15 +435,11 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         }
     }
 
-
     @Override
     public void onBackPressed() {
-        if (mReadAblTopMenu.getVisibility() == View.VISIBLE) {
-            //非全屏下才收缩，全屏下直接退出
-            if (!ReadSettingManager.getInstance().isFullScreen()) {
-                toggleMenu();
-                return;
-            }
+        if (titleBar.getVisibility() == View.VISIBLE) {
+            toggleMenu();
+            return;
         } else if (mSettingDialog.isShowing()) {
             mSettingDialog.dismiss();
             return;
@@ -569,18 +447,6 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
             mReadDlSlide.closeDrawer(Gravity.START);
             return;
         }
-
-
-        super.onBackPressed();
-    }
-
-    //退出
-    private void exit() {
-        //返回给BookDetail。
-        Intent result = new Intent();
-//        result.putExtra(BookDetailActivity.RESULT_IS_COLLECTED, isCollected);
-        setResult(Activity.RESULT_OK, result);
-        //退出
         super.onBackPressed();
     }
 

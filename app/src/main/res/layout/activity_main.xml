@@ -24,7 +24,6 @@
                     android:id="@+id/titleBar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:theme="@style/AppTheme.AppBarOverlay"
                     app:layout_scrollFlags="scroll|enterAlways"
                     app:leftIcon="@drawable/svg_list_menu"
                     app:title="@string/mreader_app_name" />

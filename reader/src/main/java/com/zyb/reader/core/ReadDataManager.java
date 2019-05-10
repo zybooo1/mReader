@@ -15,13 +15,13 @@ import javax.inject.Inject;
  * 数据处理中心
  */
 
-public class AppDataManager implements HttpHelper, PreferenceHelper, DbHelper, BaseDataManager {
+public class ReadDataManager implements HttpHelper, PreferenceHelper, DbHelper, BaseDataManager {
     private HttpHelper mHttpHelper;
     private PreferenceHelper mPreferenceHelper;
     private GreenDaoHelper mGreenDaoHelper;
 
     @Inject
-    public AppDataManager(RetrofitHelper httpHelper, PreferenceHelperImpl preferencesHelper, GreenDaoHelper greenDaoHelper) {
+    public ReadDataManager(RetrofitHelper httpHelper, PreferenceHelperImpl preferencesHelper, GreenDaoHelper greenDaoHelper) {
         mHttpHelper = httpHelper;
         mPreferenceHelper = preferencesHelper;
         mGreenDaoHelper = greenDaoHelper;

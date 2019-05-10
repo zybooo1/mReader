@@ -10,6 +10,7 @@ import com.zyb.reader.widget.page.PageView;
  */
 
 public class ReadSettingManager {
+    public static final int TEXT_SIZE_SP_DEFAULT = 20;
     /*************实在想不出什么好记的命名方式。。******************/
     public static final int READ_BG_DEFAULT = 0;
     public static final int READ_BG_1 = 1;
@@ -25,8 +26,6 @@ public class ReadSettingManager {
     public static final String SHARED_READ_IS_TEXT_DEFAULT = "shared_read_text_default";
     public static final String SHARED_READ_PAGE_MODE = "shared_read_mode";
     public static final String SHARED_READ_NIGHT_MODE = "shared_night_mode";
-    public static final String SHARED_READ_VOLUME_TURN_PAGE = "shared_read_volume_turn_page";
-    public static final String SHARED_READ_FULL_SCREEN = "shared_read_full_screen";
 
     private static volatile ReadSettingManager sInstance;
 
@@ -58,10 +57,6 @@ public class ReadSettingManager {
         sharedPreUtils.putBoolean(SHARED_READ_IS_BRIGHTNESS_AUTO,isAuto);
     }
 
-    public void setDefaultTextSize(boolean isDefault){
-        sharedPreUtils.putBoolean(SHARED_READ_IS_TEXT_DEFAULT, isDefault);
-    }
-
     public void setTextSize(int textSize){
         sharedPreUtils.putInt(SHARED_READ_TEXT_SIZE,textSize);
     }
@@ -83,7 +78,7 @@ public class ReadSettingManager {
     }
 
     public int getTextSize(){
-        return sharedPreUtils.getInt(SHARED_READ_TEXT_SIZE, CommonUtils.sp2px(28));
+        return sharedPreUtils.getInt(SHARED_READ_TEXT_SIZE, CommonUtils.sp2px(TEXT_SIZE_SP_DEFAULT));
     }
     public boolean isDefaultTextSize(){
         return sharedPreUtils.getBoolean(SHARED_READ_IS_TEXT_DEFAULT, false);
@@ -99,21 +94,5 @@ public class ReadSettingManager {
 
     public boolean isNightMode(){
         return sharedPreUtils.getBoolean(SHARED_READ_NIGHT_MODE, false);
-    }
-
-    public void setVolumeTurnPage(boolean isTurn){
-        sharedPreUtils.putBoolean(SHARED_READ_VOLUME_TURN_PAGE,isTurn);
-    }
-
-    public boolean isVolumeTurnPage(){
-        return sharedPreUtils.getBoolean(SHARED_READ_VOLUME_TURN_PAGE, false);
-    }
-
-    public void setFullScreen(boolean isFullScreen){
-        sharedPreUtils.putBoolean(SHARED_READ_FULL_SCREEN,isFullScreen);
-    }
-
-    public boolean isFullScreen(){
-        return sharedPreUtils.getBoolean(SHARED_READ_FULL_SCREEN,false);
     }
 }
