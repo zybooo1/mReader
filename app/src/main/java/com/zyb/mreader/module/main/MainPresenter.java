@@ -1,7 +1,9 @@
 package com.zyb.mreader.module.main;
 
 
+import com.zyb.base.http.CommonSubscriber;
 import com.zyb.base.mvp.AbstractPresenter;
+import com.zyb.base.utils.RxUtil;
 import com.zyb.mreader.base.bean.Book;
 import com.zyb.mreader.core.AppDataManager;
 
@@ -22,13 +24,30 @@ public class MainPresenter extends AbstractPresenter<MainContract.View, AppDataM
 
 
     @Override
+    public void drawerAction(MainContract.DRAWER_ACTION action) {
+
+        addSubscribe(RxUtil.createDelayFlowable(250, new CommonSubscriber<Long>(mView) {
+            @Override
+            protected void onStartWithViewAlive() { }
+            @Override
+            protected void onCompleteWithViewAlive() { }
+            @Override
+            protected void onNextWithViewAlive(Long aLong) {
+                switch (action){
+                    case TO_ADD_BOOK:
+                        mView.toAddBook();
+                        break;
+                }
+            }
+            @Override
+            protected void onErrorWithViewAlive(Throwable e) { }
+        }));
+    }
+
+    @Override
     public void getBooks() {
         List<Book> allBooks = mDataManager.getAllBooks();
-        if(allBooks.size()<=0){
-            mView.showPageEmpty();
-        }else {
-            mView.showPageContent();
-        }
+        allBooks.add(new Book());
         mView.onBooksLoaded(allBooks);
     }
 

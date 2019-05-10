@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.zyb.mreader.widget.BookItemCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="5dp"
-    app:cardBackgroundColor="@color/book_item_bg">
+    app:cardBackgroundColor="@color/book_item_bg"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="5dp">
 
 
     <RelativeLayout
@@ -19,18 +20,27 @@
             android:layout_margin="5dp"
             android:background="@color/book_item_fill" />
 
+        <ImageView
+            android:id="@+id/ivAdd"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:tint="@color/white"
+            app:srcCompat="@drawable/svg_add" />
+
         <TextView
             android:id="@+id/item_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="20dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:lineSpacingExtra="4dp"
+            android:layout_marginBottom="40dp"
             android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="4dp"
             android:maxLines="3"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/gray60"
+            tools:text="麦田里的守望者" />
     </RelativeLayout>
 
 </com.zyb.mreader.widget.BookItemCardView>

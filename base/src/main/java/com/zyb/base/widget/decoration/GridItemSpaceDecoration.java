@@ -11,7 +11,7 @@ public class GridItemSpaceDecoration extends RecyclerView.ItemDecoration {
     private  int topSpacing;
 
     public GridItemSpaceDecoration(int spanCount, int spacing, boolean includeEdge) {
-       this(spanCount,spacing,includeEdge,0);
+        this(spanCount,spacing,includeEdge,0);
     }
     public GridItemSpaceDecoration(int spanCount, int spacing, boolean includeEdge, int topSpacing) {
         this.mSpanCount = spanCount;
@@ -47,3 +47,4 @@ public class GridItemSpaceDecoration extends RecyclerView.ItemDecoration {
         }
     }
 }
+

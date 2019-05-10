@@ -4,19 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/layout_page_status" />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_books"
+    <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/layout_page_status" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_books"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnRefresh"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-       />
-<android.support.design.widget.FloatingActionButton
-    android:id="@+id/btnRefresh"
-    app:layout_behavior="@string/scale_down_show_behavior"
-    app:srcCompat="@drawable/svg_book"
-    android:layout_margin="20dp"
-    android:layout_alignParentEnd="true"
-    android:layout_alignParentBottom="true"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        android:tint="@color/white"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_behavior="@string/scale_down_show_behavior"
+        app:srcCompat="@drawable/svg_refresh" />
 </RelativeLayout>

@@ -1,11 +1,11 @@
 package com.zyb.base.widget.decoration;
 
+
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zyb.base.utils.CommonUtils;
-
 
 /**
  * 竖向列表底部Padding间距

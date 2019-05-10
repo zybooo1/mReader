@@ -62,7 +62,6 @@ dependencies {
     api rootProject.ext.dependencies["toast-util"]
     api rootProject.ext.dependencies["greendao"]
     api rootProject.ext.dependencies["EventBus"]
-    api rootProject.ext.dependencies["EasyLVAdapter"]
     //json
     api rootProject.ext.dependencies["gson"]
     //network

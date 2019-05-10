@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,6 +17,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textColor="@color/gray50"
             android:gravity="center_vertical"
             android:padding="10dp"
             android:textSize="12sp"
@@ -27,20 +29,24 @@
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp" />
 
-        <TextView
+        <ImageView
             android:id="@+id/file_category_tv_back_last"
             android:layout_width="75dp"
             android:layout_height="match_parent"
+            android:padding="5dp"
+            android:tint="@color/gray40"
+            app:srcCompat="@drawable/svg_directory_back"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:gravity="center"
-            android:text="上一级"
-            android:textSize="12sp" />
+            android:layout_marginLeft="5dp"/>
     </LinearLayout>
 
-    <include layout="@layout/layout_loading_view" />
-
-    <include layout="@layout/layout_empty_view" />
+<TextView
+    android:id="@+id/tvEmpty"
+    android:gravity="center"
+    android:visibility="gone"
+    android:text="当前文件夹无TXT文件"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_books"

@@ -3,30 +3,23 @@ package com.zyb.mreader.module.main;
 import android.app.Dialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.zyb.reader.db.entity.CollBookBean;
-import com.zyb.reader.db.helper.CollBookHelper;
-import com.zyb.reader.read.ReadActivity;
-import com.zyb.reader.utils.Constant;
-import com.zyb.reader.utils.StringUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zyb.base.base.BaseDialog;
 import com.zyb.base.base.activity.MVPActivity;
 import com.zyb.base.di.component.AppComponent;
+import com.zyb.base.event.BaseEvent;
+import com.zyb.base.event.EventConstants;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.LogUtil;
 import com.zyb.base.widget.decoration.GridItemSpaceDecoration;
@@ -37,20 +30,28 @@ import com.zyb.mreader.di.component.DaggerActivityComponent;
 import com.zyb.mreader.di.module.ActivityModule;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.module.addBook.AddBookActivity;
+import com.zyb.reader.db.entity.CollBookBean;
+import com.zyb.reader.db.helper.CollBookHelper;
+import com.zyb.reader.read.ReadActivity;
+import com.zyb.reader.utils.Constant;
+import com.zyb.reader.utils.StringUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class MainActivity extends MVPActivity<MainPresenter> implements MainContract.View {
 
-
+    @BindView(R.id.drawerLayout)
+    DrawerLayout drawerLayout;
     @BindView(R.id.rv_books)
     RecyclerView rvBooks;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     @BindView(R.id.appbar)
     AppBarLayout appbar;
     @BindView(R.id.smartRefresh)
@@ -61,44 +62,29 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
 
     private RecyclerView.OnScrollListener onFlingListener = new RecyclerView.OnScrollListener() {
         @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
-            int firstVisibleItemPosition = manager.findFirstVisibleItemPosition();
-            if (firstVisibleItemPosition > 0) {
-                MainActivity.this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
-                return;
-            }
-
-            //获取可视的第一个view
-            View topView = manager.getChildAt(0);
-            int lastOffset = 100;
-            if (topView != null) {
-                //获取与该view的顶部的偏移量
-                lastOffset = topView.getTop();
-
-                LogUtil.e("onScrollStateChanged " + lastOffset);
-            }
-
-            if (lastOffset <= 0) {
-                MainActivity.this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
-            } else {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            LogUtil.e("onScrolled dy:" + dy);
+            if (dy <= 0) {
                 MainActivity.this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //显示状态栏
+            } else {
+                MainActivity.this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
             }
         }
     };
     private BaseQuickAdapter.OnItemClickListener onItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            if (true) {
+            if (position < books.size()-1) {
                 File file = new File(books.get(position).getPath());
                 CollBookBean collBook = convertCollBook(file);
                 CollBookHelper.getsInstance().saveBook(collBook);
-                Intent intent =new Intent(MainActivity.this, ReadActivity.class);
+                Intent intent = new Intent(MainActivity.this, ReadActivity.class);
                 intent.putExtra(ReadActivity.EXTRA_COLL_BOOK, collBook);
                 intent.putExtra(ReadActivity.EXTRA_IS_COLLECTED, false);
                 startActivity(intent);
-                return;
+            }else {
+                toAddBook();
             }
         }
     };
@@ -120,11 +106,13 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
         return collBook;
     }
 
-    private BaseQuickAdapter.OnItemLongClickListener   onItemLongClickListener = new BaseQuickAdapter.OnItemLongClickListener() {
+    private BaseQuickAdapter.OnItemLongClickListener onItemLongClickListener = new BaseQuickAdapter.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-            longClickBook=books.get(position);
-            showRemoveDialog();
+            if (position < books.size()-1) {
+                longClickBook = books.get(position);
+                showRemoveDialog();
+            }
             return true;
         }
     };
@@ -142,13 +130,26 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
 
     @Override
     protected int getTitleBarId() {
-        return R.id.toolbar;
+        return R.id.titleBar;
+    }
+
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onEventReceived(BaseEvent<Object> event) {
+        if (event == null) return;
+        switch (event.getCode()) {
+            case EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF:
+                refreshBooks();
+                break;
+        }
     }
 
     @Override
     protected void initView() {
-        setSupportActionBar(toolbar);
-
         booksAdapter = new BooksAdapter(books);
         booksAdapter.setOnItemClickListener(onItemClickListener);
         booksAdapter.setOnItemLongClickListener(onItemLongClickListener);
@@ -171,31 +172,9 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
         mPresenter.getBooks();
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_book:
-                toAddBooks();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void toAddBooks() {
-        startActivityForResult(AddBookActivity.class, new ActivityCallback() {
-            @Override
-            public void onActivityResult(int resultCode, @Nullable Intent data) {
-                booksAdapter.notifyDataSetChanged();
-            }
-        });
+    public void onLeftClick(View v) {
+        drawerLayout.openDrawer(Gravity.START);
     }
 
     @Override
@@ -217,6 +196,21 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
         smartRefresh.finishRefresh();
     }
 
+    @OnClick(R.id.addBook)
+    public void addBookClick(View view) {
+        drawerLayout.closeDrawers();
+        switch (view.getId()) {
+            case R.id.addBook:
+                mPresenter.drawerAction(MainContract.DRAWER_ACTION.TO_ADD_BOOK);
+                break;
+        }
+    }
+
+    @Override
+    public void toAddBook() {
+        startActivity(AddBookActivity.class);
+    }
+
     BaseDialog removeDialog;
     Book longClickBook;
     MenuDialog.OnListener removeListener = new MenuDialog.OnListener() {
@@ -232,6 +226,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
 
         }
     };
+
     private void showRemoveDialog() {
         if (removeDialog == null) {
             List<String> strings = new ArrayList<>();

@@ -130,6 +130,5 @@ ext {
             "PersistentCookieJar"       : "com.github.franmontiel:PersistentCookieJar:v1.0.1",
             "XBanner"                   : "com.github.xiaohaibin:XBanner:1.6.6",
             "greendao"                  : "org.greenrobot:greendao:3.2.2",
-            "EasyLVAdapter"             : "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34"
     ]
 }

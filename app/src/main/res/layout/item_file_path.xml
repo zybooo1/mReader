@@ -12,7 +12,7 @@
     android:paddingRight="10dp">
 
     <ImageView
-        app:srcCompat="@drawable/svg_book_shelf"
+        app:srcCompat="@drawable/svg_file_path"
         android:layout_width="48dp"
         android:layout_marginEnd="10dp"
         android:layout_height="48dp" />

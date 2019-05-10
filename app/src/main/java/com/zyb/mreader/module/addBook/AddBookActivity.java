@@ -4,12 +4,20 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
 
 import com.zyb.base.base.activity.MVPActivity;
 import com.zyb.base.di.component.AppComponent;
+import com.zyb.base.event.BaseEvent;
+import com.zyb.base.event.EventConstants;
+import com.zyb.base.utils.EventBusUtil;
+import com.zyb.base.utils.LogUtil;
 import com.zyb.mreader.R;
 import com.zyb.mreader.base.bean.Book;
 import com.zyb.mreader.base.bean.BookFiles;
@@ -18,6 +26,10 @@ import com.zyb.mreader.di.module.ActivityModule;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.module.addBook.file.BookFilesFragment;
 import com.zyb.mreader.module.addBook.path.BookPathFragment;
+import com.zyb.mreader.module.main.MainActivity;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +40,6 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
 
     public static final int ADDED_RESULT = 0x123;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
     @BindView(R.id.appbar)
@@ -38,6 +48,8 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
     TabLayout tabLayout;
 
     private int[] tabTexts = new int[]{R.string.add_book_files, R.string.add_book_paths};
+
+
 
     TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
         @Override
@@ -78,13 +90,11 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
 
     @Override
     protected int getTitleBarId() {
-        return R.id.toolbar;
+        return R.id.titleBar;
     }
 
     @Override
     protected void initView() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         tabLayout.addOnTabSelectedListener(onTabSelectedListener);
         for (int tabText : tabTexts) {
             TabLayout.Tab tab = tabLayout.newTab().setText(tabText);
@@ -96,6 +106,30 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    public void onRightClick(View v) {
+        super.onRightClick(v);
+        addBooks();
+    }
+
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventReceived(BaseEvent<Object> event) {
+        if (event == null) return;
+        switch (event.getCode()) {
+            case EventConstants.EVENT_SHOW_STATUS_BAR:
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                break;
+            case EventConstants.EVENT_HIDE_STATUS_BAR:
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                break;
+        }
     }
 
     @Override
@@ -119,22 +153,6 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
         viewPager.addOnPageChangeListener(onPageChangeListener);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.add_book, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.add) {
-addBooks();
-            return true;
-        }else if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     private void addBooks() {
         List<Book> bookList = new ArrayList<>();
@@ -154,7 +172,7 @@ addBooks();
 
     @Override
     public void onBooksAdded() {
-        setResult(ADDED_RESULT);
+        EventBusUtil.sendStickyEvent(new BaseEvent(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
         finish();
     }
 }

@@ -1,5 +1,7 @@
 package com.zyb.base.utils;
 
+import com.zyb.base.http.CommonSubscriber;
+
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.BackpressureStrategy;
@@ -126,11 +128,20 @@ public class RxUtil {
     }
 
     /**
-     * createDelayObservable
+     * createDelayFlowable
      */
     public static Disposable createDelayObservable(int ms, Consumer<? super Long> consumer) {
         return Observable.timer(ms, TimeUnit.MILLISECONDS)
                 .compose(rxObservableSchedulerHelper())
                 .subscribe(consumer, throwable -> {});
+    }
+
+    /**
+     * createDelayFlowable
+     */
+    public static Disposable createDelayFlowable(int ms, CommonSubscriber<? super Long> consumer) {
+        return Flowable.timer(ms, TimeUnit.MILLISECONDS)
+                .compose(rxSchedulerHelper())
+                .subscribeWith(consumer);
     }
 }

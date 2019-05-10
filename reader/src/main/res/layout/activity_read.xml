@@ -16,7 +16,7 @@
             android:id="@+id/read_abl_top_menu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorReadMenu"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -79,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorReadMenu"
             android:clickable="true"
             android:orientation="vertical"
             android:visibility="gone"

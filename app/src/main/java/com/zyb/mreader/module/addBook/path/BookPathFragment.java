@@ -1,6 +1,7 @@
 package com.zyb.mreader.module.addBook.path;
 
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,6 +11,10 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.zyb.base.base.fragment.MVPFragment;
 import com.zyb.base.di.component.AppComponent;
+import com.zyb.base.event.BaseEvent;
+import com.zyb.base.event.EventConstants;
+import com.zyb.base.utils.EventBusUtil;
+import com.zyb.base.utils.LogUtil;
 import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
 import com.zyb.mreader.R;
 import com.zyb.mreader.base.bean.BookFiles;
@@ -29,30 +34,22 @@ import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class BookPathFragment extends MVPFragment<BookPathPresenter> implements BookPathContract.View {
     @BindView(R.id.rv_books)
     RecyclerView rvBooks;
 
-    @BindView(R.id.loading_view)
-    LinearLayout loadingView;
+    @BindView(R.id.tvEmpty)
+    TextView tvEmpty;
+
     @BindView(R.id.file_category_tv_path)
     TextView tvPath;
-    @BindView(R.id.file_category_tv_back_last)
-    TextView tvPathBack;
 
     public List<BookFiles> mFileBeans = new ArrayList<>();
     private FileStack mFileStack;
 
     private PathAdapter booksAdapter;
-    private View.OnClickListener onPathBackClickListener = v -> {
-        FileStack.FileSnapshot snapshot = mFileStack.pop();
-        int oldScrollOffset = rvBooks.computeHorizontalScrollOffset();
-        if (snapshot == null) return;
-        tvPath.setText(snapshot.filePath);
-        addFiles(snapshot.files);
-        rvBooks.scrollBy(0, snapshot.scrollOffset - oldScrollOffset);
-    };
     private BaseQuickAdapter.OnItemClickListener onItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -68,12 +65,26 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
                 toggleFileTree(file);
             } else {
                 BookFiles book = mFileBeans.get(position);
-                if(!mPresenter.isBookAdded(book)){
+                if (!mPresenter.isBookAdded(book)) {
                     book.setIsChecked(!book.getIsChecked());
                     booksAdapter.notifyItemChanged(position);
                 }
             }
         }
+    };
+
+    private RecyclerView.OnScrollListener onFlingListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            LogUtil.e("onScrolled dy:"+dy);
+            if (dy <= 0) {
+                EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_SHOW_STATUS_BAR));
+            } else {
+                EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_HIDE_STATUS_BAR));
+            }
+        }
+
     };
 
     public static BookPathFragment newInstance() {
@@ -106,15 +117,19 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
             fileBean.setId(file.getAbsolutePath());
             fileBean.setIsFile(file.isFile());
             fileBean.setPath(file.getAbsolutePath());
-            if (file.isFile()){
+            if (file.isFile()) {
                 fileBean.setSize(FileUtils.getFileSize(file.length()));
-            }else {
+            } else {
                 fileBean.setSize(FileUtils.getChildNum(file));
             }
             fileBean.setTitle(FileUtils.getSimpleName(file));
             mFileBeans.add(fileBean);
         }
-        loadingView.setVisibility(View.GONE);
+        if(mFileBeans.size()<=0){
+            tvEmpty.setVisibility(View.VISIBLE);
+        }else {
+            tvEmpty.setVisibility(View.GONE);
+        }
         booksAdapter.notifyDataSetChanged();
     }
 
@@ -127,23 +142,31 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
     protected void initView() {
         mFileStack = new FileStack();
 
-        booksAdapter = new PathAdapter(mFileBeans,mPresenter);
+        booksAdapter = new PathAdapter(mFileBeans, mPresenter);
         booksAdapter.setOnItemClickListener(onItemClickListener);
         rvBooks.setLayoutManager(new LinearLayoutManager(getContext()));
         rvBooks.addItemDecoration(new VerticalItemLineDecoration(getFragmentActivity()));
         rvBooks.setAdapter(booksAdapter);
+        rvBooks.addOnScrollListener(onFlingListener);
 
 
         File root = Environment.getExternalStorageDirectory();
         toggleFileTree(root);
-
-        tvPathBack.setOnClickListener(onPathBackClickListener);
-
     }
 
     @Override
     protected void initData() {
 
+    }
+
+    @OnClick(R.id.file_category_tv_back_last)
+    public void pathBack() {
+        FileStack.FileSnapshot snapshot = mFileStack.pop();
+        int oldScrollOffset = rvBooks.computeHorizontalScrollOffset();
+        if (snapshot == null) return;
+        tvPath.setText(snapshot.filePath);
+        addFiles(snapshot.files);
+        rvBooks.scrollBy(0, snapshot.scrollOffset - oldScrollOffset);
     }
 
     @Override

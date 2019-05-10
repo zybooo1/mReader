@@ -1,5 +1,6 @@
 package com.zyb.base.widget.decoration;
 
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.zyb.base.utils.CommonUtils;
-
 
 /**
  * 竖向列表分割线-LinearLayoutManager

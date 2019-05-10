@@ -18,8 +18,11 @@ public class BooksAdapter extends BaseQuickAdapter<Book, BaseViewHolder> {
         super(R.layout.item_book, datas);
     }
 
+
     @Override
     protected void convert(BaseViewHolder helper, Book item) {
-        helper.setText(R.id.item_title, item.getTitle());
+        int position = helper.getLayoutPosition();
+        helper.setText(R.id.item_title, item.getTitle())
+                .setGone(R.id.ivAdd, position == mData.size()-1);
     }
 }

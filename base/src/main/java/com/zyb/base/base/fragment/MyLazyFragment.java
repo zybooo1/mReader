@@ -200,49 +200,42 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
                 }
             });
         }
-        if (layoutEmpty != null && layoutEmpty.findViewById(R.id.btnEmptyRetry) != null) {
-            layoutEmpty.findViewById(R.id.btnEmptyRetry).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onPageRetry(v);
-                }
-            });
-        }
         if (usePageStatusManager()) showPageLoading();
     }
 
-    protected void hideAllStatusPage() {
+    protected void hideAllStatusPage(boolean isHideRoot) {
         if (layoutEmpty != null) layoutEmpty.setVisibility(View.GONE);
         if (layoutLoading != null) layoutLoading.setVisibility(View.GONE);
         if (layoutRetry != null) layoutRetry.setVisibility(View.GONE);
+        if (layoutStatusRoot != null) {
+            layoutStatusRoot.setVisibility(isHideRoot ? View.GONE : View.VISIBLE);
+        }
     }
 
     @Override
     public void showPageLoading() {
-        hideAllStatusPage();
+        hideAllStatusPage(false);
         if (layoutLoading != null) layoutLoading.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showPageEmpty() {
-        hideAllStatusPage();
+        hideAllStatusPage(false);
         if (layoutEmpty != null) layoutEmpty.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showPageRetry() {
-        hideAllStatusPage();
+        hideAllStatusPage(false);
         if (layoutRetry != null) layoutRetry.setVisibility(View.VISIBLE);
     }
 
     /**
-     * 只要显示一次界面内容，就不会再显示各种页面状态了
-     * 可以交给Toast
+     *
      */
     @Override
     public void showPageContent() {
-        if (layoutStatusRoot != null) layoutStatusRoot.setVisibility(View.GONE);
-        hideAllStatusPage();
+        hideAllStatusPage(true);
     }
 
     /**

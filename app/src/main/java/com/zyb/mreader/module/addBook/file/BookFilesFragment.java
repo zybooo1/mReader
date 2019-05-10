@@ -1,5 +1,6 @@
 package com.zyb.mreader.module.addBook.file;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -7,6 +8,10 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.zyb.base.base.fragment.MVPFragment;
 import com.zyb.base.di.component.AppComponent;
+import com.zyb.base.event.BaseEvent;
+import com.zyb.base.event.EventConstants;
+import com.zyb.base.utils.EventBusUtil;
+import com.zyb.base.utils.LogUtil;
 import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
 import com.zyb.mreader.R;
 import com.zyb.mreader.base.bean.BookFiles;
@@ -30,11 +35,24 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             BookFiles book = bookList.get(position);
-            if(!mPresenter.isBookAdded(book)){
+            if (!mPresenter.isBookAdded(book)) {
                 book.setIsChecked(!book.getIsChecked());
                 booksAdapter.notifyItemChanged(position);
             }
         }
+    };
+    private RecyclerView.OnScrollListener onFlingListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            LogUtil.e("onScrolled dy:"+dy);
+            if (dy <= 0) {
+                EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_SHOW_STATUS_BAR));
+            } else {
+                EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_HIDE_STATUS_BAR));
+            }
+        }
+
     };
 
     public static BookFilesFragment newInstance() {
@@ -54,6 +72,7 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
         rvBooks.setLayoutManager(new LinearLayoutManager(getFragmentActivity()));
         rvBooks.addItemDecoration(new VerticalItemLineDecoration(getFragmentActivity()));
         rvBooks.setAdapter(booksAdapter);
+        rvBooks.addOnScrollListener(onFlingListener);
 
         if (mPresenter.isBookFilesCached()) {
             onBookFilesLoaded(mPresenter.getAllBookFiles());
@@ -65,12 +84,6 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
     @Override
     protected void initData() {
 
-    }
-
-    @Override
-    protected void onPageRetry(View v) {
-        super.onPageRetry(v);
-        mPresenter.scanFiles();
     }
 
     @Override

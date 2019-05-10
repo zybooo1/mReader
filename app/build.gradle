@@ -58,7 +58,7 @@ android {
     //自定义apk文件名
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "APP_${variant.versionCode}_${variant.versionName}-${releaseTime()}.apk"
+            outputFileName = "极简阅读_${variant.versionCode}_${variant.versionName}-${releaseTime()}.apk"
         }
     }
 
