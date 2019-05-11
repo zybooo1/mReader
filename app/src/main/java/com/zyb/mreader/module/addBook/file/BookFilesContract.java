@@ -15,6 +15,7 @@ public interface BookFilesContract {
 
     interface Presenter extends BasePresenter<View> {
         void updateBookFiles(List<BookFiles> books);
+        void addBook(Book book);
         void scanFiles();
         boolean isBookAdded(BookFiles book);
         boolean isBookFilesCached();

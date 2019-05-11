@@ -1,70 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/touch_bg"
-    android:orientation="horizontal"
     android:gravity="center"
+    android:orientation="horizontal"
     android:paddingLeft="20dp"
     android:paddingTop="15dp"
-    android:paddingBottom="15dp"
-    android:paddingRight="10dp">
+    android:paddingRight="10dp"
+    android:paddingBottom="15dp">
 
     <ImageView
-        app:srcCompat="@drawable/svg_file_txt"
-        android:layout_width="48dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginEnd="10dp"
-        android:layout_height="48dp" />
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingRight="15dp">
+        app:srcCompat="@drawable/svg_file_txt" />
 
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:layout_marginEnd="30dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:paddingBottom="5dp"
-                android:text="麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/tv_size"
-                android:layout_marginEnd="30dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:paddingBottom="5dp"
-                android:text="2226516513516525612321133216521323213222265165135165256123211332165213232132"
-                android:textSize="13sp" />
-        </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingRight="15dp">
 
         <TextView
-            android:id="@+id/tv_exist_already"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:padding="5dp"
-            android:visibility="gone"
-            android:text="已添加" />
+            android:layout_marginEnd="30dp"
+            android:layout_weight="2"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingBottom="5dp"
+            android:text="麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
-        <CheckBox
-            android:focusable="false"
-            android:clickable="false"
-            android:id="@+id/cb_book"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_size"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:padding="5dp" />
+            android:layout_marginEnd="30dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingBottom="5dp"
+            android:text="2226516513516525612321133216521323213222265165135165256123211332165213232132"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_exist_already"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:padding="5dp"
+        android:text="已添加"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/ivAdd"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="8dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/shape_circle_common_primary"
+        app:srcCompat="@drawable/svg_add" />
 </LinearLayout>

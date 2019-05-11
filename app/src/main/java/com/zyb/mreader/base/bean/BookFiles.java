@@ -22,18 +22,16 @@ public class BookFiles implements MultiItemEntity {
     private String title = "";      //name
     private String path = "";      //路径
     private String size = "";      //大小
-    private boolean isChecked = false;      //是否选中
 
     private boolean isFile;
 
-    @Generated(hash = 470027827)
+    @Generated(hash = 1169191753)
     public BookFiles(String id, String title, String path, String size,
-            boolean isChecked, boolean isFile) {
+            boolean isFile) {
         this.id = id;
         this.title = title;
         this.path = path;
         this.size = size;
-        this.isChecked = isChecked;
         this.isFile = isFile;
     }
 
@@ -45,6 +43,7 @@ public class BookFiles implements MultiItemEntity {
 
     public Book toBook() {
         Book book = new Book();
+        book.setId(getPath());
         book.setTitle(getTitle());
         book.setPath(getPath());
         book.setSize(getSize());
@@ -94,15 +93,6 @@ public class BookFiles implements MultiItemEntity {
         this.size = size;
     }
 
-
-    public boolean getIsChecked() {
-        return this.isChecked;
-    }
-
-
-    public void setIsChecked(boolean isChecked) {
-        this.isChecked = isChecked;
-    }
 
 
     public boolean getIsFile() {

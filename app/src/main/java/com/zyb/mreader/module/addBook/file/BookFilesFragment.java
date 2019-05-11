@@ -31,21 +31,24 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
     RecyclerView rvBooks;
     public List<BookFiles> bookList = new ArrayList<>();
     private FilesAdapter booksAdapter;
-    private BaseQuickAdapter.OnItemClickListener onItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
+    private BaseQuickAdapter.OnItemChildClickListener onItemChildClickListener = new BaseQuickAdapter.OnItemChildClickListener() {
         @Override
-        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            BookFiles book = bookList.get(position);
-            if (!mPresenter.isBookAdded(book)) {
-                book.setIsChecked(!book.getIsChecked());
-                booksAdapter.notifyItemChanged(position);
+        public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+            if (view.getId() == R.id.ivAdd) {
+                BookFiles book = bookList.get(position);
+                if (!mPresenter.isBookAdded(book)) {
+                    mPresenter.addBook(book.toBook());
+                    booksAdapter.notifyItemChanged(position);
+                }
             }
+
         }
     };
     private RecyclerView.OnScrollListener onFlingListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            LogUtil.e("onScrolled dy:"+dy);
+            LogUtil.e("onScrolled dy:" + dy);
             if (dy <= 0) {
                 EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_SHOW_STATUS_BAR));
             } else {
@@ -68,7 +71,7 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
     @Override
     protected void initView() {
         booksAdapter = new FilesAdapter(bookList, mPresenter);
-        booksAdapter.setOnItemClickListener(onItemClickListener);
+        booksAdapter.setOnItemChildClickListener(onItemChildClickListener);
         rvBooks.setLayoutManager(new LinearLayoutManager(getFragmentActivity()));
         rvBooks.addItemDecoration(new VerticalItemLineDecoration(getFragmentActivity()));
         rvBooks.setAdapter(booksAdapter);

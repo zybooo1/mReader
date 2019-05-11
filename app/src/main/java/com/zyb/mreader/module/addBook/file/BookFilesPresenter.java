@@ -1,13 +1,18 @@
 package com.zyb.mreader.module.addBook.file;
 
 
+import com.zyb.base.event.BaseEvent;
+import com.zyb.base.event.EventConstants;
 import com.zyb.base.http.CommonSubscriber;
 import com.zyb.base.mvp.AbstractPresenter;
+import com.zyb.base.utils.EventBusUtil;
 import com.zyb.base.utils.RxUtil;
+import com.zyb.mreader.base.bean.Book;
 import com.zyb.mreader.base.bean.BookFiles;
 import com.zyb.mreader.core.AppDataManager;
 import com.zyb.mreader.utils.FileSizeComparator;
 import com.zyb.mreader.utils.FileUtils;
+import com.zyb.reader.db.entity.BookChapterBean;
 
 import org.reactivestreams.Publisher;
 
@@ -36,6 +41,12 @@ public class BookFilesPresenter extends AbstractPresenter<BookFilesContract.View
     @Override
     public void updateBookFiles(List<BookFiles> books) {
         mDataManager.updateBookFiles(books);
+    }
+
+    @Override
+    public void addBook(Book book) {
+        mDataManager.addBook(book);
+        EventBusUtil.sendStickyEvent(new BaseEvent(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
     }
 
     @Override

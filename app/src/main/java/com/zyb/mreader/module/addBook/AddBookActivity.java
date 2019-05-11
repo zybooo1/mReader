@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.zyb.base.base.activity.MVPActivity;
+import com.zyb.base.base.fragment.BaseFragmentAdapter;
+import com.zyb.base.base.fragment.BaseLazyFragment;
 import com.zyb.base.di.component.AppComponent;
 import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
@@ -109,12 +111,6 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
     }
 
     @Override
-    public void onRightClick(View v) {
-        super.onRightClick(v);
-        addBooks();
-    }
-
-    @Override
     protected boolean isRegisterEventBus() {
         return true;
     }
@@ -143,36 +139,11 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
     }
 
     private void initPager() {
-        List<Fragment> fragments = new ArrayList<>();
-        bookFilesFragment = BookFilesFragment.newInstance();
-        bookPathFragment = BookPathFragment.newInstance();
-        fragments.add(bookFilesFragment);
-        fragments.add(bookPathFragment);
-        MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager(), fragments);
+        BaseFragmentAdapter<BaseLazyFragment> adapter = new BaseFragmentAdapter<>(getSupportFragmentManager());
+        adapter.addFragment(BookFilesFragment.newInstance());
+        adapter.addFragment(BookPathFragment.newInstance());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(onPageChangeListener);
     }
 
-
-    private void addBooks() {
-        List<Book> bookList = new ArrayList<>();
-        bookFilesFragment.bookList.addAll(bookPathFragment.mFileBeans);
-        for (BookFiles bookFiles : bookFilesFragment.bookList) {
-            if (bookFiles.getIsChecked()) {
-                Book book = new Book();
-                book.setId(bookFiles.getId());
-                book.setSize(bookFiles.getSize());
-                book.setPath(bookFiles.getPath());
-                book.setTitle(bookFiles.getTitle());
-                bookList.add(book);
-            }
-        }
-        mPresenter.addBooks(bookList);
-    }
-
-    @Override
-    public void onBooksAdded() {
-        EventBusUtil.sendStickyEvent(new BaseEvent(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
-        finish();
-    }
 }

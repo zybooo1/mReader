@@ -25,7 +25,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:layout_scrollFlags="scroll|enterAlways"
-                    app:leftIcon="@drawable/svg_list_menu"
+                    app:leftIcon="@drawable/svg_logo"
                     app:title="@string/mreader_app_name" />
             </android.support.design.widget.AppBarLayout>
 
@@ -43,7 +43,7 @@
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_books"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="wrap_content" />
 
                 </FrameLayout>
 

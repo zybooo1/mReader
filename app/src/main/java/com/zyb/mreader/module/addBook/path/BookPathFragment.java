@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -63,13 +62,20 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
                 mFileStack.push(snapshot);
                 //切换下一个文件
                 toggleFileTree(file);
-            } else {
+            }
+        }
+    };
+    private BaseQuickAdapter.OnItemChildClickListener onItemChildClickListener = new BaseQuickAdapter.OnItemChildClickListener() {
+        @Override
+        public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+            if (view.getId() == R.id.ivAdd) {
                 BookFiles book = mFileBeans.get(position);
                 if (!mPresenter.isBookAdded(book)) {
-                    book.setIsChecked(!book.getIsChecked());
+                    mPresenter.addBook(book.toBook());
                     booksAdapter.notifyItemChanged(position);
                 }
             }
+
         }
     };
 
@@ -77,7 +83,7 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            LogUtil.e("onScrolled dy:"+dy);
+            LogUtil.e("onScrolled dy:" + dy);
             if (dy <= 0) {
                 EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_SHOW_STATUS_BAR));
             } else {
@@ -125,9 +131,9 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
             fileBean.setTitle(FileUtils.getSimpleName(file));
             mFileBeans.add(fileBean);
         }
-        if(mFileBeans.size()<=0){
+        if (mFileBeans.size() <= 0) {
             tvEmpty.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             tvEmpty.setVisibility(View.GONE);
         }
         booksAdapter.notifyDataSetChanged();
@@ -144,6 +150,7 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
 
         booksAdapter = new PathAdapter(mFileBeans, mPresenter);
         booksAdapter.setOnItemClickListener(onItemClickListener);
+        booksAdapter.setOnItemChildClickListener(onItemChildClickListener);
         rvBooks.setLayoutManager(new LinearLayoutManager(getContext()));
         rvBooks.addItemDecoration(new VerticalItemLineDecoration(getFragmentActivity()));
         rvBooks.setAdapter(booksAdapter);
@@ -177,11 +184,6 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
                 .apiModule(new ApiModule())
                 .build()
                 .inject(this);
-    }
-
-    @Override
-    public void onBookFilesLoaded(List<BookFiles> books) {
-
     }
 
 }

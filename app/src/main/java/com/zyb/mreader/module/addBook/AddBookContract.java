@@ -12,10 +12,8 @@ import java.util.List;
 
 public interface AddBookContract {
     interface View extends BaseView {
-        void onBooksAdded();
     }
 
     interface Presenter extends BasePresenter<View> {
-        void addBooks(List<Book> books);
     }
 }
