@@ -86,10 +86,10 @@ public class LauncherActivity extends MyActivity
     @Override
     public void noPermission(List<String> denied, boolean quick) {
         if (quick) {
-            ToastUtils.show("没有权限访问文件，请手动授予权限");
+            ToastUtils.show("没有获取必要权限，请手动授予权限");
             XXPermissions.gotoPermissionSettings(LauncherActivity.this, true);
         } else {
-            ToastUtils.show("请先授予文件读写权限");
+            ToastUtils.show("请先授予应用权限");
             getWindow().getDecorView().postDelayed(new Runnable() {
                 @Override
                 public void run() {

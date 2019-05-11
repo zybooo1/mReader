@@ -97,7 +97,7 @@
             android:gravity="center"
             android:text="15"
             android:textColor="@color/white"
-            android:textSize="14dp"/>
+            android:textSize="16dp"/>
 
         <TextView
             android:id="@+id/read_setting_tv_font_plus"
@@ -109,7 +109,7 @@
             android:gravity="center"
             android:padding="5dp"
             android:text="Aa+"
-            android:textSize="18dp"/>
+            android:textSize="16dp"/>
 
         <CheckBox
             android:id="@+id/read_setting_cb_font_default"

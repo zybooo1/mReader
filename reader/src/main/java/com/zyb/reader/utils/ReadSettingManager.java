@@ -72,7 +72,7 @@ public class ReadSettingManager {
     }
 
     public boolean isBrightnessAuto(){
-        return sharedPreUtils.getBoolean(SHARED_READ_IS_BRIGHTNESS_AUTO, false);
+        return sharedPreUtils.getBoolean(SHARED_READ_IS_BRIGHTNESS_AUTO, true);
     }
 
     public int getTextSize(){
