@@ -2,7 +2,9 @@ package com.zyb.reader.read;
 
 
 import com.zyb.base.mvp.AbstractPresenter;
+import com.zyb.base.utils.TimeUtil;
 import com.zyb.reader.core.ReadDataManager;
+import com.zyb.reader.core.bean.CollBookBean;
 
 import javax.inject.Inject;
 
@@ -15,4 +17,8 @@ public class ReadPresenter extends AbstractPresenter<ReadContract.View, ReadData
         super(dataManager);
     }
 
+    @Override
+    public void saveRecord(CollBookBean book) {
+        mDataManager.saveBook(book);
+    }
 }

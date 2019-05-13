@@ -5,10 +5,10 @@ import com.hjq.toast.ToastUtils;
 import com.zyb.base.utils.CloseUtils;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.base.utils.TimeUtil;
+import com.zyb.reader.core.bean.BookChapterBean;
+import com.zyb.reader.core.bean.CollBookBean;
 import com.zyb.reader.core.bean.Void;
-import com.zyb.reader.db.entity.BookChapterBean;
-import com.zyb.reader.db.entity.CollBookBean;
-import com.zyb.reader.db.helper.CollBookHelper;
+import com.zyb.reader.core.db.manage.ReaderDBFactory;
 import com.zyb.reader.utils.Charset;
 import com.zyb.reader.utils.ReadUtils;
 
@@ -428,7 +428,7 @@ public class LocalPageLoader extends PageLoader {
             mCollBook.setLastChapter(mChapterList.get(mCurChapterPos).getTitle());
             mCollBook.setLastRead(TimeUtil.parseDateTime(System.currentTimeMillis()));
             //直接更新
-            CollBookHelper.getsInstance().saveBook(mCollBook);
+            ReaderDBFactory.getInstance().getBooksManage().insertOrUpdate(mCollBook);
         }
     }
 

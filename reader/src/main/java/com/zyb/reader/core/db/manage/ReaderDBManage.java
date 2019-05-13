@@ -4,35 +4,33 @@ package com.zyb.reader.core.db.manage;
 import android.content.Context;
 
 import com.zyb.base.utils.constant.Constants;
-import com.zyb.reader.db.entity.DaoMaster;
-import com.zyb.reader.db.entity.DaoSession;
+import com.zyb.reader.core.bean.DaoMaster;
+import com.zyb.reader.core.bean.DaoSession;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
 /**
- * Describe：商场
- * Created by 吴天强 on 2018/11/5.
  */
 
-public class AppDBManage {
+public class ReaderDBManage {
 
 
-    private static AppDBManage dbManage;
+    private static ReaderDBManage dbManage;
 
     private Context context;
 
-    public static AppDBManage getInstance(Context context) {
+    public static ReaderDBManage getInstance(Context context) {
         if (dbManage == null) {
-            synchronized (AppDBManage.class) {
+            synchronized (ReaderDBManage.class) {
                 if (dbManage == null) {
-                    dbManage = new AppDBManage(context);
+                    dbManage = new ReaderDBManage(context);
                 }
             }
         }
         return dbManage;
     }
 
-    private AppDBManage(Context context) {
+    private ReaderDBManage(Context context) {
         this.context = context;
     }
 
@@ -73,7 +71,7 @@ public class AppDBManage {
      */
     private DaoMaster getDaoMaster() {
         if (null == mDaoMaster) {
-            mHelper = new MyOpenHelper(context, Constants.DB_NAME, null);
+            mHelper = new MyOpenHelper(context, Constants.DB_NAME,null);
             mDaoMaster = new DaoMaster(mHelper.getWritableDb());
         }
         return mDaoMaster;

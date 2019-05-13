@@ -12,7 +12,6 @@ import com.zyb.mreader.base.bean.BookFiles;
 import com.zyb.mreader.core.AppDataManager;
 import com.zyb.mreader.utils.FileSizeComparator;
 import com.zyb.mreader.utils.FileUtils;
-import com.zyb.reader.db.entity.BookChapterBean;
 
 import org.reactivestreams.Publisher;
 

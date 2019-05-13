@@ -76,6 +76,7 @@ dependencies {
     implementation project(':base')
     // 阅读模块
     implementation project(':reader')
+    implementation project(':test')
 }
 
 //获取自增版本号

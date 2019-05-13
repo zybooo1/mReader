@@ -1,6 +1,5 @@
 package com.zyb.reader.utils;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;

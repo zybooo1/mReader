@@ -18,10 +18,11 @@ import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.base.utils.TimeUtil;
 import com.zyb.reader.R;
-import com.zyb.reader.db.entity.BookChapterBean;
-import com.zyb.reader.db.entity.BookRecordBean;
-import com.zyb.reader.db.entity.CollBookBean;
-import com.zyb.reader.db.helper.BookRecordHelper;
+import com.zyb.reader.core.bean.BookChapterBean;
+import com.zyb.reader.core.bean.BookRecordBean;
+import com.zyb.reader.core.bean.BookRecordBeanDao;
+import com.zyb.reader.core.bean.CollBookBean;
+import com.zyb.reader.core.db.manage.ReaderDBFactory;
 import com.zyb.reader.utils.ReadSettingManager;
 import com.zyb.reader.utils.ReadUtils;
 
@@ -443,7 +444,7 @@ public abstract class PageLoader {
         mBookRecord.setPagePos(mCurPage.position);
 
         //存储到数据库
-        BookRecordHelper.getsInstance().saveRecordBook(mBookRecord);
+        ReaderDBFactory.getInstance().getBookRecordManage().insertOrUpdate(mBookRecord);
     }
 
     //打开书本，初始化书籍
@@ -452,8 +453,8 @@ public abstract class PageLoader {
         //init book record
 
         //从数据库取阅读数据
-        mBookRecord = BookRecordHelper.getsInstance()
-                .findBookRecordById(mCollBook.get_id());
+        mBookRecord = ReaderDBFactory.getInstance().getBookRecordManage().getQueryBuilder()
+                .where(BookRecordBeanDao.Properties.BookId.eq(mCollBook.get_id())).unique();
         if (mBookRecord == null) {
             mBookRecord = new BookRecordBean();
         }
@@ -866,7 +867,6 @@ public abstract class PageLoader {
     boolean prevChapter() {
         //判断是否上一章节为空
         if (mCurChapterPos - 1 < 0) {
-            ToastUtils.show("已经没有上一章了");
             return false;
         }
 
@@ -943,7 +943,6 @@ public abstract class PageLoader {
     boolean nextChapter() {
         //加载一章
         if (mCurChapterPos + 1 >= mChapterList.size()) {
-            ToastUtils.show("已经没有下一章了");
             return false;
         }
 

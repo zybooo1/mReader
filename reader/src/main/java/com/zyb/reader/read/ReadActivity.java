@@ -26,14 +26,18 @@ import android.widget.TextView;
 import com.hjq.bar.TitleBar;
 import com.xw.repo.VectorCompatTextView;
 import com.zyb.base.base.activity.MVPActivity;
+import com.zyb.base.base.app.BaseApplication;
 import com.zyb.base.di.component.AppComponent;
 import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.QMUIViewHelper;
+import com.zyb.base.utils.constant.Constants;
 import com.zyb.base.widget.RoundButton;
 import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
 import com.zyb.reader.R;
 import com.zyb.reader.R2;
-import com.zyb.reader.db.entity.CollBookBean;
+import com.zyb.reader.core.bean.CollBookBean;
+import com.zyb.reader.core.bean.DaoMaster;
+import com.zyb.reader.core.db.manage.MyOpenHelper;
 import com.zyb.reader.di.component.DaggerActivityComponent;
 import com.zyb.reader.di.module.ActivityModule;
 import com.zyb.reader.di.module.ApiModule;
@@ -44,6 +48,8 @@ import com.zyb.reader.widget.dialog.ReadSettingDialog;
 import com.zyb.reader.widget.page.PageLoader;
 import com.zyb.reader.widget.page.PageView;
 import com.zyb.reader.widget.page.TxtChapter;
+
+import org.greenrobot.greendao.database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +99,6 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
 
     private boolean isRegistered = false;
 
-    /*****************view******************/
     private ReadSettingDialog mSettingDialog;
     private PageLoader mPageLoader;
     //    private CategoryAdapter mCategoryAdapter;
@@ -101,8 +106,7 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
     //控制屏幕常亮
     private PowerManager.WakeLock mWakeLock;
 
-    /***************params*****************/
-    private boolean isCollected = false; //isFromSDCard
+    private boolean isCollected = false; //是否已在书架（数据库）
     private boolean isNightMode = false;
     ReadCategoryAdapter mReadCategoryAdapter;
     List<TxtChapter> mTxtChapters = new ArrayList<>();
@@ -162,10 +166,12 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         return R.id.titleBar;
     }
 
+
     @Override
     protected void initView() {
 
         mCollBook = (CollBookBean) getIntent().getSerializableExtra(EXTRA_COLL_BOOK);
+        test();
         isCollected = getIntent().getBooleanExtra(EXTRA_IS_COLLECTED, false);
         isNightMode = ReadSettingManager.getInstance().isNightMode();
 
@@ -289,9 +295,24 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         });
     }
 
+    private void test() {
+        // TODO: 2019/5/12
+        DaoMaster.OpenHelper mHelper = new MyOpenHelper(
+                BaseApplication.getInstance(), Constants.DB_NAME,null) {
+            @Override
+            public void onCreate(Database db) {
+                //This method is not executed
+                super.onCreate(db);
+            }
+        };
+        DaoMaster mDaoMaster = new DaoMaster(mHelper.getWritableDb());
+        //crashed: no such table: COLL_BOOK_BEAN (code 1)
+        long i = mDaoMaster.newSession().getCollBookBeanDao().count();
+    }
+
     @Override
     protected void initData() {
-        mPageLoader.openBook(mCollBook);
+//        mPageLoader.openBook(mCollBook);
     }
 
 

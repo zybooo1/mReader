@@ -32,7 +32,7 @@ public class AppDBFactory {
      */
     public BooksManage getBooksManage() {
         if (booksManage == null) {
-            booksManage = new BooksManage(AppDBManage.getInstance(BaseApplication.getInstance()).getDaoSession().getBookDao());
+            booksManage = new BooksManage(getDaoSession().getBookDao());
         }
         return booksManage;
     }
@@ -42,7 +42,7 @@ public class AppDBFactory {
      */
     public BookFilesManage getBookFilesManage() {
         if (bookFilesManage == null) {
-            bookFilesManage = new BookFilesManage(AppDBManage.getInstance(BaseApplication.getInstance()).getDaoSession().getBookFilesDao());
+            bookFilesManage = new BookFilesManage(getDaoSession().getBookFilesDao());
         }
         return bookFilesManage;
     }

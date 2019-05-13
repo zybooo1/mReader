@@ -1,4 +1,5 @@
-package com.zyb.reader.db.entity;
+package com.zyb.reader.core.bean;
+
 
 
 import org.greenrobot.greendao.DaoException;

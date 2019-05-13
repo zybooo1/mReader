@@ -31,8 +31,7 @@ import com.zyb.mreader.di.component.DaggerActivityComponent;
 import com.zyb.mreader.di.module.ActivityModule;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.module.addBook.AddBookActivity;
-import com.zyb.reader.db.entity.CollBookBean;
-import com.zyb.reader.db.helper.CollBookHelper;
+import com.zyb.reader.core.bean.CollBookBean;
 import com.zyb.reader.read.ReadActivity;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -77,10 +76,10 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
             if (position < books.size()-1) {
                 File file = new File(books.get(position).getPath());
                 CollBookBean collBook = convertCollBook(file);
-                CollBookHelper.getsInstance().saveBook(collBook);
+//                CollBookHelper.getsInstance().saveBook(collBook);
                 Intent intent = new Intent(MainActivity.this, ReadActivity.class);
                 intent.putExtra(ReadActivity.EXTRA_COLL_BOOK, collBook);
-                intent.putExtra(ReadActivity.EXTRA_IS_COLLECTED, false);
+                intent.putExtra(ReadActivity.EXTRA_IS_COLLECTED, true);
                 startActivity(intent);
             }else {
                 toAddBook();

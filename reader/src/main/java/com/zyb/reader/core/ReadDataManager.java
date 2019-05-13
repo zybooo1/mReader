@@ -2,6 +2,7 @@ package com.zyb.reader.core;
 
 
 import com.zyb.base.mvp.BaseDataManager;
+import com.zyb.reader.core.bean.CollBookBean;
 import com.zyb.reader.core.db.DbHelper;
 import com.zyb.reader.core.db.GreenDaoHelper;
 import com.zyb.reader.core.http.HttpHelper;
@@ -27,4 +28,8 @@ public class ReadDataManager implements HttpHelper, PreferenceHelper, DbHelper, 
         mGreenDaoHelper = greenDaoHelper;
     }
 
+    @Override
+    public void saveBook(CollBookBean book) {
+        mGreenDaoHelper.saveBook(book);
+    }
 }

@@ -1,0 +1,8 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zyb.test">
+
+    <application>
+
+        <activity android:name=".Test" />
+    </application>
+</manifest>
