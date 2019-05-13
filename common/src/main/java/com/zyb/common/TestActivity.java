@@ -1,4 +1,4 @@
-package com.zyb.test;
+package com.zyb.common;
 
 
 import com.zyb.base.base.activity.MyActivity;
@@ -9,7 +9,7 @@ import org.greenrobot.greendao.database.Database;
 
 /**
  */
-public class Test extends MyActivity {
+public class TestActivity extends MyActivity {
 
 
     @Override

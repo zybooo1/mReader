@@ -72,11 +72,12 @@ android {
 dependencies {
     // 依赖 libs 目录下所有 Jar 包
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    // 公共模块
+    // 基础模块
     implementation project(':base')
     // 阅读模块
     implementation project(':reader')
-    implementation project(':test')
+    //业务通用模块
+    implementation project(':common')
 }
 
 //获取自增版本号

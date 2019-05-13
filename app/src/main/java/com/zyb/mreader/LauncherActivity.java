@@ -1,6 +1,5 @@
 package com.zyb.mreader;
 
-import android.content.Intent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -12,9 +11,7 @@ import com.hjq.toast.ToastUtils;
 import com.zyb.base.base.activity.MyActivity;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.mreader.module.main.MainActivity;
-import com.zyb.reader.core.bean.CollBookBean;
-import com.zyb.reader.read.ReadActivity;
-import com.zyb.test.Test;
+import com.zyb.common.TestActivity;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -46,8 +43,11 @@ public class LauncherActivity extends MyActivity
 
     @Override
     protected void initView() {
-        // TODO: 2019/5/13  
-//        startActivity(Test.class);
+        // TODO: 2019/5/13
+        if (true) {
+            startActivity(TestActivity.class);
+            return;
+        }
 
         //设置状态栏和导航栏参数
         getStatusBarConfig()

@@ -29,7 +29,7 @@ ext {
             "base",
             "reader",
             "read",
-            "test",
+            "common",
     ]
 
     //依赖库统一管理

@@ -13,6 +13,9 @@ import com.zyb.reader.core.bean.DaoMaster;
 
 import org.greenrobot.greendao.database.Database;
 
+/**
+ * 原因找到了，我在APP Module创建过数据库，所以在这里忽略了onCreate方法
+ */
 public class MyOpenHelper extends DaoMaster.OpenHelper {
     public MyOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory) {
         super(context, name, factory);

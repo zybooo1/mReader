@@ -1,4 +1,4 @@
-package com.zyb.test;
+package com.zyb.common;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

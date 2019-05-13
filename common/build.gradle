@@ -6,3 +6,7 @@ greendao {
     //数据库版本，数据库升级使用到 {@link OpenHelper#onUpgrade}
     schemaVersion rootProject.ext.databaseVersion
 }
+dependencies {
+    // 基础模块
+    implementation project(':base')
+}
