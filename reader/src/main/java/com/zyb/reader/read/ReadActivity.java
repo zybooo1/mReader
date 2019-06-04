@@ -202,11 +202,6 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         }
 
         mPageLoader.setOnPageChangeListener(new PageLoader.OnPageChangeListener() {
-            @Override
-            public void onChapterChange(int pos) {
-                LogUtil.e("==========onChapterChange");
-                setCategorySelect(pos);
-            }
 
             @Override
             public void onCategoryFinish(List<TxtChapter> chapters) {
@@ -383,7 +378,6 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         } else if (i == R.id.read_tv_next_chapter) {
             setCategorySelect(mPageLoader.skipNextChapter());
         } else if (i == R.id.read_tv_category) {
-            setCategorySelect(mPageLoader.getChapterPos());
             //切换菜单
             toggleMenu();
             //打开侧滑动栏

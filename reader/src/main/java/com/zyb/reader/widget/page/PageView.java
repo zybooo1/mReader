@@ -65,7 +65,6 @@ public class PageView extends View {
         @Override
         public void pageCancel(){
             mTouchListener.cancel();
-            mPageLoader.pageCancel();
         }
     };
 

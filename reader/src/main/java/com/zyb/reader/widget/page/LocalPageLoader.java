@@ -7,20 +7,14 @@ import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.base.utils.TimeUtil;
 import com.zyb.common.db.DBFactory;
-import com.zyb.common.db.bean.BookChapterBean;
 import com.zyb.common.db.bean.CollBookBean;
 import com.zyb.reader.core.bean.Void;
 import com.zyb.reader.utils.Charset;
 import com.zyb.reader.utils.ReadUtils;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -38,6 +32,7 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 
 /**
+ *
  */
 public class LocalPageLoader extends PageLoader {
     //默认从文件中获取数据的长度
@@ -61,8 +56,6 @@ public class LocalPageLoader extends PageLoader {
     private File mBookFile;
     //编码类型
     private Charset mCharset;
-
-    private Disposable mChapterDisp = null;
 
     public LocalPageLoader(PageView pageView) {
         super(pageView);
@@ -99,12 +92,10 @@ public class LocalPageLoader extends PageLoader {
                 .subscribe(new SingleObserver<Void>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        mChapterDisp = d;
                     }
 
                     @Override
                     public void onSuccess(Void value) {
-                        mChapterDisp = null;
                         //提示目录加载完成
                         if (mPageChangeListener != null) {
                             mPageChangeListener.onCategoryFinish(mChapterList);
@@ -309,52 +300,6 @@ public class LocalPageLoader extends PageLoader {
     }
 
     /**
-     * todo
-     * 获取当前章的页数
-     */
-    @Override
-    protected List<TxtPage> loadPageList(int chapterPos) {
-        if (mChapterList == null) {
-            throw new IllegalArgumentException("Chapter list must not null");
-        }
-
-        TxtChapter chapter = mChapterList.get(chapterPos);
-        //从文件中获取数据
-        byte[] content = getChapterContent(chapter);
-        ByteArrayInputStream bais = new ByteArrayInputStream(content);
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(bais, mCharset.getName()));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return loadPages(chapter, br);
-    }
-
-    /**
-     * 从文件中提取一章的内容
-     */
-    private byte[] getChapterContent(TxtChapter chapter) {
-        RandomAccessFile bookStream = null;
-        try {
-            bookStream = new RandomAccessFile(mBookFile, "r");
-            bookStream.seek(chapter.start);
-            int extent = (int) (chapter.end - chapter.start);
-            byte[] content = new byte[extent];
-            bookStream.read(content, 0, extent);
-            return content;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            CloseUtils.closeIO(bookStream);
-        }
-
-        return new byte[0];
-    }
-
-    /**
      * 1. 检查文件中是否存在章节名
      * 2. 判断文件中使用的章节名类型的正则表达式
      *
@@ -383,18 +328,6 @@ public class LocalPageLoader extends PageLoader {
     }
 
     @Override
-    boolean prevChapter() {
-        if (mStatus == STATUS_PARSE_ERROR) return false;
-        return super.prevChapter();
-    }
-
-    @Override
-    boolean nextChapter() {
-        if (mStatus == STATUS_PARSE_ERROR) return false;
-        return super.nextChapter();
-    }
-
-    @Override
     public void skipToChapter(int pos) {
         super.skipToChapter(pos);
         //加载章节
@@ -410,11 +343,6 @@ public class LocalPageLoader extends PageLoader {
         }
     }
 
-    /*空实现*/
-    @Override
-    public void setChapterList(List<BookChapterBean> bookChapters) {
-    }
-
     @Override
     public void saveRecord() {
         super.saveRecord();
@@ -422,7 +350,6 @@ public class LocalPageLoader extends PageLoader {
         if (mCollBook != null && isBookOpen) {
             //表示当前CollBook已经阅读
             mCollBook.setUpdate(false);
-            mCollBook.setLastChapter(mChapterList.get(mCurChapterPos).getTitle());
             mCollBook.setLastRead(TimeUtil.parseDateTime(System.currentTimeMillis()));
             //直接更新
             DBFactory.getInstance().getCollBooksManage().insertOrUpdate(mCollBook);
@@ -432,10 +359,6 @@ public class LocalPageLoader extends PageLoader {
     @Override
     public void closeBook() {
         super.closeBook();
-        if (mChapterDisp != null) {
-            mChapterDisp.dispose();
-            mChapterDisp = null;
-        }
     }
 
     // 将 char[] 强转为 byte[]
