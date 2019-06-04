@@ -31,7 +31,6 @@ import io.reactivex.disposables.Disposable;
 public abstract class BaseActivity extends AppCompatActivity {
 
 
-    private static final Handler HANDLER = new Handler(Looper.getMainLooper());
     private CompositeDisposable compositeDisposable;
 
     protected void addSubscribe(Disposable disposable) {
@@ -39,12 +38,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             compositeDisposable = new CompositeDisposable();
         }
         compositeDisposable.add(disposable);
-    }
-    /**
-     * 获取一个 Handler 对象
-     */
-    public static Handler getHandler() {
-        return HANDLER;
     }
 
     @Override

@@ -3,8 +3,8 @@ package com.zyb.mreader.module.addBook.file;
 
 import com.zyb.base.mvp.BasePresenter;
 import com.zyb.base.mvp.BaseView;
-import com.zyb.mreader.base.bean.Book;
-import com.zyb.mreader.base.bean.BookFiles;
+import com.zyb.common.db.bean.Book;
+import com.zyb.common.db.bean.BookFiles;
 
 import java.util.List;
 

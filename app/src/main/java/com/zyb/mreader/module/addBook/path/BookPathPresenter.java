@@ -5,11 +5,9 @@ import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
 import com.zyb.base.mvp.AbstractPresenter;
 import com.zyb.base.utils.EventBusUtil;
-import com.zyb.mreader.base.bean.Book;
-import com.zyb.mreader.base.bean.BookFiles;
+import com.zyb.common.db.bean.Book;
+import com.zyb.common.db.bean.BookFiles;
 import com.zyb.mreader.core.AppDataManager;
-
-import java.util.List;
 
 import javax.inject.Inject;
 

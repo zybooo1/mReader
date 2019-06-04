@@ -7,7 +7,6 @@
     android:background="@drawable/selector_category_bg"
     android:gravity="center"
     android:orientation="horizontal">
-
     <com.xw.repo.VectorCompatTextView
         android:id="@+id/category_tv_chapter"
         android:layout_width="match_parent"

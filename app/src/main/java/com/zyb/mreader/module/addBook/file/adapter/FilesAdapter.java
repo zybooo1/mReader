@@ -4,8 +4,8 @@ import android.support.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.zyb.common.db.bean.BookFiles;
 import com.zyb.mreader.R;
-import com.zyb.mreader.base.bean.BookFiles;
 import com.zyb.mreader.module.addBook.file.BookFilesContract;
 
 import java.util.List;

@@ -61,4 +61,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //公共模块
     implementation project(':base')
+    //业务通用模块
+//    implementation project(':common')
 }
+

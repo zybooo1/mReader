@@ -3,12 +3,13 @@ package com.zyb.reader.widget.page;
 
 import com.hjq.toast.ToastUtils;
 import com.zyb.base.utils.CloseUtils;
+import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.base.utils.TimeUtil;
-import com.zyb.reader.core.bean.BookChapterBean;
-import com.zyb.reader.core.bean.CollBookBean;
+import com.zyb.common.db.DBFactory;
+import com.zyb.common.db.bean.BookChapterBean;
+import com.zyb.common.db.bean.CollBookBean;
 import com.zyb.reader.core.bean.Void;
-import com.zyb.reader.core.db.manage.ReaderDBFactory;
 import com.zyb.reader.utils.Charset;
 import com.zyb.reader.utils.ReadUtils;
 
@@ -74,8 +75,8 @@ public class LocalPageLoader extends PageLoader {
     @Override
     public void openBook(CollBookBean collBookBean) {
         super.openBook(collBookBean);
-        mBookFile = new File(collBookBean.get_id());
         //这里id表示本地文件的路径
+        mBookFile = new File(collBookBean.get_id());
 
         //判断是否文件存在
         if (!mBookFile.exists()) return;
@@ -312,10 +313,17 @@ public class LocalPageLoader extends PageLoader {
         System.runFinalization();
     }
 
+    /**
+     * todo
+     * 获取当前章的页数
+     */
     @Override
     protected List<TxtPage> loadPageList(int chapterPos) {
         if (mChapterList == null) {
             throw new IllegalArgumentException("Chapter list must not null");
+        }
+        if (true) {
+            return test2();
         }
 
         TxtChapter chapter = mChapterList.get(chapterPos);
@@ -428,7 +436,7 @@ public class LocalPageLoader extends PageLoader {
             mCollBook.setLastChapter(mChapterList.get(mCurChapterPos).getTitle());
             mCollBook.setLastRead(TimeUtil.parseDateTime(System.currentTimeMillis()));
             //直接更新
-            ReaderDBFactory.getInstance().getBooksManage().insertOrUpdate(mCollBook);
+            DBFactory.getInstance().getCollBooksManage().insertOrUpdate(mCollBook);
         }
     }
 
@@ -440,4 +448,154 @@ public class LocalPageLoader extends PageLoader {
             mChapterDisp = null;
         }
     }
+
+    /**
+     * todo
+     *
+     * @return
+     */
+    private List<TxtPage> test2() {
+        RandomAccessFile bookStream = null;
+        try {
+            bookStream = new RandomAccessFile(mBookFile, "r");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        TxtChapter txtChapter = new TxtChapter();
+        txtChapter.setTitle("麦田里的守望者");
+        return loadPages2(txtChapter, bookStream);
+    }
+
+    // 将 char[] 强转为 byte[]
+    public static byte[] getBytes(char[] chars) {
+        byte[] result = new byte[chars.length];
+        for (int i = 0; i < chars.length; i++) {
+            result[i] = (byte) chars[i];
+        }
+        return result;
+    }
+
+    //通过流获取Page的方法
+    List<TxtPage> loadPages2(TxtChapter chapter, RandomAccessFile br) {
+        //生成的页面
+        List<TxtPage> pages = new ArrayList<>();
+        //使用流的方式加载
+        List<String> lines = new ArrayList<>();
+        int rHeight = mVisibleHeight; //由于匹配到最后，会多删除行间距，所以在这里多加个行间距
+        int titleLinesCount = 0;
+        boolean isTitle = true; //不存在没有 Title 的情况，所以默认设置为 true。
+        String paragraph = chapter.getTitle();//默认展示标题
+        try {
+            while (isTitle || (paragraph = br.readLine()) != null) {
+
+                //重置段落
+                if (!isTitle) {
+//                    paragraph = paragraph.replaceAll("\\s", "");
+                    //如果只有换行符，那么就不执行
+                    if (paragraph.equals("")) continue;
+                    byte[] bytes = getBytes(paragraph.toCharArray());
+//                    paragraph = ReadUtils.halfToFull("  " + paragraph + "\n");
+                    LogUtil.e("loadPages2----" + new String(bytes));
+                    paragraph = "  " + new String(bytes) + "\n";
+                } else {
+                    //设置 title 的顶部间距
+                    rHeight -= mTitlePara;
+                }
+
+                int wordCount = 0;
+                String subStr = null;
+                while (paragraph.length() > 0) {
+                    //当前空间，是否容得下一行文字
+                    if (isTitle) {
+                        rHeight -= mTitlePaint.getTextSize();
+                    } else {
+                        rHeight -= mTextPaint.getTextSize();
+                    }
+
+                    //一页已经填充满了，创建 TextPage
+                    if (rHeight < 0) {
+                        //创建Page
+                        TxtPage page = new TxtPage();
+                        page.position = pages.size();
+                        page.title = chapter.getTitle();
+                        page.lines = new ArrayList<>(lines);
+                        page.titleLines = titleLinesCount;
+                        pages.add(page);
+                        //重置Lines
+                        lines.clear();
+                        rHeight = mVisibleHeight;
+                        titleLinesCount = 0;
+                        continue;
+                    }
+
+                    //测量一行占用的字节数
+                    if (isTitle) {
+                        wordCount = mTitlePaint.breakText(paragraph, true, mVisibleWidth, null);
+                    } else {
+                        wordCount = mTextPaint.breakText(paragraph, true, mVisibleWidth, null);
+                    }
+
+                    subStr = paragraph.substring(0, wordCount);
+                    if (!subStr.equals("\n")) {
+                        //将一行字节，存储到lines中
+                        lines.add(subStr);
+
+                        //设置段落间距
+                        if (isTitle) {
+                            titleLinesCount += 1;
+                            rHeight -= mTitleInterval;
+                        } else {
+                            rHeight -= mTextInterval;
+                        }
+                    }
+                    //裁剪
+                    paragraph = paragraph.substring(wordCount);
+                }
+
+                //增加段落的间距
+                if (!isTitle && lines.size() != 0) {
+                    rHeight = rHeight - mTextPara + mTextInterval;
+                }
+
+                if (isTitle) {
+                    rHeight = rHeight - mTitlePara + mTitleInterval;
+                    isTitle = false;
+                }
+            }
+
+            if (lines.size() != 0) {
+                //创建Page
+                TxtPage page = new TxtPage();
+                page.position = pages.size();
+                page.title = chapter.getTitle();
+                page.lines = new ArrayList<>(lines);
+                page.titleLines = titleLinesCount;
+                pages.add(page);
+                //重置Lines
+                lines.clear();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            CloseUtils.closeIO(br);
+        }
+
+        //可能出现内容为空的情况
+        if (pages.size() == 0) {
+            TxtPage page = new TxtPage();
+            page.lines = new ArrayList<>(1);
+            pages.add(page);
+
+            mStatus = STATUS_EMPTY;
+        }
+
+        //提示章节数量改变了。
+        if (mPageChangeListener != null) {
+            mPageChangeListener.onPageCountChange(pages.size());
+        }
+        return pages;
+    }
+
 }

@@ -1,8 +1,8 @@
 package com.zyb.reader.core.db;
 
 
-import com.zyb.reader.core.bean.CollBookBean;
-import com.zyb.reader.core.db.manage.ReaderDBFactory;
+import com.zyb.common.db.DBFactory;
+import com.zyb.common.db.bean.CollBookBean;
 
 import javax.inject.Inject;
 
@@ -12,16 +12,16 @@ import javax.inject.Inject;
 
 public class GreenDaoHelper implements DbHelper {
 
-    private ReaderDBFactory dbFactory;
+    private DBFactory dbFactory;
 
     @Inject
     GreenDaoHelper() {
-        dbFactory = ReaderDBFactory.getInstance();
+        dbFactory = DBFactory.getInstance();
     }
 
 
     @Override
     public void saveBook(CollBookBean book) {
-        dbFactory.getBooksManage().insertOrUpdate(book);
+        dbFactory.getCollBooksManage().insertOrUpdate(book);
     }
 }

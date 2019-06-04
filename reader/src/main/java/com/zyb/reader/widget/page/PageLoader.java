@@ -17,13 +17,13 @@ import com.zyb.base.utils.CloseUtils;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.base.utils.TimeUtil;
+import com.zyb.common.db.DBFactory;
+import com.zyb.common.db.bean.BookChapterBean;
+import com.zyb.common.db.bean.BookRecordBean;
+import com.zyb.common.db.bean.BookRecordBeanDao;
+import com.zyb.common.db.bean.CollBookBean;
 import com.zyb.reader.R;
-import com.zyb.reader.core.bean.BookChapterBean;
-import com.zyb.reader.core.bean.BookRecordBean;
-import com.zyb.reader.core.bean.BookRecordBeanDao;
-import com.zyb.reader.core.bean.CollBookBean;
-import com.zyb.reader.core.db.manage.ReaderDBFactory;
-import com.zyb.reader.utils.ReadSettingManager;
+import com.zyb.reader.core.prefs.PreferenceHelperImpl;
 import com.zyb.reader.utils.ReadUtils;
 
 import java.io.BufferedReader;
@@ -33,11 +33,20 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+
+import static com.zyb.base.utils.constant.Constants.NIGHT_MODE;
+import static com.zyb.base.utils.constant.Constants.READ_BG_1;
+import static com.zyb.base.utils.constant.Constants.READ_BG_2;
+import static com.zyb.base.utils.constant.Constants.READ_BG_3;
+import static com.zyb.base.utils.constant.Constants.READ_BG_4;
+import static com.zyb.base.utils.constant.Constants.READ_BG_DEFAULT;
 
 /**
  * Created by newbiechen on 17-7-1.
@@ -86,13 +95,13 @@ public abstract class PageLoader {
     //绘制提示的画笔
     private Paint mTipPaint;
     //绘制标题的画笔
-    private Paint mTitlePaint;
+    protected Paint mTitlePaint;
     //绘制背景颜色的画笔(用来擦除需要重绘的部分)
     private Paint mBgPaint;
     //绘制小说内容的画笔
-    private TextPaint mTextPaint;
+    protected TextPaint mTextPaint;
     //阅读器的配置选项
-    private ReadSettingManager mSettingManager;
+    PreferenceHelperImpl preferenceHelper=new PreferenceHelperImpl();
     //被遮盖的页，或者认为被取消显示的页
     private TxtPage mCancelPage;
     //存储阅读记录类
@@ -109,8 +118,8 @@ public abstract class PageLoader {
     //上一章的记录
     private int mLastChapter = 0;
     //书籍绘制区域的宽高
-    private int mVisibleWidth;
-    private int mVisibleHeight;
+    protected int mVisibleWidth;
+    protected int mVisibleHeight;
     //应用的宽高
     private int mDisplayWidth;
     private int mDisplayHeight;
@@ -124,12 +133,12 @@ public abstract class PageLoader {
     //字体的大小
     private int mTextSize;
     //行间距
-    private int mTextInterval;
+    protected int mTextInterval;
     //标题的行间距
-    private int mTitleInterval;
+    protected int mTitleInterval;
     //段落距离(基于行间距的额外距离)
-    private int mTextPara;
-    private int mTitlePara;
+    protected int mTextPara;
+    protected int mTitlePara;
     //电池的百分比
     private int mBatteryLevel;
     //页面的翻页效果模式
@@ -154,15 +163,14 @@ public abstract class PageLoader {
     }
 
     private void initData() {
-        mSettingManager = ReadSettingManager.getInstance();
-        mTextSize = mSettingManager.getTextSize();
+        mTextSize = preferenceHelper.getTextSize();
         mTitleSize = mTextSize + CommonUtils.sp2px(EXTRA_TITLE_SIZE);
-        mPageMode = mSettingManager.getPageMode();
-        isNightMode = mSettingManager.isNightMode();
-        mBgTheme = mSettingManager.getReadBgTheme();
+        mPageMode = preferenceHelper.getPageMode();
+        isNightMode = preferenceHelper.isNightMode();
+        mBgTheme = preferenceHelper.getReadBgTheme();
 
         if (isNightMode) {
-            setBgColor(ReadSettingManager.NIGHT_MODE);
+            setBgColor(NIGHT_MODE);
         } else {
             setBgColor(mBgTheme);
         }
@@ -329,7 +337,7 @@ public abstract class PageLoader {
         //设置标题的字体大小
         mTitlePaint.setTextSize(mTitleSize);
         //存储状态
-        mSettingManager.setTextSize(mTextSize);
+        preferenceHelper.setTextSize(mTextSize);
         //取消缓存
         mWeakPrePageList = null;
         mNextPageList = null;
@@ -354,42 +362,42 @@ public abstract class PageLoader {
         isNightMode = nightMode;
         if (isNightMode) {
             mBatteryPaint.setColor(Color.WHITE);
-            setBgColor(ReadSettingManager.NIGHT_MODE);
+            setBgColor(NIGHT_MODE);
         } else {
             mBatteryPaint.setColor(Color.BLACK);
             setBgColor(mBgTheme);
         }
-        mSettingManager.setNightMode(nightMode);
+        preferenceHelper.setNightMode(nightMode);
     }
 
     //绘制背景
     public void setBgColor(int theme) {
-        if (isNightMode && theme == ReadSettingManager.NIGHT_MODE) {
+        if (isNightMode && theme == NIGHT_MODE) {
             mTextColor = ContextCompat.getColor(BaseApplication.getInstance(), R.color.color_fff_99);
             mPageBg = ContextCompat.getColor(BaseApplication.getInstance(), R.color.black);
         } else if (isNightMode) {
             mBgTheme = theme;
-            mSettingManager.setReadBackground(theme);
+            preferenceHelper.setReadBackground(theme);
         } else {
-            mSettingManager.setReadBackground(theme);
+            preferenceHelper.setReadBackground(theme);
             switch (theme) {
-                case ReadSettingManager.READ_BG_DEFAULT:
+                case READ_BG_DEFAULT:
                     mTextColor = ContextCompat.getColor(BaseApplication.getInstance(), R.color.color_2c);
                     mPageBg = ContextCompat.getColor(BaseApplication.getInstance(), R.color.color_cec29c);
                     break;
-                case ReadSettingManager.READ_BG_1:
+                case READ_BG_1:
                     mTextColor = ContextCompat.getColor(BaseApplication.getInstance(), R.color.color_2f332d);
                     mPageBg = ContextCompat.getColor(BaseApplication.getInstance(), R.color.color_ccebcc);
                     break;
-                case ReadSettingManager.READ_BG_2:
+                case READ_BG_2:
                     mTextColor = ContextCompat.getColor(BaseApplication.getInstance(), R.color.color_92918c);
                     mPageBg = ContextCompat.getColor(BaseApplication.getInstance(), R.color.color_aaa);
                     break;
-                case ReadSettingManager.READ_BG_3:
+                case READ_BG_3:
                     mTextColor = ContextCompat.getColor(BaseApplication.getInstance(), R.color.color_383429);
                     mPageBg = ContextCompat.getColor(BaseApplication.getInstance(), R.color.color_d1cec5);
                     break;
-                case ReadSettingManager.READ_BG_4:
+                case READ_BG_4:
                     mTextColor = ContextCompat.getColor(BaseApplication.getInstance(), R.color.color_627176);
                     mPageBg = ContextCompat.getColor(BaseApplication.getInstance(), R.color.color_001c27);
                     break;
@@ -409,7 +417,7 @@ public abstract class PageLoader {
     public void setPageMode(int pageMode) {
         mPageMode = pageMode;
         mPageView.setPageMode(mPageMode);
-        mSettingManager.setPageMode(mPageMode);
+        preferenceHelper.setPageMode(mPageMode);
         //重绘
         mPageView.drawCurPage(false);
     }
@@ -444,7 +452,7 @@ public abstract class PageLoader {
         mBookRecord.setPagePos(mCurPage.position);
 
         //存储到数据库
-        ReaderDBFactory.getInstance().getBookRecordManage().insertOrUpdate(mBookRecord);
+        DBFactory.getInstance().getBookRecordManage().insertOrUpdate(mBookRecord);
     }
 
     //打开书本，初始化书籍
@@ -453,7 +461,7 @@ public abstract class PageLoader {
         //init book record
 
         //从数据库取阅读数据
-        mBookRecord = ReaderDBFactory.getInstance().getBookRecordManage().getQueryBuilder()
+        mBookRecord = DBFactory.getInstance().getBookRecordManage().getQueryBuilder()
                 .where(BookRecordBeanDao.Properties.BookId.eq(mCollBook.get_id())).unique();
         if (mBookRecord == null) {
             mBookRecord = new BookRecordBean();

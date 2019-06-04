@@ -22,17 +22,21 @@ import com.zyb.base.utils.CommonUtils;
 import com.zyb.reader.R;
 import com.zyb.reader.R2;
 import com.zyb.reader.core.bean.ReadBgBean;
+import com.zyb.reader.core.prefs.PreferenceHelperImpl;
 import com.zyb.reader.read.adapter.ReadBgAdapter;
 import com.zyb.reader.utils.BrightnessUtils;
-import com.zyb.reader.utils.ReadSettingManager;
 import com.zyb.reader.widget.page.PageLoader;
 import com.zyb.reader.widget.page.PageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.zyb.base.utils.constant.Constants.TEXT_SIZE_SP_DEFAULT;
 
 /**
  * Created by newbiechen on 17-5-18.
@@ -76,8 +80,9 @@ public class ReadSettingDialog extends Dialog {
     @BindView(R2.id.read_setting_rv_bg)
     RecyclerView mRvBg;
     /************************************/
+    PreferenceHelperImpl preferenceHelper =new PreferenceHelperImpl();
+
     private ReadBgAdapter mReadBgAdapter;
-    private ReadSettingManager mSettingManager;
     private PageLoader mPageLoader;
     private Activity mActivity;
 
@@ -118,14 +123,12 @@ public class ReadSettingDialog extends Dialog {
     }
 
     private void initData() {
-        mSettingManager = ReadSettingManager.getInstance();
-
-        isBrightnessAuto = mSettingManager.isBrightnessAuto();
-        mBrightness = mSettingManager.getBrightness();
-        mTextSize = mSettingManager.getTextSize();
-        isTextDefault = mSettingManager.isDefaultTextSize();
-        mPageMode = mSettingManager.getPageMode();
-        mReadBgTheme = mSettingManager.getReadBgTheme();
+        isBrightnessAuto = preferenceHelper.isBrightnessAuto();
+        mBrightness = preferenceHelper.getBrightness();
+        mTextSize = preferenceHelper.getTextSize();
+        isTextDefault = preferenceHelper.isDefaultTextSize();
+        mPageMode = preferenceHelper.getPageMode();
+        mReadBgTheme = preferenceHelper.getReadBgTheme();
     }
 
     private void initWidget() {
@@ -216,7 +219,7 @@ public class ReadSettingDialog extends Dialog {
                     mSbBrightness.setProgress(progress);
                     BrightnessUtils.setBrightness(mActivity, progress);
                     //设置进度
-                    ReadSettingManager.getInstance().setBrightness(progress);
+                    preferenceHelper.setBrightness(progress);
                 }
         );
 
@@ -240,7 +243,7 @@ public class ReadSettingDialog extends Dialog {
                 //设置当前 Activity 的亮度
                 BrightnessUtils.setBrightness(mActivity, progress);
                 //存储亮度的进度条
-                ReadSettingManager.getInstance().setBrightness(progress);
+                preferenceHelper.setBrightness(progress);
             }
         });
 
@@ -253,7 +256,7 @@ public class ReadSettingDialog extends Dialog {
                         //获取进度条的亮度
                         BrightnessUtils.setBrightness(mActivity, mSbBrightness.getProgress());
                     }
-                    ReadSettingManager.getInstance().setAutoBrightness(isChecked);
+                    preferenceHelper.setAutoBrightness(isChecked);
                 }
         );
 
@@ -284,7 +287,7 @@ public class ReadSettingDialog extends Dialog {
         mCbFontDefault.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
                     if (isChecked) {
-                        int fontSize = CommonUtils.dp2px(ReadSettingManager.TEXT_SIZE_SP_DEFAULT);
+                        int fontSize = CommonUtils.dp2px(TEXT_SIZE_SP_DEFAULT);
                         mTvFont.setText(fontSize + "");
                         mPageLoader.setTextSize(fontSize);
                     }

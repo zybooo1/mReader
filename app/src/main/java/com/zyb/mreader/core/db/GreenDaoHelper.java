@@ -1,9 +1,9 @@
 package com.zyb.mreader.core.db;
 
 
-import com.zyb.mreader.base.bean.Book;
-import com.zyb.mreader.base.bean.BookFiles;
-import com.zyb.mreader.core.db.manage.AppDBFactory;
+import com.zyb.common.db.bean.Book;
+import com.zyb.common.db.bean.BookFiles;
+import com.zyb.common.db.DBFactory;
 
 import java.util.List;
 
@@ -15,11 +15,11 @@ import javax.inject.Inject;
 
 public class GreenDaoHelper implements DbHelper {
 
-    private AppDBFactory dbFactory;
+    private DBFactory dbFactory;
 
     @Inject
     GreenDaoHelper() {
-        dbFactory = AppDBFactory.getInstance();
+        dbFactory = DBFactory.getInstance();
     }
 
     @Override

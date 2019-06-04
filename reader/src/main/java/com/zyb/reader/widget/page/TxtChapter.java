@@ -1,15 +1,9 @@
 package com.zyb.reader.widget.page;
 
 /**
- * Created by newbiechen on 17-7-1.
+ * 章节
  */
-
 public class TxtChapter {
-
-    //章节所属的小说(网络)
-    String bookId;
-    //章节的链接(网络)
-    String link;
 
     //章节名(共用)
     String title;
@@ -29,22 +23,6 @@ public class TxtChapter {
 
     public void setSelect(boolean select) {
         isSelect = select;
-    }
-
-    public String getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(String id) {
-        this.bookId = id;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
     }
 
     public String getTitle() {

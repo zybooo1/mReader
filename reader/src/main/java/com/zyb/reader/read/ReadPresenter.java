@@ -2,9 +2,8 @@ package com.zyb.reader.read;
 
 
 import com.zyb.base.mvp.AbstractPresenter;
-import com.zyb.base.utils.TimeUtil;
+import com.zyb.common.db.bean.CollBookBean;
 import com.zyb.reader.core.ReadDataManager;
-import com.zyb.reader.core.bean.CollBookBean;
 
 import javax.inject.Inject;
 
@@ -20,5 +19,20 @@ public class ReadPresenter extends AbstractPresenter<ReadContract.View, ReadData
     @Override
     public void saveRecord(CollBookBean book) {
         mDataManager.saveBook(book);
+    }
+
+    @Override
+    public int getBrightness() {
+        return mDataManager.getBrightness();
+    }
+
+    @Override
+    public boolean isBrightnessAuto() {
+        return mDataManager.isBrightnessAuto();
+    }
+
+    @Override
+    public boolean isNightMode() {
+        return mDataManager.isNightMode();
     }
 }

@@ -3,10 +3,8 @@ package com.zyb.mreader.module.addBook.path;
 
 import com.zyb.base.mvp.BasePresenter;
 import com.zyb.base.mvp.BaseView;
-import com.zyb.mreader.base.bean.Book;
-import com.zyb.mreader.base.bean.BookFiles;
-
-import java.util.List;
+import com.zyb.common.db.bean.Book;
+import com.zyb.common.db.bean.BookFiles;
 
 public interface BookPathContract {
     interface View extends BaseView {

@@ -1,4 +1,4 @@
-package com.zyb.common;
+package com.zyb.common.db.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 
 @Entity
-public class TestBean implements Serializable{
+public class Book implements Serializable{
     static final long serialVersionUID = 42L;
 
     @Id
@@ -17,15 +17,22 @@ public class TestBean implements Serializable{
     private String title="";      //name
     private String path="";      //路径
     private String size="";      //大小
-    @Generated(hash = 1925491776)
-    public TestBean(String id, String title, String path, String size) {
+    @Generated(hash = 654036272)
+    public Book(String id, String title, String path, String size) {
         this.id = id;
         this.title = title;
         this.path = path;
         this.size = size;
     }
-    @Generated(hash = 2087637710)
-    public TestBean() {
+    @Generated(hash = 1839243756)
+    public Book() {
+    }
+    public BookFiles toBookFile() {
+        BookFiles bookFile = new BookFiles();
+        bookFile.setTitle(getTitle());
+        bookFile.setPath(getPath());
+        bookFile.setSize(getSize());
+        return bookFile;
     }
     public String getId() {
         return this.id;

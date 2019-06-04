@@ -3,7 +3,7 @@ package com.zyb.mreader.module.main;
 
 import com.zyb.base.mvp.BasePresenter;
 import com.zyb.base.mvp.BaseView;
-import com.zyb.mreader.base.bean.Book;
+import com.zyb.common.db.bean.Book;
 
 import java.util.List;
 

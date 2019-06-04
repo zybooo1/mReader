@@ -1,38 +1,36 @@
-package com.zyb.mreader.core.db.manage;
+package com.zyb.common.db;
+
 
 import android.content.Context;
 
-
 import com.zyb.base.utils.constant.Constants;
-import com.zyb.mreader.base.bean.DaoMaster;
-import com.zyb.mreader.base.bean.DaoSession;
+import com.zyb.common.db.bean.DaoMaster;
+import com.zyb.common.db.bean.DaoSession;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
 /**
- * Describe：商场
- * Created by 吴天强 on 2018/11/5.
  */
 
-public class AppDBManage {
+public class DBManage {
 
 
-    private static AppDBManage dbManage;
+    private static DBManage dbManage;
 
     private Context context;
 
-    public static AppDBManage getInstance(Context context) {
+    public static DBManage getInstance(Context context) {
         if (dbManage == null) {
-            synchronized (AppDBManage.class) {
+            synchronized (DBManage.class) {
                 if (dbManage == null) {
-                    dbManage = new AppDBManage(context);
+                    dbManage = new DBManage(context);
                 }
             }
         }
         return dbManage;
     }
 
-    private AppDBManage(Context context) {
+    private DBManage(Context context) {
         this.context = context;
     }
 

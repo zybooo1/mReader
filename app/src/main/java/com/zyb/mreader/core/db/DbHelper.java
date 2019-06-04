@@ -1,8 +1,8 @@
 package com.zyb.mreader.core.db;
 
 
-import com.zyb.mreader.base.bean.Book;
-import com.zyb.mreader.base.bean.BookFiles;
+import com.zyb.common.db.bean.Book;
+import com.zyb.common.db.bean.BookFiles;
 
 import java.util.List;
 

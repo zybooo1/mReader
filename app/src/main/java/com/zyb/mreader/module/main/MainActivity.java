@@ -2,6 +2,7 @@ package com.zyb.mreader.module.main;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.DrawerLayout;
@@ -25,13 +26,13 @@ import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.TimeUtil;
 import com.zyb.base.widget.decoration.GridItemSpaceDecoration;
 import com.zyb.base.widget.dialog.MenuDialog;
+import com.zyb.common.db.bean.Book;
 import com.zyb.mreader.R;
-import com.zyb.mreader.base.bean.Book;
 import com.zyb.mreader.di.component.DaggerActivityComponent;
 import com.zyb.mreader.di.module.ActivityModule;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.module.addBook.AddBookActivity;
-import com.zyb.reader.core.bean.CollBookBean;
+import com.zyb.common.db.bean.CollBookBean;
 import com.zyb.reader.read.ReadActivity;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -74,6 +75,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             if (position < books.size()-1) {
+                LogUtil.e("onItemClick---"+books.get(position).getPath());
                 File file = new File(books.get(position).getPath());
                 CollBookBean collBook = convertCollBook(file);
 //                CollBookHelper.getsInstance().saveBook(collBook);
@@ -163,6 +165,15 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
     @Override
     protected void initData() {
         smartRefresh.autoRefresh();
+        textToSpeech = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status==TextToSpeech.SUCCESS){
+                    textToSpeechInited=true;
+                }
+            }
+        });
+
     }
 
     private void refreshBooks() {
@@ -171,7 +182,19 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
 
     @Override
     public void onLeftClick(View v) {
+        // TODO: 2019/5/14
         drawerLayout.openDrawer(Gravity.START);
+//        test();
+    }
+    private TextToSpeech textToSpeech;
+    private boolean textToSpeechInited=false;
+    private void test() {
+        if (textToSpeechInited) {
+            textToSpeech.setPitch(1.9f);
+            textToSpeech.speak("你好, 我是小爱!", TextToSpeech.QUEUE_FLUSH, null);
+        }else {
+            showError("语音引擎未就绪~");
+        }
     }
 
     @Override

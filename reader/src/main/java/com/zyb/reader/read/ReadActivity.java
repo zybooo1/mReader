@@ -33,17 +33,16 @@ import com.zyb.base.utils.QMUIViewHelper;
 import com.zyb.base.utils.constant.Constants;
 import com.zyb.base.widget.RoundButton;
 import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
+import com.zyb.common.db.MyOpenHelper;
+import com.zyb.common.db.bean.CollBookBean;
+import com.zyb.common.db.bean.DaoMaster;
 import com.zyb.reader.R;
 import com.zyb.reader.R2;
-import com.zyb.reader.core.bean.CollBookBean;
-import com.zyb.reader.core.bean.DaoMaster;
-import com.zyb.reader.core.db.manage.MyOpenHelper;
 import com.zyb.reader.di.component.DaggerActivityComponent;
 import com.zyb.reader.di.module.ActivityModule;
 import com.zyb.reader.di.module.ApiModule;
 import com.zyb.reader.read.adapter.ReadCategoryAdapter;
 import com.zyb.reader.utils.BrightnessUtils;
-import com.zyb.reader.utils.ReadSettingManager;
 import com.zyb.reader.widget.dialog.ReadSettingDialog;
 import com.zyb.reader.widget.page.PageLoader;
 import com.zyb.reader.widget.page.PageView;
@@ -66,21 +65,21 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
     private static final int ANIM_SHOW_DURATION = 400;
     @BindView(R2.id.titleBar)
     TitleBar titleBar;
-    @BindView(R2.id.pv_read_page)
+    @BindView(R2.id.pv_read_page)   //阅读界面
     PageView mPvReadPage;
-    @BindView(R2.id.read_tv_page_tip)
+    @BindView(R2.id.read_tv_page_tip)   //页数提示
     RoundButton mReadTvPageTip;
-    @BindView(R2.id.read_tv_pre_chapter)
+    @BindView(R2.id.read_tv_pre_chapter)   //上一章
     TextView mReadTvPreChapter;
-    @BindView(R2.id.read_sb_chapter_progress)
+    @BindView(R2.id.read_sb_chapter_progress)   //章数进度
     SeekBar mReadSbChapterProgress;
-    @BindView(R2.id.read_tv_next_chapter)
+    @BindView(R2.id.read_tv_next_chapter)   //下一张
     TextView mReadTvNextChapter;
-    @BindView(R2.id.read_tv_night_mode)
+    @BindView(R2.id.read_tv_night_mode)   //日夜间模式
     VectorCompatTextView mReadTvNightMode;
-    @BindView(R2.id.read_ll_bottom_menu)
+    @BindView(R2.id.read_ll_bottom_menu)   //底部菜单
     LinearLayout mReadLlBottomMenu;
-    @BindView(R2.id.rv_read_category)
+    @BindView(R2.id.rv_read_category)   //侧边章节目录
     RecyclerView mRvReadCategory;
     @BindView(R2.id.read_dl_slide)
     DrawerLayout mReadDlSlide;
@@ -98,16 +97,15 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
     public static final String EXTRA_IS_COLLECTED = "extra_is_collected";
 
     private boolean isRegistered = false;
-
+    //设置弹窗
     private ReadSettingDialog mSettingDialog;
     private PageLoader mPageLoader;
-    //    private CategoryAdapter mCategoryAdapter;
+    //书籍
     private CollBookBean mCollBook;
     //控制屏幕常亮
     private PowerManager.WakeLock mWakeLock;
-
-    private boolean isCollected = false; //是否已在书架（数据库）
-    private boolean isNightMode = false;
+    private boolean isCollected = false;   //是否已在书架（数据库）
+    private boolean isNightMode = false;   //是否是夜间模式
     ReadCategoryAdapter mReadCategoryAdapter;
     List<TxtChapter> mTxtChapters = new ArrayList<>();
 
@@ -169,11 +167,9 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
 
     @Override
     protected void initView() {
-
         mCollBook = (CollBookBean) getIntent().getSerializableExtra(EXTRA_COLL_BOOK);
-        test();
         isCollected = getIntent().getBooleanExtra(EXTRA_IS_COLLECTED, false);
-        isNightMode = ReadSettingManager.getInstance().isNightMode();
+        isNightMode = mPresenter.isNightMode();
 
         setTitle(mCollBook.getTitle());
         //获取页面加载器
@@ -193,10 +189,10 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         registerReceiver(mReceiver, intentFilter);
 
         //设置当前Activity的Brightness
-        if (ReadSettingManager.getInstance().isBrightnessAuto()) {
+        if (mPresenter.isBrightnessAuto()) {
             BrightnessUtils.setBrightness(this, BrightnessUtils.getScreenBrightness(this));
         } else {
-            BrightnessUtils.setBrightness(this, ReadSettingManager.getInstance().getBrightness());
+            BrightnessUtils.setBrightness(this, mPresenter.getBrightness());
         }
 
         //初始化屏幕常亮类
@@ -245,7 +241,6 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (mReadLlBottomMenu.getVisibility() == VISIBLE) {
-                    //显示标题
                     mReadTvPageTip.setText(String.format(Locale.CHINA, "%d/%d",
                             progress + 1, mReadSbChapterProgress.getMax() + 1));
                     mReadTvPageTip.setVisibility(VISIBLE);
@@ -260,6 +255,7 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
             public void onStopTrackingTouch(SeekBar seekBar) {
                 //进行切换
                 int pagePos = mReadSbChapterProgress.getProgress();
+                LogUtil.e("onStopTrackingTouch:"+pagePos);
                 if (pagePos != mPageLoader.getPagePos()) {
                     mPageLoader.skipToPage(pagePos);
                 }
@@ -290,29 +286,13 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
             }
 
             @Override
-            public void cancel() {
-            }
+            public void cancel() { }
         });
-    }
-
-    private void test() {
-        // TODO: 2019/5/12
-        DaoMaster.OpenHelper mHelper = new MyOpenHelper(
-                BaseApplication.getInstance(), Constants.DB_NAME,null) {
-            @Override
-            public void onCreate(Database db) {
-                //This method is not executed
-                super.onCreate(db);
-            }
-        };
-        DaoMaster mDaoMaster = new DaoMaster(mHelper.getWritableDb());
-        //crashed: no such table: COLL_BOOK_BEAN (code 1)
-        long i = mDaoMaster.newSession().getCollBookBeanDao().count();
     }
 
     @Override
     protected void initData() {
-//        mPageLoader.openBook(mCollBook);
+        mPageLoader.openBook(mCollBook);
     }
 
 

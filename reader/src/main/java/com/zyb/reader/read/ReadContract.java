@@ -3,7 +3,7 @@ package com.zyb.reader.read;
 
 import com.zyb.base.mvp.BasePresenter;
 import com.zyb.base.mvp.BaseView;
-import com.zyb.reader.core.bean.CollBookBean;
+import com.zyb.common.db.bean.CollBookBean;
 
 public interface ReadContract {
     interface View extends BaseView {
@@ -11,5 +11,10 @@ public interface ReadContract {
 
     interface Presenter extends BasePresenter<View> {
         void saveRecord(CollBookBean book);
+        int getBrightness();
+
+        boolean isBrightnessAuto();
+
+        boolean isNightMode();
     }
 }

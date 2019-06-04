@@ -1,7 +1,7 @@
 package com.zyb.reader.core.db;
 
 
-import com.zyb.reader.core.bean.CollBookBean;
+import com.zyb.common.db.bean.CollBookBean;
 
 /**
  */

@@ -1,4 +1,5 @@
-package com.zyb.reader.core.bean;
+package com.zyb.common.db.bean;
+
 
 
 

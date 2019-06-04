@@ -1,4 +1,4 @@
-package com.zyb.mreader.base.bean;
+package com.zyb.common.db.bean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 
@@ -6,15 +6,12 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
-import java.io.File;
-
-import static com.zyb.mreader.module.addBook.path.adapter.PathAdapter.ITEM_BOOK;
-import static com.zyb.mreader.module.addBook.path.adapter.PathAdapter.ITEM_PATH;
-
 
 @Entity
 public class BookFiles implements MultiItemEntity {
     static final long serialVersionUID = 42L;
+    public static final int ITEM_BOOK = 0;
+    public static final int ITEM_PATH = 1;
 
     @Id
     private String id;
@@ -27,7 +24,7 @@ public class BookFiles implements MultiItemEntity {
 
     @Generated(hash = 1169191753)
     public BookFiles(String id, String title, String path, String size,
-            boolean isFile) {
+                     boolean isFile) {
         this.id = id;
         this.title = title;
         this.path = path;
@@ -54,6 +51,7 @@ public class BookFiles implements MultiItemEntity {
     public int getItemType() {
         return getIsFile() ? ITEM_BOOK : ITEM_PATH;
     }
+
     public String getId() {
         return this.id;
     }
@@ -92,7 +90,6 @@ public class BookFiles implements MultiItemEntity {
     public void setSize(String size) {
         this.size = size;
     }
-
 
 
     public boolean getIsFile() {

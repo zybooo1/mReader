@@ -2,8 +2,8 @@ package com.zyb.mreader.core;
 
 
 import com.zyb.base.mvp.BaseDataManager;
-import com.zyb.mreader.base.bean.Book;
-import com.zyb.mreader.base.bean.BookFiles;
+import com.zyb.common.db.bean.Book;
+import com.zyb.common.db.bean.BookFiles;
 import com.zyb.mreader.core.db.DbHelper;
 import com.zyb.mreader.core.db.GreenDaoHelper;
 import com.zyb.mreader.core.http.HttpHelper;

@@ -1,9 +1,8 @@
-package com.zyb.mreader.core.db.manage;
+package com.zyb.common.db.manage;
 
 
 import com.zyb.base.base.db.BaseDBManager;
-import com.zyb.mreader.base.bean.Book;
-import com.zyb.mreader.base.bean.BookFiles;
+import com.zyb.common.db.bean.BookFiles;
 
 import org.greenrobot.greendao.AbstractDao;
 

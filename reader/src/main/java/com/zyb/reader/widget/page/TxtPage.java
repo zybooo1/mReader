@@ -3,7 +3,7 @@ package com.zyb.reader.widget.page;
 import java.util.List;
 
 /**
- * Created by newbiechen on 17-7-1.
+ * 页
  */
 
 public class TxtPage {

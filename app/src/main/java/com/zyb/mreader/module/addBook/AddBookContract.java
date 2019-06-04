@@ -5,7 +5,6 @@ import android.widget.ArrayAdapter;
 
 import com.zyb.base.mvp.BasePresenter;
 import com.zyb.base.mvp.BaseView;
-import com.zyb.mreader.base.bean.Book;
 
 import java.util.List;
 

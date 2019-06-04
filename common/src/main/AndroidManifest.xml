@@ -2,7 +2,5 @@
     package="com.zyb.common">
 
     <application>
-
-        <activity android:name="com.zyb.common.TestActivity" />
     </application>
 </manifest>

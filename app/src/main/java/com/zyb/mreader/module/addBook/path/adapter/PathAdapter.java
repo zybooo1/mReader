@@ -4,18 +4,19 @@ import android.support.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.zyb.common.db.bean.BookFiles;
 import com.zyb.mreader.R;
-import com.zyb.mreader.base.bean.BookFiles;
-import com.zyb.mreader.module.addBook.file.BookFilesContract;
 import com.zyb.mreader.module.addBook.path.BookPathContract;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.zyb.common.db.bean.BookFiles.ITEM_BOOK;
+import static com.zyb.common.db.bean.BookFiles.ITEM_PATH;
+
 public class PathAdapter extends BaseMultiItemQuickAdapter<BookFiles, BaseViewHolder> {
-    public static final int ITEM_BOOK = 0;
-    public static final int ITEM_PATH = 1;
+
 
     private BookPathContract.Presenter mPresenter;
 

@@ -21,8 +21,6 @@ import com.zyb.base.event.EventConstants;
 import com.zyb.base.utils.EventBusUtil;
 import com.zyb.base.utils.LogUtil;
 import com.zyb.mreader.R;
-import com.zyb.mreader.base.bean.Book;
-import com.zyb.mreader.base.bean.BookFiles;
 import com.zyb.mreader.di.component.DaggerActivityComponent;
 import com.zyb.mreader.di.module.ActivityModule;
 import com.zyb.mreader.di.module.ApiModule;

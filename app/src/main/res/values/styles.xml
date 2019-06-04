@@ -8,7 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
         <!-- Set menu background and text color -->
         <item name="android:windowBackground">@color/window_bg</item>
-        <item name="android:selectableItemBackground">@drawable/touch_bg</item>
+        <!--暂时注释，否则NavView Menu显示可能有问题-->
+        <!--<item name="android:selectableItemBackground">@drawable/touch_bg</item>-->
     </style>
     <!-- Base application theme. -->
     <style name="FullScreenTheme" parent="AppTheme">

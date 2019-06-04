@@ -11,7 +11,6 @@ import com.hjq.toast.ToastUtils;
 import com.zyb.base.base.activity.MyActivity;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.mreader.module.main.MainActivity;
-import com.zyb.common.TestActivity;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -43,12 +42,6 @@ public class LauncherActivity extends MyActivity
 
     @Override
     protected void initView() {
-        // TODO: 2019/5/13
-        if (true) {
-            startActivity(TestActivity.class);
-            return;
-        }
-
         //设置状态栏和导航栏参数
         getStatusBarConfig()
                 .fullScreen(true)//有导航栏的情况下，activity全屏显示，也就是activity最下面被导航栏覆盖，不写默认非全屏

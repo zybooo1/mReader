@@ -1,31 +1,16 @@
-package com.zyb.reader.core.db.manage;
+package com.zyb.common.db;
 
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.zyb.base.base.db.DBMigrationHelper;
-import com.zyb.base.utils.LogUtil;
-import com.zyb.reader.core.bean.BookChapterBeanDao;
-import com.zyb.reader.core.bean.BookRecordBeanDao;
-import com.zyb.reader.core.bean.CollBookBeanDao;
-import com.zyb.reader.core.bean.DaoMaster;
+import com.zyb.common.db.bean.BookDao;
+import com.zyb.common.db.bean.DaoMaster;
 
-import org.greenrobot.greendao.database.Database;
-
-/**
- * 原因找到了，我在APP Module创建过数据库，所以在这里忽略了onCreate方法
- */
 public class MyOpenHelper extends DaoMaster.OpenHelper {
     public MyOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory) {
         super(context, name, factory);
-    }
-
-    @Override
-    public Database getWritableDb() {
-        LogUtil.e("------------getWritableDb");
-        return super.getWritableDb();
-
     }
 
     /**
@@ -39,7 +24,7 @@ public class MyOpenHelper extends DaoMaster.OpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
             DBMigrationHelper dbMigrationHelper = new DBMigrationHelper();
-            Class[] classes = {CollBookBeanDao.class, BookRecordBeanDao.class, BookChapterBeanDao.class};
+            Class[] classes = {BookDao.class};
             dbMigrationHelper.onUpgrade(db, classes);
         }
     }

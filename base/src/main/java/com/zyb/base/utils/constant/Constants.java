@@ -16,8 +16,23 @@ public class Constants {
     public static String IMG_CACHE_PATH = Environment.getExternalStorageDirectory() + "imageCache/";
     //文件缓存目录
     public static String FILE_CACHE_PATH = Environment.getExternalStorageDirectory() + "fileCache/";
+
+
     //SP名称
-    public static final String BASE_SHARED_PREFERENCE = "base_shared_preference";
-    //SP用户信息
-    public static final String SP_USER_FLAG = "sp_user_data";
+    public static final String SP_NAME = "sp_mreader";
+    public static final int TEXT_SIZE_SP_DEFAULT = 20;
+    public static final int READ_BG_DEFAULT = 0;
+    public static final int READ_BG_1 = 1;
+    public static final int READ_BG_2 = 2;
+    public static final int READ_BG_3 = 3;
+    public static final int READ_BG_4 = 4;
+    public static final int NIGHT_MODE = 5;
+
+    public static final String SHARED_READ_BG = "shared_read_bg";
+    public static final String SHARED_READ_BRIGHTNESS = "shared_read_brightness";
+    public static final String SHARED_READ_IS_BRIGHTNESS_AUTO = "shared_read_is_brightness_auto";
+    public static final String SHARED_READ_TEXT_SIZE = "shared_read_text_size";
+    public static final String SHARED_READ_IS_TEXT_DEFAULT = "shared_read_text_default";
+    public static final String SHARED_READ_PAGE_MODE = "shared_read_mode";
+    public static final String SHARED_READ_NIGHT_MODE = "shared_night_mode";
 }
