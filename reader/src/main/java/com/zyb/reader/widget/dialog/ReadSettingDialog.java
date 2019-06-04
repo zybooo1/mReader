@@ -39,9 +39,7 @@ import butterknife.ButterKnife;
 import static com.zyb.base.utils.constant.Constants.TEXT_SIZE_SP_DEFAULT;
 
 /**
- * Created by newbiechen on 17-5-18.
  */
-
 public class ReadSettingDialog extends Dialog {
     private static final String TAG = "ReadSettingDialog";
 

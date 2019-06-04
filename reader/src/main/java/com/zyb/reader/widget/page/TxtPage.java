@@ -5,7 +5,6 @@ import java.util.List;
 /**
  * 页
  */
-
 public class TxtPage {
     int position;
     String title;

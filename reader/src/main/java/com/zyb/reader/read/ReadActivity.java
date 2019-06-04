@@ -301,9 +301,7 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
         mReadCategoryAdapter.setOnItemClickListener((adapter, view, position) -> {
             setCategorySelect(position);
             mReadDlSlide.closeDrawer(Gravity.START);
-            mPageLoader.skipToChapter(position);
         });
-
     }
 
     /**

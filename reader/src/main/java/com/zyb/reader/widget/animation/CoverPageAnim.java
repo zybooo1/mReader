@@ -7,9 +7,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 
 /**
- * Created by newbiechen on 17-7-24.
  */
-
 public class CoverPageAnim extends HorizonPageAnim {
 
     private Rect mSrcRect, mDestRect;

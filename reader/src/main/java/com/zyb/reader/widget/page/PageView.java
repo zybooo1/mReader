@@ -20,7 +20,7 @@ import com.zyb.reader.widget.animation.SlidePageAnim;
 
 
 /**
- * 绘制页面显示内容的类
+ * 页View
  */
 public class PageView extends View {
 
@@ -277,7 +277,8 @@ public class PageView extends View {
     //获取PageLoader
     public PageLoader getPageLoader(){
         if (mPageLoader == null){
-                mPageLoader = new LocalPageLoader(this);
+                mPageLoader = new PageLoader(this) {
+                };
         }
         return mPageLoader;
     }
