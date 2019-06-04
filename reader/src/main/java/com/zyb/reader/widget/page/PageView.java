@@ -31,8 +31,6 @@ public class PageView extends View {
     //滚动效果
     public final static int PAGE_MODE_SCROLL = 4;
 
-    private final static String TAG = "BookPageWidget";
-
     private int mViewWidth = 0; // 当前View的宽
     private int mViewHeight = 0; // 当前View的高
 
@@ -140,71 +138,8 @@ public class PageView extends View {
         return mPageAnim.getBgBitmap();
     }
 
-
-    public boolean autoPrevPage(){
-        //滚动暂时不支持自动翻页
-        if (mPageAnim instanceof ScrollPageAnim){
-            return false;
-        }
-        else {
-            startPageAnim(PageAnimation.Direction.PRE);
-            return true;
-        }
-    }
-
-    public boolean autoNextPage(){
-        if (mPageAnim instanceof ScrollPageAnim){
-            return false;
-        }
-        else {
-            startPageAnim(PageAnimation.Direction.NEXT);
-            return true;
-        }
-    }
-
-    private void startPageAnim(PageAnimation.Direction direction){
-        if (mTouchListener == null) return;
-        //是否正在执行动画
-        abortAnimation();
-        if (direction == PageAnimation.Direction.NEXT){
-            int x = mViewWidth;
-            int y = mViewHeight;
-            //设置点击点
-            mPageAnim.setTouchPoint(x,y);
-            //初始化动画
-            mPageAnim.setStartPoint(x,y);
-            //设置方向
-            Boolean hasNext = hasNext();
-
-            mPageAnim.setDirection(direction);
-            if (!hasNext) {
-                return;
-            }
-        }
-        else{
-            int x = 0;
-            int y = mViewHeight;
-            //初始化动画
-            mPageAnim.setStartPoint(x,y);
-            //设置点击点
-            mPageAnim.setTouchPoint(x,y);
-            mPageAnim.setDirection(direction);
-            //设置方向方向
-            Boolean hashPrev = hasPrev();
-            if (!hashPrev) {
-                return;
-            }
-        }
-        mPageAnim.startAnim();
-        this.postInvalidate();
-    }
-
     public void setBgColor(int color){
         mBgColor = color;
-    }
-
-    public void canTouchable(boolean touchable){
-        canTouch = touchable;
     }
 
     @Override
@@ -299,11 +234,6 @@ public class PageView extends View {
         //进行滑动
         mPageAnim.scrollAnim();
         super.computeScroll();
-    }
-
-    //如果滑动状态没有停止就取消状态，重新设置Anim的触碰点
-    public void abortAnimation() {
-        mPageAnim.abortAnim();
     }
 
     public boolean isPrepare(){

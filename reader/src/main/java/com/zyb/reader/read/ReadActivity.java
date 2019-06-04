@@ -197,18 +197,15 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
 
         //初始化屏幕常亮类
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "keep bright");
+        if (pm != null) {
+            mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "mreader:keep_bright");
+        }
 
         mPageLoader.setOnPageChangeListener(new PageLoader.OnPageChangeListener() {
             @Override
             public void onChapterChange(int pos) {
                 LogUtil.e("==========onChapterChange");
                 setCategorySelect(pos);
-            }
-
-            @Override
-            public void onLoadChapter(List<TxtChapter> chapters, int pos) {
-                LogUtil.e("==========onLoadChapter");
             }
 
             @Override
@@ -457,13 +454,13 @@ public class ReadActivity extends MVPActivity<ReadPresenter> implements ReadCont
     @Override
     protected void onResume() {
         super.onResume();
-        mWakeLock.acquire();
+        if(mWakeLock!=null)mWakeLock.acquire(10*60*1000L /*10 minutes*/);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mWakeLock.release();
+        if(mWakeLock!=null)mWakeLock.release();
         if (isCollected) {
             mPageLoader.saveRecord();
         }

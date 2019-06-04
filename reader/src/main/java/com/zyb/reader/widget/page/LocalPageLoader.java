@@ -26,28 +26,26 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleObserver;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
- * Created by newbiechen on 17-7-1.
- * 问题:
- * 1. 异常处理没有做好
  */
-
 public class LocalPageLoader extends PageLoader {
-    private static final String TAG = "LocalPageLoader";
     //默认从文件中获取数据的长度
     private final static int BUFFER_SIZE = 512 * 1024;
     //没有标题的时候，每个章节的最大长度
     private final static int MAX_LENGTH_WITH_NO_CHAPTER = 10 * 1024;
-
     // "序(章)|前言"
     private final static Pattern mPreChapterPattern = Pattern.compile("^(\\s{0,10})((\u5e8f[\u7ae0\u8a00]?)|(\u524d\u8a00)|(\u6954\u5b50))(\\s{0,10})$", Pattern.MULTILINE);
-
     //正则表达式章节匹配模式
     // "(第)([0-9零一二两三四五六七八九十百千万壹贰叁肆伍陆柒捌玖拾佰仟]{1,10})([章节回集卷])(.*)"
     private static final String[] CHAPTER_PATTERNS = new String[]{"^(.{0,8})(\u7b2c)([0-9\u96f6\u4e00\u4e8c\u4e24\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341\u767e\u5343\u4e07\u58f9\u8d30\u53c1\u8086\u4f0d\u9646\u67d2\u634c\u7396\u62fe\u4f70\u4edf]{1,10})([\u7ae0\u8282\u56de\u96c6\u5377])(.{0,30})$",
@@ -55,7 +53,6 @@ public class LocalPageLoader extends PageLoader {
             "^(\\s{0,4})([\\(\uff08\u3010\u300a])(.{0,30})([\\)\uff09\u3011\u300b])(\\s{0,2})$",
             "^(\\s{0,4})(\u6b63\u6587)(.{0,20})$",
             "^(.{0,4})(Chapter|chapter)(\\s{0,4})([0-9]{1,4})(.{0,30})$"};
-
     //书本的大小
     private long mBookSize;
     //章节解析模式
@@ -137,8 +134,6 @@ public class LocalPageLoader extends PageLoader {
      * 未完成的部分:
      * 1. 序章的添加
      * 2. 章节存在的书本的虚拟分章效果
-     *
-     * @throws IOException
      */
     private void loadChapters() throws IOException {
         List<TxtChapter> chapters = new ArrayList<>();
@@ -322,9 +317,6 @@ public class LocalPageLoader extends PageLoader {
         if (mChapterList == null) {
             throw new IllegalArgumentException("Chapter list must not null");
         }
-        if (true) {
-            return test2();
-        }
 
         TxtChapter chapter = mChapterList.get(chapterPos);
         //从文件中获取数据
@@ -341,9 +333,6 @@ public class LocalPageLoader extends PageLoader {
 
     /**
      * 从文件中提取一章的内容
-     *
-     * @param chapter
-     * @return
      */
     private byte[] getChapterContent(TxtChapter chapter) {
         RandomAccessFile bookStream = null;
@@ -449,23 +438,6 @@ public class LocalPageLoader extends PageLoader {
         }
     }
 
-    /**
-     * todo
-     *
-     * @return
-     */
-    private List<TxtPage> test2() {
-        RandomAccessFile bookStream = null;
-        try {
-            bookStream = new RandomAccessFile(mBookFile, "r");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        TxtChapter txtChapter = new TxtChapter();
-        txtChapter.setTitle("麦田里的守望者");
-        return loadPages2(txtChapter, bookStream);
-    }
-
     // 将 char[] 强转为 byte[]
     public static byte[] getBytes(char[] chars) {
         byte[] result = new byte[chars.length];
@@ -475,127 +447,138 @@ public class LocalPageLoader extends PageLoader {
         return result;
     }
 
-    //通过流获取Page的方法
-    List<TxtPage> loadPages2(TxtChapter chapter, RandomAccessFile br) {
-        //生成的页面
-        List<TxtPage> pages = new ArrayList<>();
-        //使用流的方式加载
-        List<String> lines = new ArrayList<>();
-        int rHeight = mVisibleHeight; //由于匹配到最后，会多删除行间距，所以在这里多加个行间距
-        int titleLinesCount = 0;
-        boolean isTitle = true; //不存在没有 Title 的情况，所以默认设置为 true。
-        String paragraph = chapter.getTitle();//默认展示标题
-        try {
-            while (isTitle || (paragraph = br.readLine()) != null) {
+    @Override
+    protected void syncPages() {
+        int loadCount = 100;
+        Disposable disposable = Observable.create(new ObservableOnSubscribe<List<TxtPage>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<TxtPage>> emitter) throws Exception {
+                RandomAccessFile bookStream = new RandomAccessFile(mBookFile, "r");
+                TxtChapter txtChapter = new TxtChapter();
+                txtChapter.setTitle("麦田里的守望者");
+                //生成的页面
+                List<TxtPage> pages = new ArrayList<>();
+                //使用流的方式加载
+                List<String> lines = new ArrayList<>();
+                int rHeight = mVisibleHeight; //由于匹配到最后，会多删除行间距，所以在这里多加个行间距
+                int titleLinesCount = 0;
+                boolean isTitle = true; //不存在没有 Title 的情况，所以默认设置为 true。
+                String paragraph = txtChapter.getTitle();//默认展示标题
+                while (isTitle || (paragraph = bookStream.readLine()) != null) {
 
-                //重置段落
-                if (!isTitle) {
+                    //重置段落
+                    if (!isTitle) {
 //                    paragraph = paragraph.replaceAll("\\s", "");
-                    //如果只有换行符，那么就不执行
-                    if (paragraph.equals("")) continue;
-                    byte[] bytes = getBytes(paragraph.toCharArray());
+                        //如果只有换行符，那么就不执行
+                        if (paragraph.equals("")) continue;
+                        byte[] bytes = getBytes(paragraph.toCharArray());
 //                    paragraph = ReadUtils.halfToFull("  " + paragraph + "\n");
-                    LogUtil.e("loadPages2----" + new String(bytes));
-                    paragraph = "  " + new String(bytes) + "\n";
-                } else {
-                    //设置 title 的顶部间距
-                    rHeight -= mTitlePara;
-                }
-
-                int wordCount = 0;
-                String subStr = null;
-                while (paragraph.length() > 0) {
-                    //当前空间，是否容得下一行文字
-                    if (isTitle) {
-                        rHeight -= mTitlePaint.getTextSize();
+                        paragraph = "  " + new String(bytes) + "\n";
                     } else {
-                        rHeight -= mTextPaint.getTextSize();
+                        //设置 title 的顶部间距
+                        rHeight -= mTitlePara;
                     }
 
-                    //一页已经填充满了，创建 TextPage
-                    if (rHeight < 0) {
-                        //创建Page
-                        TxtPage page = new TxtPage();
-                        page.position = pages.size();
-                        page.title = chapter.getTitle();
-                        page.lines = new ArrayList<>(lines);
-                        page.titleLines = titleLinesCount;
-                        pages.add(page);
-                        //重置Lines
-                        lines.clear();
-                        rHeight = mVisibleHeight;
-                        titleLinesCount = 0;
-                        continue;
-                    }
-
-                    //测量一行占用的字节数
-                    if (isTitle) {
-                        wordCount = mTitlePaint.breakText(paragraph, true, mVisibleWidth, null);
-                    } else {
-                        wordCount = mTextPaint.breakText(paragraph, true, mVisibleWidth, null);
-                    }
-
-                    subStr = paragraph.substring(0, wordCount);
-                    if (!subStr.equals("\n")) {
-                        //将一行字节，存储到lines中
-                        lines.add(subStr);
-
-                        //设置段落间距
+                    int wordCount = 0;
+                    String subStr = null;
+                    while (paragraph.length() > 0) {
+                        //当前空间，是否容得下一行文字
                         if (isTitle) {
-                            titleLinesCount += 1;
-                            rHeight -= mTitleInterval;
+                            rHeight -= mTitlePaint.getTextSize();
                         } else {
-                            rHeight -= mTextInterval;
+                            rHeight -= mTextPaint.getTextSize();
                         }
+
+                        //一页已经填充满了，创建 TextPage
+                        if (rHeight < 0) {
+                            //创建Page
+                            TxtPage page = new TxtPage();
+                            page.position = 0;
+                            page.title = txtChapter.getTitle();
+                            page.lines = new ArrayList<>(lines);
+                            page.titleLines = titleLinesCount;
+                            pages.add(page);
+                            if (pages.size() >= loadCount) {
+                                emitter.onNext(pages);
+                                pages.clear();
+                            }
+                            //重置Lines
+                            lines.clear();
+                            rHeight = mVisibleHeight;
+                            titleLinesCount = 0;
+                            continue;
+                        }
+
+                        //测量一行占用的字节数
+                        if (isTitle) {
+                            wordCount = mTitlePaint.breakText(paragraph, true, mVisibleWidth, null);
+                        } else {
+                            wordCount = mTextPaint.breakText(paragraph, true, mVisibleWidth, null);
+                        }
+
+                        subStr = paragraph.substring(0, wordCount);
+                        if (!subStr.equals("\n")) {
+                            //将一行字节，存储到lines中
+                            lines.add(subStr);
+
+                            //设置段落间距
+                            if (isTitle) {
+                                titleLinesCount += 1;
+                                rHeight -= mTitleInterval;
+                            } else {
+                                rHeight -= mTextInterval;
+                            }
+                        }
+                        //裁剪
+                        paragraph = paragraph.substring(wordCount);
                     }
-                    //裁剪
-                    paragraph = paragraph.substring(wordCount);
+
+                    //增加段落的间距
+                    if (!isTitle && lines.size() != 0) {
+                        rHeight = rHeight - mTextPara + mTextInterval;
+                    }
+
+                    if (isTitle) {
+                        rHeight = rHeight - mTitlePara + mTitleInterval;
+                        isTitle = false;
+                    }
                 }
 
-                //增加段落的间距
-                if (!isTitle && lines.size() != 0) {
-                    rHeight = rHeight - mTextPara + mTextInterval;
+                if (lines.size() != 0) {
+                    //创建Page
+                    TxtPage page = new TxtPage();
+                    page.position = 0;
+                    page.title = txtChapter.getTitle();
+                    page.lines = new ArrayList<>(lines);
+                    page.titleLines = titleLinesCount;
+                    pages.add(page);
+                    //重置Lines
+                    lines.clear();
                 }
-
-                if (isTitle) {
-                    rHeight = rHeight - mTitlePara + mTitleInterval;
-                    isTitle = false;
-                }
+                emitter.onNext(pages);
+                bookStream.close();
             }
-
-            if (lines.size() != 0) {
-                //创建Page
-                TxtPage page = new TxtPage();
-                page.position = pages.size();
-                page.title = chapter.getTitle();
-                page.lines = new ArrayList<>(lines);
-                page.titleLines = titleLinesCount;
-                pages.add(page);
-                //重置Lines
-                lines.clear();
+        }).subscribe(new Consumer<List<TxtPage>>() {
+            @Override
+            public void accept(List<TxtPage> txtPages) throws Exception {
+                for (TxtPage page : txtPages) {
+                    for (String line : page.lines) {
+                        LogUtil.e("syncPages onNext----" + line);
+                    }
+                }
+                updatePages(txtPages);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            CloseUtils.closeIO(br);
-        }
-
-        //可能出现内容为空的情况
-        if (pages.size() == 0) {
-            TxtPage page = new TxtPage();
-            page.lines = new ArrayList<>(1);
-            pages.add(page);
-
-            mStatus = STATUS_EMPTY;
-        }
-
-        //提示章节数量改变了。
-        if (mPageChangeListener != null) {
-            mPageChangeListener.onPageCountChange(pages.size());
-        }
-        return pages;
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                LogUtil.e("syncPages onError----" + throwable.toString());
+            }
+        }, new Action() {
+            @Override
+            public void run() throws Exception {
+                LogUtil.e("syncPages onComplete----");
+            }
+        });
     }
 
 }
