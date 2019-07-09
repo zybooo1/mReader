@@ -11,8 +11,7 @@
     <application >
 
         <activity
-            android:name=".read.ReadActivity"
-            android:theme="@style/FullScreenTheme"
+            android:name=".ReadActivity"
             android:screenOrientation="portrait" />
     </application>
 

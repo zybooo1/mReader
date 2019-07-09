@@ -27,13 +27,15 @@ import com.zyb.base.utils.TimeUtil;
 import com.zyb.base.widget.decoration.GridItemSpaceDecoration;
 import com.zyb.base.widget.dialog.MenuDialog;
 import com.zyb.common.db.bean.Book;
+import com.zyb.common.db.bean.CollBookBean;
 import com.zyb.mreader.R;
 import com.zyb.mreader.di.component.DaggerActivityComponent;
 import com.zyb.mreader.di.module.ActivityModule;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.module.addBook.AddBookActivity;
-import com.zyb.common.db.bean.CollBookBean;
-import com.zyb.reader.read.ReadActivity;
+import com.zyb.reader.ReadActivity;
+import com.zyb.reader.db.BookList;
+import com.zyb.reader.util.Fileutil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -74,16 +76,21 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
     private BaseQuickAdapter.OnItemClickListener onItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            if (position < books.size()-1) {
-                LogUtil.e("onItemClick---"+books.get(position).getPath());
+            if (position < books.size() - 1) {
+                LogUtil.e("onItemClick---" + books.get(position).getPath());
                 File file = new File(books.get(position).getPath());
-                CollBookBean collBook = convertCollBook(file);
-//                CollBookHelper.getsInstance().saveBook(collBook);
+//                File file = new File("/storage/emulated/0/iBook/三体全集.txt");
+                BookList bookList = new BookList();
+                String bookName = Fileutil.getFileNameNoEx(file.getName());
+                bookList.setBookname(bookName);
+                bookList.setBookpath(file.getAbsolutePath());
+
+
                 Intent intent = new Intent(MainActivity.this, ReadActivity.class);
-                intent.putExtra(ReadActivity.EXTRA_COLL_BOOK, collBook);
-                intent.putExtra(ReadActivity.EXTRA_IS_COLLECTED, true);
+                intent.putExtra(ReadActivity.EXTRA_BOOK, bookList);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-            }else {
+            } else {
                 toAddBook();
             }
         }
@@ -108,7 +115,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
     private BaseQuickAdapter.OnItemLongClickListener onItemLongClickListener = new BaseQuickAdapter.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-            if (position < books.size()-1) {
+            if (position < books.size() - 1) {
                 longClickBook = books.get(position);
                 showRemoveDialog();
             }
@@ -165,14 +172,14 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
     @Override
     protected void initData() {
         smartRefresh.autoRefresh();
-        textToSpeech = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status==TextToSpeech.SUCCESS){
-                    textToSpeechInited=true;
-                }
-            }
-        });
+//        textToSpeech = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
+//            @Override
+//            public void onInit(int status) {
+//                if(status==TextToSpeech.SUCCESS){
+//                    textToSpeechInited=true;
+//                }
+//            }
+//        });
 
     }
 
@@ -186,13 +193,15 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
         drawerLayout.openDrawer(Gravity.START);
 //        test();
     }
+
     private TextToSpeech textToSpeech;
-    private boolean textToSpeechInited=false;
+    private boolean textToSpeechInited = false;
+
     private void test() {
         if (textToSpeechInited) {
             textToSpeech.setPitch(1.9f);
             textToSpeech.speak("你好, 我是小爱!", TextToSpeech.QUEUE_FLUSH, null);
-        }else {
+        } else {
             showError("语音引擎未就绪~");
         }
     }

@@ -48,8 +48,6 @@ public class LauncherActivity extends MyActivity
                 .hideBar(BarHide.FLAG_HIDE_STATUS_BAR)//隐藏状态栏
                 .transparentNavigationBar()//透明导航栏，不写默认黑色(设置此方法，fullScreen()方法自动为true)
                 .init();
-        // 初始化吐司工具类
-        ToastUtils.init(getApplication());
         Disposable disposable = Observable.just(true)
                 .delay(DELAY_TIME, TimeUnit.MILLISECONDS)
                 .compose(RxUtil.rxObservableSchedulerHelper())

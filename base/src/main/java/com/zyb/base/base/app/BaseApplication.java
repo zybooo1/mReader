@@ -6,6 +6,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.hjq.bar.TitleBar;
+import com.hjq.toast.ToastUtils;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshFooterCreator;
@@ -80,7 +81,8 @@ public class BaseApplication extends MultiDexApplication {
         mAppComponent.inject(this);
         Utils.initAppComponent(mAppComponent);
 
-
+        // 初始化吐司工具类
+        ToastUtils.init(getInstance());
         ARouter.init(sInstance);
         if (BuildConfig.DEBUG) ARouter.openDebug();
         initBugly();

@@ -50,7 +50,6 @@ dependencies {
     api rootProject.ext.dependencies["base-rcv-helper"]
     api rootProject.ext.dependencies["smartrefresh"]
     api rootProject.ext.dependencies["smartrefreshHeader"]
-    api rootProject.ext.dependencies["swipebacklayout"]
     api rootProject.ext.dependencies["VectorCompatTextView"]
     //test
     testImplementation rootProject.ext.dependencies["junit"]
@@ -62,6 +61,7 @@ dependencies {
     api rootProject.ext.dependencies["toast-util"]
     api rootProject.ext.dependencies["greendao"]
     api rootProject.ext.dependencies["EventBus"]
+    api rootProject.ext.dependencies["pagerslidingtabstrip"]
     //json
     api rootProject.ext.dependencies["gson"]
     //network
