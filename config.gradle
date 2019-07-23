@@ -1,18 +1,17 @@
 //项目的通用配置信息及第三方依赖统一管理
 ext {
     // Sdk及版本号
-    targetSdkVersion = 28
-    compileSdkVersion = 28
+    targetSdkVersion = 27
+    compileSdkVersion = 27
     minSdkVersion = 19
     buildToolsVersion = '28.0.3'
     versionCode = 10
     versionName = "1.0"
     databaseVersion = 1
 
-    def organization = "com.zyb"
     //依赖库版本号
     def dependVersion = [
-            support                : "28.0.0",
+            support                : "27.1.0",
             retrofit               : "2.3.0",
             okhttp                 : "3.9.0",
             glide                  : "4.8.0",

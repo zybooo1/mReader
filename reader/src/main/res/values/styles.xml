@@ -23,10 +23,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="guideTheme" parent="AppTheme.NoActionBar">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@mipmap/guide</item>
-    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

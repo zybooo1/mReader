@@ -1,77 +1,33 @@
 package com.zyb.reader.adapter;
 
-import android.content.Context;
 import android.graphics.Typeface;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
+import android.support.annotation.Nullable;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
+import com.zyb.common.db.bean.BookCatalogue;
 import com.zyb.reader.Config;
 import com.zyb.reader.R;
-import com.zyb.reader.db.BookCatalogue;
 
 import java.util.List;
 
 
-public class CatalogueAdapter extends BaseAdapter {
-    private Context mContext;
-    private List<BookCatalogue> bookCatalogueList;
+public class CatalogueAdapter extends BaseQuickAdapter<BookCatalogue, BaseViewHolder> {
     private Typeface typeface;
-    private Config config;
-    private int currentCharter = 0;
+    private int currentPosition;
 
-    public CatalogueAdapter(Context context, List<BookCatalogue> bookCatalogueList) {
-        mContext = context;
-        this.bookCatalogueList = bookCatalogueList;
-        config = config.getInstance();
-        typeface = config.getTypeface();
+    public CatalogueAdapter(@Nullable List<BookCatalogue> data) {
+        super(R.layout.item_catalogue, data);
+        typeface = Config.getInstance().getTypeface();
     }
 
     @Override
-    public int getCount() {
-        return bookCatalogueList.size();
+    protected void convert(BaseViewHolder helper, BookCatalogue bean) {
+        helper.setText(R.id.catalogue_tv, bean.getBookCatalogue())
+                .setTypeface(R.id.catalogue_tv, typeface);
     }
 
-    @Override
-    public Object getItem(int position) {
-        return bookCatalogueList.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    public void setCharter(int charter){
-        currentCharter = charter;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        final ViewHolder viewHolder;
-        if(convertView==null) {
-            viewHolder= new ViewHolder();
-            convertView = inflater.inflate(R.layout.cataloguelistview_item,null);
-            viewHolder.catalogue_tv = (TextView)convertView.findViewById(R.id.catalogue_tv);
-            viewHolder.catalogue_tv.setTypeface(typeface);
-            convertView.setTag(viewHolder);
-        }else {
-            viewHolder = (ViewHolder)convertView.getTag();
-        }
-        if (currentCharter == position){
-            viewHolder.catalogue_tv.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
-        }else{
-            viewHolder.catalogue_tv.setTextColor(mContext.getResources().getColor(R.color.read_textColor));
-        }
-        viewHolder.catalogue_tv.setText(bookCatalogueList.get(position).getBookCatalogue());
-        //Log.d("catalogue",bookCatalogueList.get(position).getBookCatalogue());
-        return convertView;
-    }
-
-    class ViewHolder {
-        TextView catalogue_tv;
+    public void setCurrentPosition(int currentPosition) {
+        this.currentPosition = currentPosition;
     }
 }

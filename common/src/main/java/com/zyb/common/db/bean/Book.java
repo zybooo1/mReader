@@ -7,6 +7,9 @@ import org.greenrobot.greendao.annotation.Id;
 import java.io.Serializable;
 
 
+/**
+ * 书架上的书
+ */
 @Entity
 public class Book implements Serializable{
     static final long serialVersionUID = 42L;
@@ -17,22 +20,21 @@ public class Book implements Serializable{
     private String title="";      //name
     private String path="";      //路径
     private String size="";      //大小
-    @Generated(hash = 654036272)
-    public Book(String id, String title, String path, String size) {
+
+    private long begin;
+    private String charset;
+    @Generated(hash = 753008462)
+    public Book(String id, String title, String path, String size, long begin,
+            String charset) {
         this.id = id;
         this.title = title;
         this.path = path;
         this.size = size;
+        this.begin = begin;
+        this.charset = charset;
     }
     @Generated(hash = 1839243756)
     public Book() {
-    }
-    public BookFiles toBookFile() {
-        BookFiles bookFile = new BookFiles();
-        bookFile.setTitle(getTitle());
-        bookFile.setPath(getPath());
-        bookFile.setSize(getSize());
-        return bookFile;
     }
     public String getId() {
         return this.id;
@@ -58,4 +60,17 @@ public class Book implements Serializable{
     public void setSize(String size) {
         this.size = size;
     }
+    public long getBegin() {
+        return this.begin;
+    }
+    public void setBegin(long begin) {
+        this.begin = begin;
+    }
+    public String getCharset() {
+        return this.charset;
+    }
+    public void setCharset(String charset) {
+        this.charset = charset;
+    }
+
 }

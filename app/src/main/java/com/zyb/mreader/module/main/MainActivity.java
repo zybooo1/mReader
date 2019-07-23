@@ -2,15 +2,21 @@ package com.zyb.mreader.module.main;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.speech.tts.TextToSpeech;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -21,21 +27,27 @@ import com.zyb.base.base.activity.MVPActivity;
 import com.zyb.base.di.component.AppComponent;
 import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
+import com.zyb.base.router.RouterConstants;
+import com.zyb.base.router.RouterUtils;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.LogUtil;
-import com.zyb.base.utils.TimeUtil;
+import com.zyb.base.utils.QMUIViewHelper;
+import com.zyb.base.utils.constant.ApiConstants;
+import com.zyb.base.widget.WebActivity;
 import com.zyb.base.widget.decoration.GridItemSpaceDecoration;
 import com.zyb.base.widget.dialog.MenuDialog;
+import com.zyb.common.db.DBFactory;
 import com.zyb.common.db.bean.Book;
-import com.zyb.common.db.bean.CollBookBean;
 import com.zyb.mreader.R;
 import com.zyb.mreader.di.component.DaggerActivityComponent;
 import com.zyb.mreader.di.module.ActivityModule;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.module.addBook.AddBookActivity;
+import com.zyb.mreader.widget.ContentScaleAnimation;
+import com.zyb.mreader.widget.Rotate3DAnimation;
+import com.zyb.reader.Config;
 import com.zyb.reader.ReadActivity;
-import com.zyb.reader.db.BookList;
-import com.zyb.reader.util.Fileutil;
+import com.zyb.reader.util.FileUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -47,19 +59,21 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class MainActivity extends MVPActivity<MainPresenter> implements MainContract.View {
+/**
+ *
+ */
+public class MainActivity extends MVPActivity<MainPresenter> implements
+        MainContract.View, Animation.AnimationListener {
 
     @BindView(R.id.drawerLayout)
     DrawerLayout drawerLayout;
     @BindView(R.id.rv_books)
     RecyclerView rvBooks;
-    @BindView(R.id.appbar)
-    AppBarLayout appbar;
     @BindView(R.id.smartRefresh)
     SmartRefreshLayout smartRefresh;
 
     private BooksAdapter booksAdapter;
-    List<Book> books = new ArrayList<>();
+    List<com.zyb.common.db.bean.Book> books = new ArrayList<>();
 
     private RecyclerView.OnScrollListener onFlingListener = new RecyclerView.OnScrollListener() {
         @Override
@@ -77,40 +91,13 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             if (position < books.size() - 1) {
-                LogUtil.e("onItemClick---" + books.get(position).getPath());
-                File file = new File(books.get(position).getPath());
-//                File file = new File("/storage/emulated/0/iBook/三体全集.txt");
-                BookList bookList = new BookList();
-                String bookName = Fileutil.getFileNameNoEx(file.getName());
-                bookList.setBookname(bookName);
-                bookList.setBookpath(file.getAbsolutePath());
-
-
-                Intent intent = new Intent(MainActivity.this, ReadActivity.class);
-                intent.putExtra(ReadActivity.EXTRA_BOOK, bookList);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                bookPosition = position;
+                onBookItemClick(position, view);
             } else {
                 toAddBook();
             }
         }
     };
-
-    /**
-     * 将文件转换成CollBook
-     */
-    private CollBookBean convertCollBook(File file) {
-        //判断文件是否存在
-        if (!file.exists()) return null;
-
-        CollBookBean collBook = new CollBookBean();
-        collBook.setLocal(true);
-        collBook.set_id(file.getAbsolutePath());
-        collBook.setTitle(file.getName().replace(".txt", ""));
-        collBook.setLastChapter("开始阅读");
-        collBook.setLastRead(TimeUtil.parseDateTime(System.currentTimeMillis()));
-        return collBook;
-    }
 
     private BaseQuickAdapter.OnItemLongClickListener onItemLongClickListener = new BaseQuickAdapter.OnItemLongClickListener() {
         @Override
@@ -156,6 +143,8 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
 
     @Override
     protected void initView() {
+        Config.createConfig(this);
+
         booksAdapter = new BooksAdapter(books);
         booksAdapter.setOnItemClickListener(onItemClickListener);
         booksAdapter.setOnItemLongClickListener(onItemLongClickListener);
@@ -171,16 +160,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
 
     @Override
     protected void initData() {
-        smartRefresh.autoRefresh();
-//        textToSpeech = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
-//            @Override
-//            public void onInit(int status) {
-//                if(status==TextToSpeech.SUCCESS){
-//                    textToSpeechInited=true;
-//                }
-//            }
-//        });
-
+        refreshBooks();
     }
 
     private void refreshBooks() {
@@ -189,21 +169,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
 
     @Override
     public void onLeftClick(View v) {
-        // TODO: 2019/5/14
         drawerLayout.openDrawer(Gravity.START);
-//        test();
-    }
-
-    private TextToSpeech textToSpeech;
-    private boolean textToSpeechInited = false;
-
-    private void test() {
-        if (textToSpeechInited) {
-            textToSpeech.setPitch(1.9f);
-            textToSpeech.speak("你好, 我是小爱!", TextToSpeech.QUEUE_FLUSH, null);
-        } else {
-            showError("语音引擎未就绪~");
-        }
     }
 
     @Override
@@ -217,7 +183,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
     }
 
     @Override
-    public void onBooksLoaded(List<Book> books) {
+    public void onBooksLoaded(List<com.zyb.common.db.bean.Book> books) {
         this.books.clear();
         this.books.addAll(books);
         booksAdapter.notifyDataSetChanged();
@@ -225,12 +191,15 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
         smartRefresh.finishRefresh();
     }
 
-    @OnClick(R.id.addBook)
+    @OnClick({R.id.addBook, R.id.feedBack})
     public void addBookClick(View view) {
         drawerLayout.closeDrawers();
         switch (view.getId()) {
             case R.id.addBook:
                 mPresenter.drawerAction(MainContract.DRAWER_ACTION.TO_ADD_BOOK);
+                break;
+            case R.id.feedBack:
+                mPresenter.drawerAction(MainContract.DRAWER_ACTION.TO_FEED_BACK);
                 break;
         }
     }
@@ -240,8 +209,15 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
         startActivity(AddBookActivity.class);
     }
 
+    @Override
+    public void toFeedBack() {
+        RouterUtils.getInstance().build(RouterConstants.PATH_BASE_ATY_WEB_VIEW)
+                .withString(WebActivity.URL_FLAG, ApiConstants.FEED_BACK_URL)
+                .navigation();
+    }
+
     BaseDialog removeDialog;
-    Book longClickBook;
+    com.zyb.common.db.bean.Book longClickBook;
     MenuDialog.OnListener removeListener = new MenuDialog.OnListener() {
 
         @Override
@@ -275,6 +251,187 @@ public class MainActivity extends MVPActivity<MainPresenter> implements MainCont
 
     private void hideRemoveLawDialog() {
         if (removeDialog != null) removeDialog.dismiss();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.START)) {
+            drawerLayout.closeDrawer(Gravity.START);
+        } else if (!isAnimating) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        hideRemoveLawDialog();
+    }
+
+    /**
+     * 书本打开动画
+     */
+    // 记录View的位置
+    private int[] location = new int[2];
+    // 内容页
+    @BindView(R.id.img_content)
+    public ImageView mContent;
+    // 封面
+    @BindView(R.id.img_first)
+    public RelativeLayout mFirst;
+    @BindView(R.id.book_title)
+    public TextView tvBookTitle;
+    // 缩放动画
+    private ContentScaleAnimation scaleAnimation;
+    // 3D旋转动画
+    private Rotate3DAnimation threeDAnimation;
+    // 是否打开书籍 其实是是否离开当前界面，跳转到其他的界面
+    private boolean isOpenBook = false;
+    private boolean isAnimating = false;
+
+    private int bookPosition;
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        // 当界面重新进入的时候进行合书的动画
+        if (isOpenBook) {
+            initPageColor();
+            scaleAnimation.reverse();
+            threeDAnimation.reverse();
+            mFirst.clearAnimation();
+            mFirst.startAnimation(threeDAnimation);
+            mContent.clearAnimation();
+            mContent.startAnimation(scaleAnimation);
+        }
+    }
+
+    private void initPageColor() {
+        switch (Config.getInstance().getBookBgType()) {
+            case Config.BOOK_BG_DEFAULT:
+                mContent.setBackground(ContextCompat.getDrawable(this, com.zyb.reader.R.drawable.paper));
+                break;
+            case Config.BOOK_BG_1:
+                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.read_bg_1));
+                break;
+            case Config.BOOK_BG_2:
+                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.read_bg_2));
+                break;
+            case Config.BOOK_BG_3:
+                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.read_bg_3));
+                break;
+            case Config.BOOK_BG_4:
+                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.read_bg_4));
+                break;
+        }
+        if (Config.getInstance().getDayOrNight())
+            mContent.setBackgroundColor(Color.BLACK);
+    }
+
+    private void readBook() {
+        String filePath = books.get(bookPosition).getPath();
+        LogUtil.e("onItemClick---" + filePath);
+        File file = new File(filePath);
+//                File file = new File("/storage/emulated/0/iBook/三体全集.txt");
+        Book book = DBFactory.getInstance().getBooksManage().query(filePath);
+        if (book == null) {
+            book = new Book();
+            String bookName = FileUtils.getFileNameNoEx(file.getName());
+            book.setTitle(bookName);
+            book.setPath(filePath);
+            book.setId(filePath);
+        }
+
+        Intent intent = new Intent(MainActivity.this, ReadActivity.class);
+        intent.putExtra(ReadActivity.EXTRA_BOOK, book);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+        isAnimating = true;
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+        isAnimating = false;
+        if (scaleAnimation.hasEnded() && threeDAnimation.hasEnded()) {
+            // 两个动画都结束的时候再处理后续操作
+            if (!isOpenBook) {
+                isOpenBook = true;
+                readBook();
+            } else {
+                isOpenBook = false;
+                mFirst.clearAnimation();
+                mContent.clearAnimation();
+                mFirst.setVisibility(View.GONE);
+                mContent.setVisibility(View.GONE);
+            }
+        }
+    }
+
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+
+    }
+
+    public void onBookItemClick(int pos, View view) {
+        mFirst.setVisibility(View.VISIBLE);
+        mContent.setVisibility(View.VISIBLE);
+
+        // 计算当前的位置坐标
+        view.getLocationInWindow(location);
+        int width = view.getWidth();
+        int height = view.getHeight();
+
+        // 两个ImageView设置大小和位置
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFirst.getLayoutParams();
+        params.leftMargin = location[0];
+        params.topMargin = location[1];
+        params.width = width;
+        params.height = height;
+        mFirst.setLayoutParams(params);
+        mContent.setLayoutParams(params);
+
+        initPageColor();
+
+        tvBookTitle.setText(books.get(bookPosition).getTitle());
+
+        initAnimation(view);
+        LogUtil.e("left:" + mFirst.getLeft() + "top:" + mFirst.getTop());
+
+        mContent.clearAnimation();
+        mContent.startAnimation(scaleAnimation);
+        mFirst.clearAnimation();
+        mFirst.startAnimation(threeDAnimation);
+    }
+
+    // 初始化动画
+    private void initAnimation(View view) {
+        float viewWidth = view.getWidth();
+        float viewHeight = view.getHeight();
+
+        float screenWidth = CommonUtils.getScreenWidth();
+        float screenHeight = CommonUtils.getOriginScreenHight();
+
+        float horScale = screenWidth / viewWidth;
+        float verScale = screenHeight / viewHeight;
+        float scale = horScale > verScale ? horScale : verScale;
+
+        scaleAnimation = new ContentScaleAnimation(location[0], location[1], scale, false);
+        scaleAnimation.setInterpolator(new DecelerateInterpolator());  //设置插值器
+        scaleAnimation.setDuration(1000);
+        scaleAnimation.setFillAfter(true);  //动画停留在最后一帧
+        scaleAnimation.setAnimationListener(this);
+
+        threeDAnimation = new Rotate3DAnimation(this, -180, 0
+                , location[0], location[1], scale, true);
+        threeDAnimation.setDuration(1000);                         //设置动画时长
+        threeDAnimation.setFillAfter(true);                        //保持旋转后效果
+        threeDAnimation.setInterpolator(new DecelerateInterpolator());
     }
 
 }

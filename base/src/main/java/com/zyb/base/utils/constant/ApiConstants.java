@@ -5,10 +5,8 @@ package com.zyb.base.utils.constant;
  * @author zyb
  */
 public class ApiConstants {
-    public static final String BASE_WAN_ANDROID_URL = "https://www.wanandroid.com";
-
     public static final String BASE_OUTTER_URL = "http://www.qq.com/";
 
-    public static final String BANNER_INFO = "banners";
-    public static final String ARTICLE_INFO = "articles";
+    public static final String FEED_BACK_URL = "https://www.wjx.top/jq/42971606.aspx";
+
 }

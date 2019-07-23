@@ -37,6 +37,9 @@ public class MainPresenter extends AbstractPresenter<MainContract.View, AppDataM
                     case TO_ADD_BOOK:
                         mView.toAddBook();
                         break;
+                    case TO_FEED_BACK:
+                        mView.toFeedBack();
+                        break;
                 }
             }
             @Override

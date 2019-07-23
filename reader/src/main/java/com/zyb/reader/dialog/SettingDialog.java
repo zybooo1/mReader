@@ -12,10 +12,10 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.zyb.base.utils.CommonUtils;
 import com.zyb.reader.Config;
 import com.zyb.reader.R;
 import com.zyb.reader.R2;
-import com.zyb.reader.util.DisplayUtils;
 import com.zyb.reader.view.CircleImageView;
 
 import butterknife.BindView;
@@ -149,45 +149,46 @@ public class SettingDialog extends Dialog {
     private void selectBg(int type) {
         switch (type) {
             case Config.BOOK_BG_DEFAULT:
-                iv_bg_default.setBorderWidth(DisplayUtils.dp2px(getContext(), 2));
-                iv_bg1.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg2.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg3.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg4.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
+                iv_bg_default.setBorderWidth(CommonUtils.dp2px( 2));
+                iv_bg1.setBorderWidth(CommonUtils.dp2px(0));
+                iv_bg2.setBorderWidth(CommonUtils.dp2px(0));
+                iv_bg3.setBorderWidth(CommonUtils.dp2px(0));
+                iv_bg4.setBorderWidth(CommonUtils.dp2px(0));
                 break;
             case Config.BOOK_BG_1:
-                iv_bg_default.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg1.setBorderWidth(DisplayUtils.dp2px(getContext(), 2));
-                iv_bg2.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg3.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg4.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
+                iv_bg_default.setBorderWidth(CommonUtils.dp2px( 0));
+                iv_bg1.setBorderWidth(CommonUtils.dp2px( 2));
+                iv_bg2.setBorderWidth(CommonUtils.dp2px( 0));
+                iv_bg3.setBorderWidth(CommonUtils.dp2px( 0));
+                iv_bg4.setBorderWidth(CommonUtils.dp2px( 0));
                 break;
             case Config.BOOK_BG_2:
-                iv_bg_default.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg1.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg2.setBorderWidth(DisplayUtils.dp2px(getContext(), 2));
-                iv_bg3.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg4.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
+                iv_bg_default.setBorderWidth(CommonUtils.dp2px( 0));
+                iv_bg1.setBorderWidth(CommonUtils.dp2px( 0));
+                iv_bg2.setBorderWidth(CommonUtils.dp2px( 2));
+                iv_bg3.setBorderWidth(CommonUtils.dp2px( 0));
+                iv_bg4.setBorderWidth(CommonUtils.dp2px( 0));
                 break;
             case Config.BOOK_BG_3:
-                iv_bg_default.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg1.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg2.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg3.setBorderWidth(DisplayUtils.dp2px(getContext(), 2));
-                iv_bg4.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
+                iv_bg_default.setBorderWidth(CommonUtils.dp2px(0));
+                iv_bg1.setBorderWidth(CommonUtils.dp2px(0));
+                iv_bg2.setBorderWidth(CommonUtils.dp2px(0));
+                iv_bg3.setBorderWidth(CommonUtils.dp2px(2));
+                iv_bg4.setBorderWidth(CommonUtils.dp2px(0));
                 break;
             case Config.BOOK_BG_4:
-                iv_bg_default.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg1.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg2.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg3.setBorderWidth(DisplayUtils.dp2px(getContext(), 0));
-                iv_bg4.setBorderWidth(DisplayUtils.dp2px(getContext(), 2));
+                iv_bg_default.setBorderWidth(CommonUtils.dp2px( 0));
+                iv_bg1.setBorderWidth(CommonUtils.dp2px( 0));
+                iv_bg2.setBorderWidth(CommonUtils.dp2px( 0));
+                iv_bg3.setBorderWidth(CommonUtils.dp2px( 0));
+                iv_bg4.setBorderWidth(CommonUtils.dp2px( 2));
                 break;
         }
     }
 
     //设置字体
     public void setBookBg(int type) {
+        config.setDayOrNight(false);
         config.setBookBg(type);
         if (mSettingListener != null) {
             mSettingListener.changeBookBg(type);
@@ -277,7 +278,7 @@ public class SettingDialog extends Dialog {
     }
 
 
-    @OnClick({R2.id.tv_dark, R2.id.tv_bright, R2.id.tv_xitong, R2.id.tv_subtract, R2.id.tv_add, R2.id.tv_size_default, R2.id.tv_qihei, R2.id.tv_fzxinghei, R2.id.tv_fzkatong,R2.id.tv_bysong,
+    @OnClick({R2.id.tv_dark, R2.id.tv_bright, R2.id.tv_xitong, R2.id.tv_subtract, R2.id.tv_add, R2.id.tv_size_default, R2.id.tv_qihei, R2.id.tv_fzxinghei, R2.id.tv_fzkatong, R2.id.tv_bysong,
             R2.id.tv_default, R2.id.iv_bg_default, R2.id.iv_bg_1, R2.id.iv_bg_2, R2.id.iv_bg_3, R2.id.iv_bg_4})
     public void onClick(View view) {
         int i = view.getId();

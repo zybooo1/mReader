@@ -6,52 +6,75 @@
     android:layout_height="match_parent">
 
     <!--Content-->
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.CoordinatorLayout
+
+        <com.hjq.bar.TitleBar
+            android:id="@+id/titleBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="?attr/actionBarSize"
+            app:leftIcon="@drawable/svg_logo"
+            app:title="@string/mreader_app_name" />
 
-            <android.support.design.widget.AppBarLayout
-                android:id="@+id/appbar"
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/smartRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/titleBar"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:srlEnableLoadMore="false">
+
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary">
+                android:layout_height="match_parent">
 
-                <com.hjq.bar.TitleBar
-                    android:id="@+id/titleBar"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_books"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:layout_scrollFlags="scroll|enterAlways"
-                    app:leftIcon="@drawable/svg_logo"
-                    app:title="@string/mreader_app_name" />
-            </android.support.design.widget.AppBarLayout>
+                    android:layout_height="wrap_content" />
 
-            <com.scwang.smartrefresh.layout.SmartRefreshLayout
-                android:id="@+id/smartRefresh"
+            </FrameLayout>
+
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+        <ImageView
+            android:id="@+id/img_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/img_first"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/book_item_bg">
+
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:srlEnableLoadMore="false">
+                android:layout_margin="5dp"
+                android:background="@color/book_item_fill" />
+            <TextView
+                android:id="@+id/book_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="40dp"
+                android:ellipsize="end"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="4dp"
+                android:maxLines="3"
+                android:textColor="@color/gray60"/>
+        </RelativeLayout>
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rv_books"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </FrameLayout>
-
-            </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-
-        </android.support.design.widget.CoordinatorLayout>
-    </FrameLayout>
+    </RelativeLayout>
 
     <!--Drawer-->
-   <include layout="@layout/layout_main_drawer"/>
+    <include layout="@layout/layout_main_drawer" />
 </android.support.v4.widget.DrawerLayout>

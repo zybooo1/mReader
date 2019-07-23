@@ -6,24 +6,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.SQLException;
-import android.graphics.Point;
 import android.graphics.Typeface;
-import android.os.Build;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.AppBarLayout;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Display;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -35,15 +31,30 @@ import com.baidu.tts.client.SpeechError;
 import com.baidu.tts.client.SpeechSynthesizer;
 import com.baidu.tts.client.SpeechSynthesizerListener;
 import com.baidu.tts.client.TtsMode;
-import com.zyb.base.base.activity.BaseActivity;
+import com.gyf.barlibrary.ImmersionBar;
+import com.xw.repo.VectorCompatTextView;
 import com.zyb.base.base.activity.MyActivity;
-import com.zyb.reader.db.BookList;
-import com.zyb.reader.db.BookMarks;
+import com.zyb.base.base.fragment.BaseFragmentStateAdapter;
+import com.zyb.base.event.BaseEvent;
+import com.zyb.base.event.EventConstants;
+import com.zyb.base.utils.LogUtil;
+import com.zyb.base.utils.QMUIViewHelper;
+import com.zyb.base.widget.RoundButton;
+import com.zyb.common.db.DBFactory;
+import com.zyb.common.db.bean.Book;
+import com.zyb.common.db.bean.BookMarks;
+import com.zyb.common.db.bean.BookMarksDao;
 import com.zyb.reader.dialog.PageModeDialog;
 import com.zyb.reader.dialog.SettingDialog;
+import com.zyb.reader.fragment.BookMarkFragment;
+import com.zyb.reader.fragment.CatalogFragment;
 import com.zyb.reader.util.BrightnessUtil;
+import com.zyb.reader.util.FileUtils;
 import com.zyb.reader.util.PageFactory;
 import com.zyb.reader.view.PageWidget;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -59,66 +70,50 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.zyb.reader.AppContext.ENGLISH_SPEECH_FEMALE_MODEL_NAME;
-import static com.zyb.reader.AppContext.ENGLISH_SPEECH_MALE_MODEL_NAME;
-import static com.zyb.reader.AppContext.ENGLISH_TEXT_MODEL_NAME;
-import static com.zyb.reader.AppContext.SAMPLE_DIR_NAME;
-import static com.zyb.reader.AppContext.SPEECH_FEMALE_MODEL_NAME;
-import static com.zyb.reader.AppContext.SPEECH_MALE_MODEL_NAME;
-import static com.zyb.reader.AppContext.TEXT_MODEL_NAME;
 
 /**
- * Created by Administrator on 2016/7/15 0015.
+ * 阅读界面
  */
 public class ReadActivity extends MyActivity implements SpeechSynthesizerListener {
+    private static final int ANIM_HIDE_DURATION = 200;
+    private static final int ANIM_SHOW_DURATION = 400;
+
     private static final String TAG = "ReadActivity";
     public final static String EXTRA_BOOK = "bookList";
     private final static int MESSAGE_CHANGEPROGRESS = 1;
 
     @BindView(R2.id.bookpage)
     PageWidget bookpage;
-    //    @BindView(R2.id.btn_return)
-//    ImageButton btn_return;
-//    @BindView(R2.id.ll_top)
-//    LinearLayout ll_top;
-    @BindView(R2.id.tv_progress)
-    TextView tv_progress;
-    @BindView(R2.id.rl_progress)
-    RelativeLayout rl_progress;
+    @BindView(R2.id.rl_top_root)
+    RelativeLayout rlTopRoot;
+    @BindView(R2.id.rl_top_bar)
+    RelativeLayout rlTopBar;
+    @BindView(R2.id.tvTitle)
+    TextView tvTitle;
+    @BindView(R2.id.viewProgressPercent)
+    RoundButton viewProgressPercent;
     @BindView(R2.id.tv_pre)
     TextView tv_pre;
     @BindView(R2.id.sb_progress)
     SeekBar sb_progress;
     @BindView(R2.id.tv_next)
     TextView tv_next;
-    @BindView(R2.id.tv_directory)
-    TextView tv_directory;
     @BindView(R2.id.tv_dayornight)
-    TextView tv_dayornight;
-    @BindView(R2.id.tv_pagemode)
-    TextView tv_pagemode;
-    @BindView(R2.id.tv_setting)
-    TextView tv_setting;
+    VectorCompatTextView tv_dayornight;
     @BindView(R2.id.bookpop_bottom)
     LinearLayout bookpop_bottom;
     @BindView(R2.id.rl_bottom)
-    RelativeLayout rl_bottom;
+    ConstraintLayout rl_bottom;
     @BindView(R2.id.tv_stop_read)
     TextView tv_stop_read;
     @BindView(R2.id.rl_read_bottom)
     RelativeLayout rl_read_bottom;
-    @BindView(R2.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R2.id.appbar)
-    AppBarLayout appbar;
 
     private Config config;
     private WindowManager.LayoutParams lp;
-    private BookList bookList;
+    private Book book;
     private PageFactory pageFactory;
-    private int screenWidth, screenHeight;
     // popwindow是否显示
-    private Boolean isShow = false;
     private SettingDialog mSettingDialog;
     private PageModeDialog mPageModeDialog;
     private Boolean mDayOrNight;
@@ -131,11 +126,11 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
-                Log.e(TAG, Intent.ACTION_BATTERY_CHANGED);
+                LogUtil.e(TAG, Intent.ACTION_BATTERY_CHANGED);
                 int level = intent.getIntExtra("level", 0);
                 pageFactory.updateBattery(level);
             } else if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
-                Log.e(TAG, Intent.ACTION_TIME_TICK);
+                LogUtil.e(TAG, Intent.ACTION_TIME_TICK);
                 pageFactory.updateTime();
             }
         }
@@ -147,10 +142,19 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
     }
 
     @Override
-    protected int getTitleBarId() {
-        return 0;
+    protected boolean isRegisterEventBus() {
+        return true;
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventReceived(BaseEvent<Object> event) {
+        if (event == null) return;
+        switch (event.getCode()) {
+            case EventConstants.EVENT_CLOSE_READ_DRAWER:
+                drawerLayout.closeDrawer(Gravity.START);
+                break;
+        }
+    }
 
     /**
      * 将sample工程需要的资源文件拷贝到SD卡中使用（授权文件为临时授权文件，请注册正式授权）
@@ -195,23 +199,19 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
             }
         }
     }
+
     private String mSampleDirPath;
+
     private void initialEnv() {
         if (mSampleDirPath == null) {
             String sdcardPath = Environment.getExternalStorageDirectory().toString();
-            mSampleDirPath = sdcardPath + "/" + SAMPLE_DIR_NAME;
+            mSampleDirPath = sdcardPath + "/" + FileUtils.SAMPLE_DIR_NAME;
         }
         makeDir(mSampleDirPath);
-        copyFromAssetsToSdcard(false, SPEECH_FEMALE_MODEL_NAME, mSampleDirPath + "/" + SPEECH_FEMALE_MODEL_NAME);
-        copyFromAssetsToSdcard(false, SPEECH_MALE_MODEL_NAME, mSampleDirPath + "/" + SPEECH_MALE_MODEL_NAME);
-        copyFromAssetsToSdcard(false, TEXT_MODEL_NAME, mSampleDirPath + "/" + TEXT_MODEL_NAME);
+        copyFromAssetsToSdcard(false,  FileUtils.SPEECH_FEMALE_MODEL_NAME, mSampleDirPath + "/" +  FileUtils.SPEECH_FEMALE_MODEL_NAME);
+        copyFromAssetsToSdcard(false,  FileUtils.SPEECH_MALE_MODEL_NAME, mSampleDirPath + "/" +  FileUtils.SPEECH_MALE_MODEL_NAME);
+        copyFromAssetsToSdcard(false,  FileUtils.TEXT_MODEL_NAME, mSampleDirPath + "/" +  FileUtils.TEXT_MODEL_NAME);
 //        copyFromAssetsToSdcard(false, LICENSE_FILE_NAME, mSampleDirPath + "/" + LICENSE_FILE_NAME);
-        copyFromAssetsToSdcard(false, "english/" + ENGLISH_SPEECH_FEMALE_MODEL_NAME, mSampleDirPath + "/"
-                + ENGLISH_SPEECH_FEMALE_MODEL_NAME);
-        copyFromAssetsToSdcard(false, "english/" + ENGLISH_SPEECH_MALE_MODEL_NAME, mSampleDirPath + "/"
-                + ENGLISH_SPEECH_MALE_MODEL_NAME);
-        copyFromAssetsToSdcard(false, "english/" + ENGLISH_TEXT_MODEL_NAME, mSampleDirPath + "/"
-                + ENGLISH_TEXT_MODEL_NAME);
     }
 
     private void makeDir(String dirPath) {
@@ -220,29 +220,21 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
             file.mkdirs();
         }
     }
-    public String getTTPath(){
+
+    public String getTTPath() {
         return mSampleDirPath;
     }
+
     @Override
     protected void initView() {
+        ImmersionBar.setTitleBarMarginTop(this, rlTopBar);
+        //禁止手势滑动
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
         Config.createConfig(this);
         PageFactory.createPageFactory(this);
 
         initialEnv();
-
-        if (Build.VERSION.SDK_INT >= 14 && Build.VERSION.SDK_INT < 19) {
-            bookpage.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
-
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.mipmap.return_button);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         config = Config.getInstance();
         pageFactory = PageFactory.getInstance();
@@ -254,54 +246,57 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
 
         mSettingDialog = new SettingDialog(this);
         mPageModeDialog = new PageModeDialog(this);
-        //获取屏幕宽高
-        WindowManager manage = getWindowManager();
-        Display display = manage.getDefaultDisplay();
-        Point displaysize = new Point();
-        display.getSize(displaysize);
-        screenWidth = displaysize.x;
-        screenHeight = displaysize.y;
         //保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        //隐藏
-        hideSystemUI();
         //改变屏幕亮度
         if (!config.isSystemLight()) {
             BrightnessUtil.setBrightness(this, config.getLight());
         }
         //获取intent中的携带的信息
         Intent intent = getIntent();
-        bookList = (BookList) intent.getSerializableExtra(EXTRA_BOOK);
+        book = (Book) intent.getSerializableExtra(EXTRA_BOOK);
+
+        tvTitle.setText(book.getTitle());
 
         bookpage.setPageMode(config.getPageMode());
-        pageFactory.setPageWidget(bookpage);
+        bookpage.post(new Runnable() {
+            @Override
+            public void run() {
+                pageFactory.setPageWidget(bookpage);
 
-        try {
-            pageFactory.openBook(bookList);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "打开电子书失败", Toast.LENGTH_SHORT).show();
-        }
+                try {
+                    pageFactory.openBook(book);
+                    tabLayout.addTab(tabLayout.newTab().setText("目录"));
+                    tabLayout.addTab(tabLayout.newTab().setText("书签"));
+                    tabLayout.addOnTabSelectedListener(onTabSelectedListener);
+                    ArrayList<Fragment> fragments = new ArrayList<>();
+                    fragments.add(CatalogFragment.newInstance(pageFactory.getBookPath()));
+                    fragments.add(BookMarkFragment.newInstance(pageFactory.getBookPath()));
+                    adapter = new BaseFragmentStateAdapter(getSupportFragmentManager(), fragments);
+                    viewPager.setAdapter(adapter);
+                    viewPager.addOnPageChangeListener(onPageChangeListener);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(ReadActivity.this, "打开电子书失败", Toast.LENGTH_SHORT).show();
+                }
 
-        initDayOrNight();
-
-//        new Thread(){
-//            @Override
-//            public void run() {
-//                super.run();
-//                initialTts();
-//            }
-//        }.start();
-//        initialTts();
+                initDayOrNight();
+            }
+        });
 
         sb_progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             float pro;
 
-            // 触发操作，拖动
+            // 拖动
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 pro = (float) (progress / 10000.0);
-                showProgress(pro);
+                DecimalFormat decimalFormat = new DecimalFormat("00.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+                String p = decimalFormat.format(pro * 100.0);//format 返回的是字符串
+                viewProgressPercent.setText(String.format("%s%%", p));
+                if (rl_bottom.getVisibility() == View.VISIBLE && fromUser) {
+                    viewProgressPercent.setVisibility(View.VISIBLE);
+                }
             }
 
             // 表示进度条刚开始拖动，开始拖动时候触发的操作
@@ -314,6 +309,7 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 pageFactory.changeProgress(pro);
+                viewProgressPercent.setVisibility(View.GONE);
             }
         });
 
@@ -378,16 +374,12 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
         bookpage.setTouchListener(new PageWidget.TouchListener() {
             @Override
             public void center() {
-                if (isShow) {
-                    hideReadSetting();
-                } else {
-                    showReadSetting();
-                }
+                toggleMenu();
             }
 
             @Override
             public Boolean prePage() {
-                if (isShow || isSpeaking) {
+                if (getMenuIsShowing() || isSpeaking) {
                     return false;
                 }
 
@@ -401,8 +393,8 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
 
             @Override
             public Boolean nextPage() {
-                Log.e("setTouchListener", "nextPage");
-                if (isShow || isSpeaking) {
+                LogUtil.e("setTouchListener", "nextPage");
+                if (getMenuIsShowing() || isSpeaking) {
                     return false;
                 }
 
@@ -418,6 +410,15 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
                 pageFactory.cancelPage();
             }
         });
+
+    }
+
+    private void hideSystemUI() {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
+    }
+
+    private void showSystemUI() {
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //显示状态栏
 
     }
 
@@ -443,7 +444,7 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
     @Override
     protected void onResume() {
         super.onResume();
-        if (!isShow) {
+        if (!getMenuIsShowing()) {
             hideSystemUI();
         }
         if (mSpeechSynthesizer != null) {
@@ -471,159 +472,96 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // TODO Auto-generated method stub
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (isShow) {
-                hideReadSetting();
-                return true;
-            }
-            if (mSettingDialog.isShowing()) {
-                mSettingDialog.hide();
-                return true;
-            }
-            if (mPageModeDialog.isShowing()) {
-                mPageModeDialog.hide();
-                return true;
-            }
-            finish();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+    @OnClick(R2.id.btnAddBookMark)
+    public void clickAddBookMark() {
+        if (pageFactory.getCurrentPage() != null) {
+            // TODO: 2019/7/13
+//List<BookMarks> bookMarksList = DataSupport.where("bookpath = ? and begin = ?", pageFactory.getBookPath(),pageFactory.getCurrentPage().getBegin() + "").find(BookMarks.class);
+            List<BookMarks> bookMarksList = DBFactory.getInstance().getBookMarksManage()
+                    .getQueryBuilder()
+                    .where(BookMarksDao.Properties.Bookpath.eq(pageFactory.getBookPath()), BookMarksDao.Properties.Begin.eq(pageFactory.getCurrentPage().getBegin()))
+                    .list();
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.read, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_add_bookmark) {
-            if (pageFactory.getCurrentPage() != null) {
-//                List<BookMarks> bookMarksList = DataSupport.where("bookpath = ? and begin = ?", pageFactory.getBookPath(),pageFactory.getCurrentPage().getBegin() + "").find(BookMarks.class);
-                List<BookMarks> bookMarksList = new ArrayList<>();
-
-                if (!bookMarksList.isEmpty()) {
-                    Toast.makeText(ReadActivity.this, "该书签已存在", Toast.LENGTH_SHORT).show();
-                } else {
-                    BookMarks bookMarks = new BookMarks();
-                    String word = "";
-                    for (String line : pageFactory.getCurrentPage().getLines()) {
-                        word += line;
-                    }
-                    try {
-                        SimpleDateFormat sf = new SimpleDateFormat(
-                                "yyyy-MM-dd HH:mm ss");
-                        String time = sf.format(new Date());
-                        bookMarks.setTime(time);
-                        bookMarks.setBegin(pageFactory.getCurrentPage().getBegin());
-                        bookMarks.setText(word);
-                        bookMarks.setBookpath(pageFactory.getBookPath());
-//                        bookMarks.save();
-
-                        Toast.makeText(ReadActivity.this, "书签添加成功", Toast.LENGTH_SHORT).show();
-                    } catch (SQLException e) {
-                        Toast.makeText(ReadActivity.this, "该书签已存在", Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        Toast.makeText(ReadActivity.this, "添加书签失败", Toast.LENGTH_SHORT).show();
-                    }
+            if (!bookMarksList.isEmpty()) {
+                Toast.makeText(ReadActivity.this, "该书签已存在", Toast.LENGTH_SHORT).show();
+            } else {
+                BookMarks bookMarks = new BookMarks();
+                String word = "";
+                for (String line : pageFactory.getCurrentPage().getLines()) {
+                    word += line;
                 }
-            }
-        } else if (id == R.id.action_read_book) {
-            initialTts();
-            if (mSpeechSynthesizer != null) {
-                mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_VOLUME, "5");
-                mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_SPEED, "5");
-                mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_PITCH, "5");
-                mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_SPEAKER, "0");
-//                mSpeechSynthesizer.setParam(SpeechSynthesizer. MIX_MODE_DEFAULT);
-//                mSpeechSynthesizer.setParam(SpeechSynthesizer. AUDIO_ENCODE_AMR);
-//                mSpeechSynthesizer.setParam(SpeechSynthesizer. AUDIO_BITRA TE_AMR_15K85);
-                mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_VOCODER_OPTIM_LEVEL, "0");
-                int result = mSpeechSynthesizer.speak(pageFactory.getCurrentPage().getLineToString());
-                if (result < 0) {
-                    Log.e(TAG, "error,please look up error code in doc or URL:http://yuyin.baidu.com/docs/tts/122 ");
-                } else {
-                    hideReadSetting();
-                    isSpeaking = true;
+                try {
+                    SimpleDateFormat sf = new SimpleDateFormat(
+                            "yyyy-MM-dd HH:mm ss");
+                    String time = sf.format(new Date());
+                    bookMarks.setId(pageFactory.getBookPath() + pageFactory.getCurrentPage().getBegin());
+                    bookMarks.setTime(time);
+                    bookMarks.setBegin(pageFactory.getCurrentPage().getBegin());
+                    bookMarks.setText(word);
+                    bookMarks.setBookpath(pageFactory.getBookPath());
+                    DBFactory.getInstance().getBookMarksManage().insertOrUpdate(bookMarks);
+
+                    Toast.makeText(ReadActivity.this, "书签添加成功", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(ReadActivity.this, "添加书签失败", Toast.LENGTH_SHORT).show();
                 }
             }
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
+    @OnClick(R2.id.btnStartSpeech)
+    public void clickStartSpeech() {
+        initialTts();
+        if (mSpeechSynthesizer != null) {
+            mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_VOLUME, "5");
+            mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_SPEED, "5");
+            mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_PITCH, "5");
+            mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_SPEAKER, "0");
+            //                mSpeechSynthesizer.setParam(SpeechSynthesizer. MIX_MODE_DEFAULT);
+            //                mSpeechSynthesizer.setParam(SpeechSynthesizer. AUDIO_ENCODE_AMR);
+            //                mSpeechSynthesizer.setParam(SpeechSynthesizer. AUDIO_BITRA TE_AMR_15K85);
+            mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_VOCODER_OPTIM_LEVEL, "0");
+            int result = mSpeechSynthesizer.speak(pageFactory.getCurrentPage().getLineToString());
+            if (result < 0) {
+                LogUtil.e(TAG, "error,please look up error code in doc or URL:http://yuyin.baidu.com/docs/tts/122 ");
+            } else {
+                toggleMenu();
+                isSpeaking = true;
+            }
+        }
+    }
 
-    public static boolean openBook(final BookList bookList, Activity context) {
-        if (bookList == null) {
+    @OnClick(R2.id.ivBack)
+    public void clickBack() {
+        finish();
+    }
+
+    public static boolean openBook(final Book book, Activity context) {
+        if (book == null) {
             throw new NullPointerException("BookList can not be null");
         }
 
         Intent intent = new Intent(context, ReadActivity.class);
-        intent.putExtra(EXTRA_BOOK, bookList);
+        intent.putExtra(EXTRA_BOOK, book);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.overridePendingTransition(R.anim.in_from_right, R.anim.out_to_left);
         context.startActivity(intent);
         return true;
     }
 
-//    public BookPageWidget getPageWidget() {
-//        return bookpage;
-//    }
-
-    /**
-     * 隐藏菜单。沉浸式阅读
-     */
-    private void hideSystemUI() {
-        // Set the IMMERSIVE flag.
-        // Set the content to appear under the system bars so that the content
-        // doesn't resize when the system bars hide and show.
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        //  | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        );
-    }
-
-    private void showSystemUI() {
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        );
-    }
-
-    //显示书本进度
-    public void showProgress(float progress) {
-        if (rl_progress.getVisibility() != View.VISIBLE) {
-            rl_progress.setVisibility(View.VISIBLE);
-        }
-        setProgress(progress);
-    }
-
-    //隐藏书本进度
-    public void hideProgress() {
-        rl_progress.setVisibility(View.GONE);
-    }
 
     public void initDayOrNight() {
         mDayOrNight = config.getDayOrNight();
         if (mDayOrNight) {
             tv_dayornight.setText(getResources().getString(R.string.read_setting_day));
+            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.svg_brightness_up);
+            tv_dayornight.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
+
         } else {
             tv_dayornight.setText(getResources().getString(R.string.read_setting_night));
+            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.svg_night);
+            tv_dayornight.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
         }
     }
 
@@ -640,57 +578,54 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
         pageFactory.setDayOrNight(mDayOrNight);
     }
 
-    private void setProgress(float progress) {
-        DecimalFormat decimalFormat = new DecimalFormat("00.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
-        String p = decimalFormat.format(progress * 100.0);//format 返回的是字符串
-        tv_progress.setText(p + "%");
-    }
-
     public void setSeekBarProgress(float progress) {
         sb_progress.setProgress((int) (progress * 10000));
     }
 
-    private void showReadSetting() {
-        isShow = true;
-        rl_progress.setVisibility(View.GONE);
-
+    /**
+     * 切换菜单栏的可视状态
+     * 默认是隐藏的
+     */
+    private void toggleMenu() {
         if (isSpeaking) {
-            Animation topAnim = AnimationUtils.loadAnimation(this, R.anim.dialog_top_enter);
-            rl_read_bottom.startAnimation(topAnim);
-            rl_read_bottom.setVisibility(View.VISIBLE);
-        } else {
-            showSystemUI();
+            if (rl_read_bottom.getVisibility() == View.VISIBLE) {
+                QMUIViewHelper.slideOut(rl_read_bottom, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
+            } else {
+                QMUIViewHelper.slideIn(rl_read_bottom, ANIM_SHOW_DURATION, QMUIViewHelper.QMUIDirection.BOTTOM_TO_TOP);
+            }
+            return;
+        }
 
-            Animation bottomAnim = AnimationUtils.loadAnimation(this, R.anim.dialog_enter);
-            Animation topAnim = AnimationUtils.loadAnimation(this, R.anim.dialog_top_enter);
-            rl_bottom.startAnimation(topAnim);
-            appbar.startAnimation(topAnim);
-//        ll_top.startAnimation(topAnim);
-            rl_bottom.setVisibility(View.VISIBLE);
-//        ll_top.setVisibility(View.VISIBLE);
-            appbar.setVisibility(View.VISIBLE);
+        if (getMenuIsShowing()) {
+            QMUIViewHelper.slideOut(rlTopRoot, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.BOTTOM_TO_TOP);
+            QMUIViewHelper.slideOut(rl_bottom, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
+            hideSystemUI();
+        } else {
+            QMUIViewHelper.slideIn(rlTopRoot, ANIM_SHOW_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
+            QMUIViewHelper.slideIn(rl_bottom, ANIM_SHOW_DURATION, QMUIViewHelper.QMUIDirection.BOTTOM_TO_TOP);
+            showSystemUI();
         }
     }
 
-    private void hideReadSetting() {
-        isShow = false;
-        Animation bottomAnim = AnimationUtils.loadAnimation(this, R.anim.dialog_exit);
-        Animation topAnim = AnimationUtils.loadAnimation(this, R.anim.dialog_top_exit);
-        if (rl_bottom.getVisibility() == View.VISIBLE) {
-            rl_bottom.startAnimation(topAnim);
+    private boolean getMenuIsShowing() {
+        return rlTopRoot.getVisibility() == View.VISIBLE;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getMenuIsShowing()) {
+            toggleMenu();
+            return;
         }
-        if (appbar.getVisibility() == View.VISIBLE) {
-            appbar.startAnimation(topAnim);
+        if (mSettingDialog.isShowing()) {
+            mSettingDialog.hide();
+            return;
         }
-        if (rl_read_bottom.getVisibility() == View.VISIBLE) {
-            rl_read_bottom.startAnimation(topAnim);
+        if (mPageModeDialog.isShowing()) {
+            mPageModeDialog.hide();
+            return;
         }
-//        ll_top.startAnimation(topAnim);
-        rl_bottom.setVisibility(View.GONE);
-        rl_read_bottom.setVisibility(View.GONE);
-//        ll_top.setVisibility(View.GONE);
-        appbar.setVisibility(View.GONE);
-        hideSystemUI();
+        super.onBackPressed();
     }
 
     private void initialTts() {
@@ -699,71 +634,58 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
         this.mSpeechSynthesizer.setSpeechSynthesizerListener(this);
         // 文本模型文件路径 (离线引擎使用)
         this.mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_TTS_TEXT_MODEL_FILE, getTTPath() + "/"
-                + TEXT_MODEL_NAME);
+                +  FileUtils.TEXT_MODEL_NAME);
         // 声学模型文件路径 (离线引擎使用)
         this.mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_TTS_SPEECH_MODEL_FILE, getTTPath() + "/"
-                + SPEECH_FEMALE_MODEL_NAME);
+                +  FileUtils.SPEECH_FEMALE_MODEL_NAME);
         // 本地授权文件路径,如未设置将使用默认路径.设置临时授权文件路径，LICENCE_FILE_NAME请替换成临时授权文件的实际路径，仅在使用临时license文件时需要进行设置，如果在[应用管理]中开通了正式离线授权，不需要设置该参数，建议将该行代码删除（离线引擎）
         // 如果合成结果出现临时授权文件将要到期的提示，说明使用了临时授权文件，请删除临时授权即可。
-//        this.mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_TTS_LICENCE_FILE, ((AppContext)getApplication()).getTTPath() + "/"
-//                + AppContext.LICENSE_FILE_NAME);
+        //        this.mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_TTS_LICENCE_FILE, ((AppContext)getApplication()).getTTPath() + "/"
+        //                + AppContext.LICENSE_FILE_NAME);
         // 请替换为语音开发者平台上注册应用得到的App ID (离线授权)
-        this.mSpeechSynthesizer.setAppId("8921835"/*这里只是为了让Demo运行使用的APPID,请替换成自己的id。*/);
+        this.mSpeechSynthesizer.setAppId("16840271"/*这里只是为了让Demo运行使用的APPID,请替换成自己的id。*/);
         // 请替换为语音开发者平台注册应用得到的apikey和secretkey (在线授权)
-        this.mSpeechSynthesizer.setApiKey("sjEFlROl4j090FtDTHlEpvFB",
-                "a2d95dc24960e03ef2d41a5fb1a2c025"/*这里只是为了让Demo正常运行使用APIKey,请替换成自己的APIKey*/);
+        this.mSpeechSynthesizer.setApiKey("jpG13VVTMaWnjZ1C2n1KjsRG",
+                "eqR2dWhQZsfiCf2ZPZj39OgkDC3isE3W"/*这里只是为了让Demo正常运行使用APIKey,请替换成自己的APIKey*/);
         // 发音人（在线引擎），可用参数为0,1,2,3。。。（服务器端会动态增加，各值含义参考文档，以文档说明为准。0--普通女声，1--普通男声，2--特别男声，3--情感男声。。。）
         this.mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_SPEAKER, "0");
         // 设置Mix模式的合成策略
-        this.mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_MIX_MODE, SpeechSynthesizer.MIX_MODE_DEFAULT);
+        this.mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_MIX_MODE, SpeechSynthesizer.MIX_MODE_HIGH_SPEED_SYNTHESIZE_WIFI);
         // 授权检测接口(只是通过AuthInfo进行检验授权是否成功。)
         // AuthInfo接口用于测试开发者是否成功申请了在线或者离线授权，如果测试授权成功了，可以删除AuthInfo部分的代码（该接口首次验证时比较耗时），不会影响正常使用（合成使用时SDK内部会自动验证授权）
         AuthInfo authInfo = this.mSpeechSynthesizer.auth(TtsMode.MIX);
 
         if (authInfo.isSuccess()) {
-            Log.e(TAG, "auth success");
+            LogUtil.e(TAG, "auth success");
         } else {
             String errorMsg = authInfo.getTtsError().getDetailMessage();
-            Log.e(TAG, "auth failed errorMsg=" + errorMsg);
+            LogUtil.e(TAG, "auth failed errorMsg=" + errorMsg);
         }
 
         // 初始化tts
         mSpeechSynthesizer.initTts(TtsMode.MIX);
-        // 加载离线英文资源（提供离线英文合成功能）
-        int result = mSpeechSynthesizer.loadEnglishModel(getTTPath() + "/" + ENGLISH_TEXT_MODEL_NAME, getTTPath()
-                + "/" + ENGLISH_SPEECH_FEMALE_MODEL_NAME);
-//        toPrint("loadEnglishModel result=" + result);
-//
-//        //打印引擎信息和model基本信息
-//        printEngineInfo();
     }
 
-    @OnClick({R2.id.tv_progress, R2.id.rl_progress, R2.id.tv_pre, R2.id.sb_progress,
-            R2.id.tv_next, R2.id.tv_directory, R2.id.tv_dayornight, R2.id.tv_pagemode,
-            R2.id.tv_setting, R2.id.bookpop_bottom, R2.id.rl_bottom, R2.id.tv_stop_read})
+    @OnClick({R2.id.tv_pre, R2.id.sb_progress, R2.id.tv_next, R2.id.tv_directory,
+            R2.id.tv_dayornight, R2.id.tv_pagemode, R2.id.tv_setting, R2.id.bookpop_bottom,
+            R2.id.rl_bottom, R2.id.tv_stop_read})
     public void onClick(View view) {
         int i = view.getId();//            case R.id.btn_return:
-//                finish();
-//                break;
-//            case R.id.ll_top:
-//                break;
-        if (i == R.id.tv_progress) {
-        } else if (i == R.id.rl_progress) {
-        } else if (i == R.id.tv_pre) {
+        if (i == R.id.tv_pre) {
             pageFactory.preChapter();
         } else if (i == R.id.sb_progress) {
         } else if (i == R.id.tv_next) {
             pageFactory.nextChapter();
         } else if (i == R.id.tv_directory) {
-            Intent intent = new Intent(ReadActivity.this, MarkActivity.class);
-            startActivity(intent);
+            drawerLayout.openDrawer(Gravity.START);
+            toggleMenu();
         } else if (i == R.id.tv_dayornight) {
             changeDayOrNight();
         } else if (i == R.id.tv_pagemode) {
-            hideReadSetting();
+            toggleMenu();
             mPageModeDialog.show();
         } else if (i == R.id.tv_setting) {
-            hideReadSetting();
+            toggleMenu();
             mSettingDialog.show();
         } else if (i == R.id.bookpop_bottom) {
         } else if (i == R.id.rl_bottom) {
@@ -771,7 +693,7 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
             if (mSpeechSynthesizer != null) {
                 mSpeechSynthesizer.stop();
                 isSpeaking = false;
-                hideReadSetting();
+                toggleMenu();
             }
         }
     }
@@ -854,7 +776,53 @@ public class ReadActivity extends MyActivity implements SpeechSynthesizerListene
     public void onError(String utteranceId, SpeechError error) {
         mSpeechSynthesizer.stop();
         isSpeaking = false;
-        Log.e(TAG, error.description);
+        LogUtil.e(TAG, error.description);
     }
 
+
+    /**
+     * 侧滑
+     */
+    @BindView(R2.id.drawerLayout)
+    DrawerLayout drawerLayout;
+    @BindView(R2.id.tabLayout)
+    TabLayout tabLayout;
+    @BindView(R2.id.viewPager)
+    ViewPager viewPager;
+    private BaseFragmentStateAdapter adapter;
+    private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            tabLayout.getTabAt(position).select();
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+        }
+    };
+    TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
+        @Override
+        public void onTabSelected(TabLayout.Tab tab) {
+            int position = tab.getPosition();
+            viewPager.setCurrentItem(position);
+        }
+
+        @Override
+        public void onTabUnselected(TabLayout.Tab tab) {
+        }
+
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
+        }
+    };
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
 }

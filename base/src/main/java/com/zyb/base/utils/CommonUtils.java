@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -25,6 +26,7 @@ import com.zyb.base.base.app.BaseApplication;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
@@ -246,7 +248,30 @@ public class CommonUtils {
         }
     }
 
-
+    /**
+     * 获取屏幕原始尺寸高度，包括虚拟功能键高度
+     *
+     * @param context
+     * @return
+     */
+    public static int getOriginScreenHight() {
+        int dpi = getScreenHeight();
+        WindowManager windowManager = (WindowManager) BaseApplication.getInstance().getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        @SuppressWarnings("rawtypes")
+        Class c;
+        try {
+            c = Class.forName("android.view.Display");
+            @SuppressWarnings("unchecked")
+            Method method = c.getMethod("getRealMetrics", DisplayMetrics.class);
+            method.invoke(display, displayMetrics);
+            dpi = displayMetrics.heightPixels;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dpi;
+    }
     /**
      * 获得屏幕高度,单位是px
      *
@@ -263,7 +288,6 @@ public class CommonUtils {
     /**
      * 获得屏幕宽度，单位是px
      *
-     * @param context
      * @return
      */
     public static int getScreenHeight() {
@@ -273,7 +297,16 @@ public class CommonUtils {
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.heightPixels;
     }
+    public static String subString(String text, int num) {
+        String content = "";
+        if (text.length() > num) {
+            content = text.substring(0, num - 1) + "...";
+        } else {
+            content = text;
+        }
 
+        return content;
+    }
     /**
      * 隐藏软键盘(只适用于Activity，不适用于Fragment)
      */

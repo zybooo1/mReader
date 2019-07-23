@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zyb.base.base.activity.BaseActivity;
+import com.zyb.base.utils.EventBusUtil;
 
 import java.lang.reflect.Field;
 import java.util.Random;
@@ -67,7 +68,19 @@ public abstract class BaseLazyFragment extends Fragment {
             parent.removeView(mRootView);
         }
 
+        if (isRegisterEventBus()) {
+            EventBusUtil.register(this);
+        }
         return mRootView;
+    }
+
+    /**
+     * 是否注册事件分发
+     *
+     * @return true绑定EventBus事件分发，默认不绑定，子类需要绑定的话复写此方法返回true.
+     */
+    protected boolean isRegisterEventBus() {
+        return false;
     }
 
     @Override
@@ -92,6 +105,7 @@ public abstract class BaseLazyFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initNormal();
         if (isReplaceFragment) {
             if (isFragmentVisible) {
                 initLazyLoad();
@@ -114,8 +128,8 @@ public abstract class BaseLazyFragment extends Fragment {
                 // 从不可见到可见
                 onRestart();
             }
-        } else {
-            if (isLazyLoad) onFragmentPause();
+        }else {
+            if(isLazyLoad) onFragmentPause();
         }
     }
 
@@ -127,6 +141,12 @@ public abstract class BaseLazyFragment extends Fragment {
             isLazyLoad = true;
             initFragment();
         }
+    }
+
+    /**
+     * 普通初始化
+     */
+    protected void initNormal() {
     }
 
     /**
@@ -245,6 +265,14 @@ public abstract class BaseLazyFragment extends Fragment {
      */
     public void finish() {
         mActivity.finish();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (isRegisterEventBus()) {
+            EventBusUtil.unregister(this);
+        }
     }
 
     /**

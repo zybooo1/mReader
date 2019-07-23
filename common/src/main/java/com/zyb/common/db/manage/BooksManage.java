@@ -9,7 +9,6 @@ import org.greenrobot.greendao.AbstractDao;
 /**
  * Describe：DB操作类
  */
-
 public class BooksManage extends BaseDBManager<Book, String> {
     public BooksManage(AbstractDao dao) {
         super(dao);

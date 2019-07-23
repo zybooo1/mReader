@@ -12,6 +12,8 @@ import android.graphics.Region;
 import android.graphics.drawable.GradientDrawable;
 import android.widget.Scroller;
 
+import com.zyb.base.utils.LogUtil;
+
 /**
  * Created by Administrator on 2016/8/26 0026.
  */
@@ -288,6 +290,7 @@ public class SimulationAnimation extends AnimationProvider {
             canvas.clipPath(mPath0);
             canvas.clipPath(mPath1, Region.Op.INTERSECT);
         } catch (Exception e) {
+            LogUtil.e(e.getMessage());
         }
 
 
@@ -356,7 +359,7 @@ public class SimulationAnimation extends AnimationProvider {
             canvas.clipPath(mPath0, Region.Op.XOR);
             canvas.clipPath(mPath1, Region.Op.INTERSECT);
         } catch (Exception e) {
-            // TODO: handle exception
+            LogUtil.e(e.getMessage());
         }
 
         int leftx;
@@ -392,6 +395,7 @@ public class SimulationAnimation extends AnimationProvider {
             canvas.clipPath(mPath0, Region.Op.XOR);
             canvas.clipPath(mPath1, Region.Op.INTERSECT);
         } catch (Exception e) {
+            LogUtil.e(e.getMessage());
         }
 
         if (mIsRTandLB) {
@@ -457,6 +461,7 @@ public class SimulationAnimation extends AnimationProvider {
             canvas.clipPath(mPath0);
             canvas.clipPath(mPath1, Region.Op.INTERSECT);
         } catch (Exception e) {
+            LogUtil.e(e.getMessage());
         }
 
 
@@ -481,7 +486,9 @@ public class SimulationAnimation extends AnimationProvider {
         mPath0.close();
 
         canvas.save();
+        // TODO: 2019/7/10 api 28 以上此方法报错
         canvas.clipPath(path, Region.Op.XOR);
+//        canvas.clipPath(path, Region.Op.DIFFERENCE);
         canvas.drawBitmap(bitmap, 0, 0, null);
         try {
             canvas.restore();

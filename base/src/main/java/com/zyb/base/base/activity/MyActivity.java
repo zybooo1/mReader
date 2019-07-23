@@ -61,6 +61,11 @@ public abstract class MyActivity extends UIActivity
         setTitle(getText(titleId));
     }
 
+    @Override
+    protected int getTitleBarId() {
+        return 0;
+    }
+
     /**
      * 设置标题栏的标题
      */

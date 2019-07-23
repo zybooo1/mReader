@@ -3,12 +3,13 @@ package com.zyb.common.db;
 
 import com.zyb.base.base.app.BaseApplication;
 import com.zyb.common.db.bean.DaoSession;
+import com.zyb.common.db.manage.BookCatalogueManage;
 import com.zyb.common.db.manage.BookFilesManage;
-import com.zyb.common.db.manage.BookRecordManage;
+import com.zyb.common.db.manage.BookMarksManage;
 import com.zyb.common.db.manage.BooksManage;
-import com.zyb.common.db.manage.CollBooksManage;
 
 /**
+ *
  */
 
 public class DBFactory {
@@ -16,8 +17,8 @@ public class DBFactory {
     private static DBFactory mInstance = null;
     private BooksManage booksManage;
     private BookFilesManage bookFilesManage;
-    private CollBooksManage collBooksManage;
-    private BookRecordManage bookRecordManage;
+    private BookMarksManage bookMarksManage;
+    private BookCatalogueManage bookCatalogueManage;
 
     public static DBFactory getInstance() {
         if (mInstance == null) {
@@ -32,7 +33,6 @@ public class DBFactory {
 
     /**
      * Mange
-     *
      */
     public BooksManage getBooksManage() {
         if (booksManage == null) {
@@ -40,9 +40,9 @@ public class DBFactory {
         }
         return booksManage;
     }
+
     /**
      * Mange
-     *
      */
     public BookFilesManage getBookFilesManage() {
         if (bookFilesManage == null) {
@@ -50,30 +50,29 @@ public class DBFactory {
         }
         return bookFilesManage;
     }
+
     /**
      * Mange
-     *
      */
-    public CollBooksManage getCollBooksManage() {
-        if (collBooksManage == null) {
-            collBooksManage = new CollBooksManage(getDaoSession().getCollBookBeanDao());
+    public BookMarksManage getBookMarksManage() {
+        if (bookMarksManage == null) {
+            bookMarksManage = new BookMarksManage(getDaoSession().getBookMarksDao());
         }
-        return collBooksManage;
-    }
-    /**
-     * Mange
-     *
-     */
-    public BookRecordManage getBookRecordManage() {
-        if (bookRecordManage == null) {
-            bookRecordManage = new BookRecordManage(getDaoSession().getBookRecordBeanDao());
-        }
-        return bookRecordManage;
+        return bookMarksManage;
     }
 
     /**
      * Mange
-     *
+     */
+    public BookCatalogueManage getBookCatalogueManage() {
+        if (bookCatalogueManage == null) {
+            bookCatalogueManage = new BookCatalogueManage(getDaoSession().getBookCatalogueDao());
+        }
+        return bookCatalogueManage;
+    }
+
+    /**
+     * Mange
      */
     public DaoSession getDaoSession() {
         return DBManage.getInstance(BaseApplication.getInstance()).getDaoSession();

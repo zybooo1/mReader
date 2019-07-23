@@ -7,6 +7,9 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
 
+/**
+ * 书文件
+ */
 @Entity
 public class BookFiles implements MultiItemEntity {
     static final long serialVersionUID = 42L;

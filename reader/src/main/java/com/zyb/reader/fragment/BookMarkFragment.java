@@ -1,21 +1,26 @@
 package com.zyb.reader.fragment;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.Dialog;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
-
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.zyb.base.base.fragment.MyLazyFragment;
+import com.zyb.base.event.BaseEvent;
+import com.zyb.base.event.EventConstants;
+import com.zyb.base.utils.EventBusUtil;
+import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
+import com.zyb.base.widget.dialog.MessageDialog;
+import com.zyb.common.db.DBFactory;
+import com.zyb.common.db.bean.BookMarks;
+import com.zyb.common.db.bean.BookMarksDao;
 import com.zyb.reader.R;
 import com.zyb.reader.R2;
 import com.zyb.reader.adapter.MarkAdapter;
-import com.zyb.reader.base.BaseFragment;
-import com.zyb.reader.db.BookMarks;
 import com.zyb.reader.util.PageFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -24,78 +29,89 @@ import butterknife.BindView;
 /**
  * Created by Administrator on 2016/8/31 0031.
  */
-public class BookMarkFragment extends BaseFragment {
+public class BookMarkFragment extends MyLazyFragment {
     public static final String ARGUMENT = "argument";
 
-    @BindView(R2.id.lv_bookmark)
-    ListView lv_bookmark;
+    @BindView(R2.id.rvBookmark)
+    RecyclerView rvBookmark;
 
     private String bookpath;
     private String mArgument;
     private List<BookMarks> bookMarksList;
     private MarkAdapter markAdapter;
     private PageFactory pageFactory;
+    private BaseQuickAdapter.OnItemClickListener onItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+            pageFactory.changeChapter(bookMarksList.get(position).getBegin());
+            EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_CLOSE_READ_DRAWER));
+        }
+    };
+    private BaseQuickAdapter.OnItemLongClickListener onItemLongClickListener = new BaseQuickAdapter.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
+            showDialog(true, "是否删除书签？", "删除", "取消",
+                    new MessageDialog.OnListener() {
+                        @Override
+                        public void onConfirm(Dialog dialog) {
+                            DBFactory.getInstance().getBookMarksManage().delete(bookMarksList.get(position));
+                            bookMarksList.clear();
+                            bookMarksList.addAll(queryAllMarks());
+                            markAdapter.notifyDataSetChanged();
+                        }
+                        @Override
+                        public void onCancel(Dialog dialog) { }
+                    });
+            return false;
+        }
+    };
+
 
     @Override
-    protected int getLayoutRes() {
+    protected int getLayoutId() {
         return R.layout.fragment_bookmark;
     }
 
     @Override
-    protected void initData(View view) {
+    protected void initView() {
+
+    }
+
+    @Override
+    protected void initData() {
         pageFactory = PageFactory.getInstance();
         Bundle bundle = getArguments();
         if (bundle != null) {
             bookpath = bundle.getString(ARGUMENT);
         }
-        bookMarksList = new ArrayList<>();
-//        bookMarksList = DataSupport.where("bookpath = ?", bookpath).find(BookMarks.class);
-        markAdapter = new MarkAdapter(getActivity(), bookMarksList);
-        lv_bookmark.setAdapter(markAdapter);
+        bookMarksList = queryAllMarks();
+
+        markAdapter = new MarkAdapter(bookMarksList);
+        rvBookmark.setAdapter(markAdapter);
+        rvBookmark.setLayoutManager(new LinearLayoutManager(mActivity));
+        VerticalItemLineDecoration decoration = new VerticalItemLineDecoration.Builder(mActivity)
+                .colorRes(R.color.list_item_divider)
+                .build();
+        rvBookmark.addItemDecoration(decoration);
+        markAdapter.setOnItemClickListener(onItemClickListener);
+        markAdapter.setOnItemLongClickListener(onItemLongClickListener);
+
     }
 
-    @Override
-    protected void initListener() {
-        lv_bookmark.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                pageFactory.changeChapter(bookMarksList.get(position).getBegin());
-                getActivity().finish();
-            }
-        });
-        lv_bookmark.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("提示")
-                        .setMessage("是否删除书签？")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setPositiveButton("删除", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-//                                DataSupport.delete(BookMarks.class,bookMarksList.get(position).getId());
-//                                bookMarksList.clear();
-//                                bookMarksList.addAll(DataSupport.where("bookpath = ?", bookpath).find(BookMarks.class));
-//                                markAdapter.notifyDataSetChanged();
-                            }
-                        }).setCancelable(true).show();
-                return false;
-            }
-        });
+    private List<BookMarks> queryAllMarks() {
+        return DBFactory.getInstance().getBookMarksManage()
+                .getQueryBuilder()
+                .where(BookMarksDao.Properties.Bookpath.eq(bookpath))
+                .list();
     }
 
     /**
      * 用于从Activity传递数据到Fragment
+     *
      * @param bookpath
      * @return
      */
-    public static BookMarkFragment newInstance(String bookpath)
-    {
+    public static BookMarkFragment newInstance(String bookpath) {
         Bundle bundle = new Bundle();
         bundle.putString(ARGUMENT, bookpath);
         BookMarkFragment bookMarkFragment = new BookMarkFragment();

@@ -15,9 +15,6 @@ import com.scwang.smartrefresh.layout.api.RefreshFooter;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
-import com.sinovoice.hcicloudsdk.api.HciCloudSys;
-import com.sinovoice.hcicloudsdk.common.HciErrorCode;
-import com.sinovoice.hcicloudsdk.common.InitParam;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zyb.base.BuildConfig;
 import com.zyb.base.R;
@@ -89,22 +86,8 @@ public class BaseApplication extends MultiDexApplication {
         //init utils
         Utils.init(sInstance);
         TitleBar.initStyle(new MyTitleBarStyle(this));
-        initHciCloud();
     }
 
-    private void initHciCloud() {
-        InitParam initparam = new InitParam();
-        initparam.addParam(InitParam.AuthParam.PARAM_KEY_AUTH_PATH, "/storage/emulated/0/myApp/auth");
-        initparam.addParam(InitParam.AuthParam.PARAM_KEY_CLOUD_URL, "/api.hcicloud.com:8888");
-
-        String strConfig = initparam.getStringConfig();
-        int errCode = HciCloudSys.hciInit(strConfig, this);
-        if (errCode != HciErrorCode.HCI_ERR_NONE && errCode != HciErrorCode.HCI_ERR_SYS_ALREADY_INIT) {
-            LogUtil.e("\nhciInit error: " + HciCloudSys.hciGetErrorInfo(errCode));
-        } else {
-            LogUtil.e("\nhciInit success");
-        }
-    }
 
     /**
      * 初始化Bugly错误日志上报

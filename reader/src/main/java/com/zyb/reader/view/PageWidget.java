@@ -13,6 +13,8 @@ import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
+import com.zyb.base.utils.CommonUtils;
+import com.zyb.base.utils.LogUtil;
 import com.zyb.reader.Config;
 import com.zyb.reader.util.PageFactory;
 import com.zyb.reader.view.animation.AnimationProvider;
@@ -66,19 +68,31 @@ public class PageWidget extends View {
     public PageWidget(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
+}
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+mScreenWidth=w;
+mScreenHeight=h;
         initPage();
-        mScroller = new Scroller(getContext(),new LinearInterpolator());
-        mAnimationProvider = new SimulationAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
     }
 
     private void initPage(){
-        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics metric = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(metric);
-        mScreenWidth = metric.widthPixels;
-        mScreenHeight = metric.heightPixels;
+//        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+//        DisplayMetrics metric = new DisplayMetrics();
+//        wm.getDefaultDisplay().getMetrics(metric);
+//        mScreenWidth = metric.widthPixels;
+//        mScreenHeight = metric.heightPixels;
+//        mScreenWidth= CommonUtils.getScreenWidth();
+//        mScreenHeight= CommonUtils.getScreenHeight();
+        LogUtil.e("initPage:mScreenWidth="+mScreenWidth+"mScreenHeight="+mScreenHeight);
         mCurPageBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);      //android:LargeHeap=true  use in  manifest application
         mNextPageBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);
+
+        mScroller = new Scroller(getContext(),new LinearInterpolator());
+        mAnimationProvider = new SimulationAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
+
     }
 
     public void setPageMode(int pageMode){

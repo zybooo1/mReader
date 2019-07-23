@@ -63,11 +63,11 @@ public class MyTitleBarStyle extends BaseTitleBarStyle {
 
     @Override
     public Drawable getLeftBackground() {
-        return getDrawable(R.drawable.bar_selector_selectable_black);
+        return getDrawable(R.drawable.titlebar_back_bg);
     }
 
     @Override
     public Drawable getRightBackground() {
-        return getDrawable(com.hjq.bar.R.drawable.bar_selector_selectable_black);
+        return getDrawable(R.drawable.titlebar_back_bg);
     }
 }
