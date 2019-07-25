@@ -4,8 +4,6 @@
     <color name="colorPrimaryDark">#0FB8CE</color>
     <color name="colorAccent">#FFEB3B</color>
     <color name="windowBackground">#F4F4F4</color>
-    <color name="colorReadMenu">#3c3f41</color>
-    <color name="colorReadMenuAlpha">#963C3F41</color>
     <!-- 分割线的颜色 -->
     <color name="colorLine">#ECECEC</color>
     <color name="touch_bg">#20000000</color>

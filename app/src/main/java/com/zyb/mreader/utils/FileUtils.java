@@ -3,6 +3,7 @@ package com.zyb.mreader.utils;
 import android.os.Environment;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ public class FileUtils {
     public static final String SUFFIX_TXT = ".txt";
     public static final String SUFFIX_EPUB = ".epub";
     public static final String SUFFIX_PDF = ".pdf";
+
+    public static final long MIN_TXT_FILE_SIZE = 10*1024;
 
 
     //文件名
@@ -57,14 +60,17 @@ public class FileUtils {
         File file = new File(filePath);
         //获取文件夹
         File[] dirs = file.listFiles(
-                pathname -> {
-                    if (pathname.isDirectory() && !pathname.getName().startsWith(".")) {
-                        return true;
-                    } else if (pathname.getName().endsWith(".txt")) { //获取txt文件
-                        txtFiles.add(pathname);
-                        return false;
-                    } else {
-                        return false;
+                new FileFilter() {
+                    @Override
+                    public boolean accept(File pathname) {
+                        if (pathname.isDirectory() && !pathname.getName().startsWith(".")) {
+                            return true;
+                        } else if (pathname.getName().endsWith(".txt")&&pathname.length()>MIN_TXT_FILE_SIZE) { //获取txt文件
+                            txtFiles.add(pathname);
+                            return false;
+                        } else {
+                            return false;
+                        }
                     }
                 }
         );

@@ -10,6 +10,7 @@
         <activity
             android:name=".ReadActivity"
             android:screenOrientation="portrait" />
+        <service android:name=".SpeechService" />
     </application>
 
 </manifest>

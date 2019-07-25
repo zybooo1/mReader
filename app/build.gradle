@@ -4,7 +4,7 @@ apply from: "../base_compiler.gradle"
 
 //获取编译时间
 static def releaseTime() {
-    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
 }
 
 //当前版本号
@@ -39,13 +39,40 @@ android {
         }
     }
 
+    // 签名配置
+    signingConfigs {
+        release {
+            try {
+                storeFile file("D:/Android/signedKey/zyb.jks")
+                storePassword "123456"
+                keyAlias "zyb"
+                keyPassword "123456"
+            } catch (ex) {
+                throw new InvalidUserDataException(ex.toString())
+            }
+        }
+
+        debug {
+            try {
+                storeFile file("D:/Android/signedKey/zyb.jks")
+                storePassword "123456"
+                keyAlias "zyb"
+                keyPassword "123456"
+            } catch (ex) {
+                throw new InvalidUserDataException(ex.toString())
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -58,7 +85,7 @@ android {
     //自定义apk文件名
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "极简阅读_${variant.versionCode}_${variant.versionName}-${releaseTime()}.apk"
+            outputFileName = "极简阅读_${variant.versionName}_${releaseTime()}.apk"
         }
     }
 

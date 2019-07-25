@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#000000">
@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorReadMenu"
             android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">
 
             <RelativeLayout
@@ -53,23 +54,129 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/rl_read_bottom"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom"
+            android:layout_height="wrap_content"
             android:background="@color/colorReadMenu"
+            android:padding="15dp"
             android:visibility="gone"
-            tools:visibility="gone">
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible">
 
             <TextView
+                android:id="@+id/tvTiming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="定时"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/sbTiming"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tab1" />
+
+            <TextView
+                android:id="@+id/tab1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="关闭"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/sbTiming"
+                app:layout_constraintLeft_toLeftOf="@+id/sbTiming"
+                app:layout_constraintRight_toLeftOf="@+id/tab2" />
+
+
+            <TextView
+                android:id="@+id/tab2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="15"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/sbTiming"
+                app:layout_constraintLeft_toRightOf="@id/tab1"
+                app:layout_constraintRight_toLeftOf="@+id/tab3" />
+
+
+            <TextView
+                android:id="@+id/tab3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="30"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/sbTiming"
+                app:layout_constraintLeft_toRightOf="@id/tab2"
+                app:layout_constraintRight_toLeftOf="@+id/tab4" />
+
+            <TextView
+                android:id="@+id/tab4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="45"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/sbTiming"
+                app:layout_constraintLeft_toRightOf="@id/tab3"
+                app:layout_constraintRight_toLeftOf="@+id/tab5" />
+
+            <TextView
+                android:id="@+id/tab5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="60"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/sbTiming"
+                app:layout_constraintLeft_toRightOf="@id/tab4"
+                app:layout_constraintRight_toRightOf="@+id/sbTiming" />
+
+            <SeekBar
+                android:id="@+id/sbTiming"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="15dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:max="60"
+                android:maxHeight="3dp"
+                android:minHeight="3dp"
+                android:progressDrawable="@drawable/seekbar_bg"
+                android:thumb="@drawable/seekbar_thumb"
+                android:thumbOffset="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_stop_read"
+                app:layout_constraintLeft_toRightOf="@+id/tvTiming"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <com.zyb.base.widget.RoundButton
                 android:id="@+id/tv_stop_read"
-                style="@style/setting_dialog_button"
-                android:layout_centerInParent="true"
-                android:text="停止语音播放"
-                android:textSize="20dp" />
-        </RelativeLayout>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="40dp"
+                android:paddingTop="10dp"
+                android:paddingRight="40dp"
+                android:paddingBottom="10dp"
+                android:text="停止朗读"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:btnStrokeColor="@color/white"
+                app:btnStrokeWidth="1dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+        </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/rl_bottom"
@@ -77,36 +184,17 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:visibility="gone"
-            tools:visibility="visible">
-
-
-            <com.zyb.base.widget.RoundButton
-                android:id="@+id/viewProgressPercent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/bookpop_bottom"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginBottom="10dp"
-                android:gravity="center"
-                android:paddingLeft="15dp"
-                android:paddingTop="8dp"
-                android:paddingRight="15dp"
-                android:paddingBottom="8dp"
-                android:text="00.00%"
-                android:textColor="@color/white"
-                android:visibility="gone"
-                app:btnSolidColor="@color/colorReadMenuAlpha"
-                tools:visibility="visible" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/bookpop_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:background="@color/colorReadMenu"
                 android:baselineAligned="false"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -207,49 +295,59 @@
                         app:drawableTopCompat="@drawable/svg_setting" />
                 </LinearLayout>
             </LinearLayout>
-
-            <RelativeLayout
-                app:layout_constraintBottom_toTopOf="@+id/bookpop_bottom"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:id="@+id/btnAddBookMark"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginBottom="30dp"
-                android:background="@drawable/shape_circle_btn_read"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="10dp"
-                    android:tint="@color/white"
-                    app:srcCompat="@drawable/svg_bookmark" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/btnStartSpeech"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                app:layout_constraintBottom_toTopOf="@+id/bookpop_bottom"
-                app:layout_constraintRight_toRightOf="parent"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="30dp"
-                android:background="@drawable/shape_circle_btn_read"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="10dp"
-                    android:tint="@color/white"
-                    app:srcCompat="@drawable/svg_listening" />
-            </RelativeLayout>
-
         </android.support.constraint.ConstraintLayout>
 
-    </RelativeLayout>
+        <com.zyb.base.widget.RoundButton
+            android:id="@+id/viewProgressPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingTop="8dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="8dp"
+            android:text="00.00%"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:btnSolidColor="@color/colorReadMenuAlpha"
+            app:layout_constraintBottom_toTopOf="@+id/rl_bottom"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/btnAddBookMark"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/shape_circle_btn_read"
+            android:padding="10dp"
+            android:tint="@color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/rl_bottom"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:srcCompat="@drawable/svg_bookmark"
+            tools:visibility="visible" />
+
+
+        <ImageView
+            android:id="@+id/btnStartSpeech"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/shape_circle_btn_read"
+            android:padding="10dp"
+            android:tint="@color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/rl_bottom"
+            app:layout_constraintRight_toRightOf="parent"
+            app:srcCompat="@drawable/svg_listening"
+            tools:visibility="visible" />
+    </android.support.constraint.ConstraintLayout>
 
     <!--侧滑栏-->
     <LinearLayout

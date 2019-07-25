@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.common.db.DBFactory;
 import com.zyb.common.db.bean.Book;
@@ -482,6 +483,7 @@ public class PageFactory {
             try {
                 mBookUtil.openBook(book);
             } catch (Exception e) {
+                CrashReport.postCatchedException(e);
                 e.printStackTrace();
                 return false;
             }

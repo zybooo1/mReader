@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <com.hjq.bar.TitleBar
             android:id="@+id/titleBar"
             android:layout_width="match_parent"
@@ -48,16 +47,17 @@
 
         <RelativeLayout
             android:id="@+id/img_first"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/book_item_bg">
+            android:background="@color/book_item_bg"
+            android:visibility="gone">
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:background="@color/book_item_fill" />
+
             <TextView
                 android:id="@+id/book_title"
                 android:layout_width="match_parent"
@@ -70,7 +70,7 @@
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="4dp"
                 android:maxLines="3"
-                android:textColor="@color/gray60"/>
+                android:textColor="@color/gray60" />
         </RelativeLayout>
 
     </RelativeLayout>

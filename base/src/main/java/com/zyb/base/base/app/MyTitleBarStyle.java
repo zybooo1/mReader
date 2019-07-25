@@ -58,7 +58,7 @@ public class MyTitleBarStyle extends BaseTitleBarStyle {
 
     @Override
     public float getTitleSize() {
-        return sp2px(20);
+        return sp2px(18);
     }
 
     @Override

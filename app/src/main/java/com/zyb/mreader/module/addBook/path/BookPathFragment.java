@@ -119,6 +119,7 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
     private void addFiles(List<File> files) {
         mFileBeans.clear();
         for (File file : files) {
+            if (file.isFile()&&file.length() < FileUtils.MIN_TXT_FILE_SIZE) continue;
             BookFiles fileBean = new BookFiles();
             fileBean.setId(file.getAbsolutePath());
             fileBean.setIsFile(file.isFile());
