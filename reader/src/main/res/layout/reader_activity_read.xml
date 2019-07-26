@@ -44,6 +44,7 @@
                     android:id="@+id/tvTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_toLeftOf="@+id/ivSearch"
                     android:layout_toEndOf="@+id/ivBack"
                     android:ellipsize="end"
                     android:gravity="center|left"
@@ -51,6 +52,17 @@
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     tools:text="极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读" />
+
+                <ImageView
+                    android:id="@+id/ivSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:tint="@color/white"
+                    app:srcCompat="@drawable/svg_search" />
             </RelativeLayout>
         </RelativeLayout>
 
@@ -63,6 +75,151 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/v1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="发音人"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvSpeaker"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvSpeaker" />
+
+            <ImageView
+                android:id="@+id/speakerChangeLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:tint="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/tvSpeaker"
+                app:layout_constraintLeft_toRightOf="@+id/v1"
+                app:layout_constraintRight_toLeftOf="@+id/tvSpeaker"
+                app:layout_constraintTop_toTopOf="@+id/tvSpeaker"
+                app:srcCompat="@drawable/svg_left_triangle" />
+
+            <ImageView
+                android:id="@+id/speakerChangeRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:rotation="180"
+                android:tint="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/tvSpeaker"
+                app:layout_constraintLeft_toRightOf="@+id/tvSpeaker"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvSpeaker"
+                app:srcCompat="@drawable/svg_left_triangle" />
+
+            <TextView
+                android:id="@+id/tvSpeaker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="25dp"
+                android:text="王老师"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/tv1"
+                app:layout_constraintLeft_toRightOf="@+id/v1"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <TextView
+                android:id="@+id/tvSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="语速"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/sbSpeed"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv1" />
+
+            <TextView
+                android:id="@+id/tv1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="最慢"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
+                app:layout_constraintLeft_toLeftOf="@+id/sbSpeed"
+                app:layout_constraintRight_toLeftOf="@+id/tv2" />
+
+
+            <TextView
+                android:id="@+id/tv2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="较慢"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
+                app:layout_constraintLeft_toRightOf="@id/tv1"
+                app:layout_constraintRight_toLeftOf="@+id/tv3" />
+
+
+            <TextView
+                android:id="@+id/tv3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="正常"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
+                app:layout_constraintLeft_toRightOf="@id/tv2"
+                app:layout_constraintRight_toLeftOf="@+id/tv4" />
+
+            <TextView
+                android:id="@+id/tv4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="较快"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
+                app:layout_constraintLeft_toRightOf="@id/tv3"
+                app:layout_constraintRight_toLeftOf="@+id/tv5" />
+
+            <TextView
+                android:id="@+id/tv5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="最快"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
+                app:layout_constraintLeft_toRightOf="@id/tv4"
+                app:layout_constraintRight_toRightOf="@+id/sbSpeed" />
+
+            <SeekBar
+                android:id="@+id/sbSpeed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="20dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:max="10"
+                android:maxHeight="3dp"
+                android:minHeight="3dp"
+                android:progress="5"
+                android:progressDrawable="@drawable/seekbar_bg"
+                android:thumb="@drawable/seekbar_thumb"
+                android:thumbOffset="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/tab1"
+                app:layout_constraintLeft_toRightOf="@+id/tvSpeed"
+                app:layout_constraintRight_toRightOf="parent" />
 
             <TextView
                 android:id="@+id/tvTiming"
@@ -147,7 +304,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="20dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:max="60"
@@ -349,7 +506,7 @@
             tools:visibility="visible" />
     </android.support.constraint.ConstraintLayout>
 
-    <!--侧滑栏-->
+    <!--左侧滑栏-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -371,5 +528,47 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
+    </LinearLayout>
+    <!--右侧滑栏-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="@color/colorReadMenu"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/reader_search_edit_bg">
+
+            <com.zyb.base.widget.ClearEditText
+                android:id="@+id/etSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:focusable="true"
+                android:hint="搜索"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/gray80"
+                android:textColorHint="@color/gray50"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

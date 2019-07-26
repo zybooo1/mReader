@@ -12,12 +12,15 @@ import com.zyb.reader.R;
 import java.util.List;
 
 
+/**
+ * 目录
+ */
 public class CatalogueAdapter extends BaseQuickAdapter<BookCatalogue, BaseViewHolder> {
     private Typeface typeface;
     private int currentPosition;
 
     public CatalogueAdapter(@Nullable List<BookCatalogue> data) {
-        super(R.layout.item_catalogue, data);
+        super(R.layout.reader_item_catalogue, data);
         typeface = Config.getInstance().getTypeface();
     }
 

@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by Administrator on 2016/8/30 0030.
+ * 翻页模式设置弹窗
  */
 public class PageModeDialog extends Dialog {
 
@@ -51,7 +51,7 @@ public class PageModeDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setGravity(Gravity.BOTTOM);
-        setContentView(R.layout.dialog_pagemode);
+        setContentView(R.layout.reader_dialog_pagemode);
         // 初始化View注入
         ButterKnife.bind(this);
 

@@ -15,23 +15,17 @@ import static android.content.ContentValues.TAG;
 
 
 /**
- * Created by fujiayi on 2017/5/19.
+ * 离线语音资源管理
  */
-
 public class OfflineResource {
 
     public static final String VOICE_FEMALE = "F";
-
     public static final String VOICE_MALE = "M";
-
-
     public static final String VOICE_DUYY = "Y";
-
     public static final String VOICE_DUXY = "X";
 
     private AssetManager assets;
     private String destPath;
-
     private String textFilename;
     private String modelFilename;
 
@@ -70,7 +64,6 @@ public class OfflineResource {
         modelFilename = copyAssetsFile(model);
 
     }
-
 
     private String copyAssetsFile(String sourceFilename) throws IOException {
         String destFilename = destPath + "/" + sourceFilename;

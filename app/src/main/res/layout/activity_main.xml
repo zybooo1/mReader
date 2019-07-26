@@ -23,6 +23,8 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/titleBar"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:srlDragRate="0.3"
+            app:srlEnablePureScrollMode="true"
             app:srlEnableLoadMore="false">
 
             <FrameLayout

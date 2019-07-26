@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by Administrator on 2016/7/26 0026.
+ * 阅读设置弹窗
  */
 public class SettingDialog extends Dialog {
 
@@ -89,7 +89,7 @@ public class SettingDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setGravity(Gravity.BOTTOM);
-        setContentView(R.layout.dialog_setting);
+        setContentView(R.layout.reader_dialog_setting);
         // 初始化View注入
         ButterKnife.bind(this);
 

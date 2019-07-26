@@ -14,11 +14,14 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 
+/**
+ * 书签
+ */
 public class MarkAdapter extends BaseQuickAdapter<BookMarks, BaseViewHolder> {
     private Typeface typeface;
 
     public MarkAdapter(@Nullable List<BookMarks> data) {
-        super(R.layout.item_bookmark, data);
+        super(R.layout.reader_item_bookmark, data);
         typeface = Config.getInstance().getTypeface();
     }
 

@@ -27,7 +27,7 @@ import butterknife.BindView;
 
 
 /**
- * Created by Administrator on 2016/8/31 0031.
+ * 书签
  */
 public class BookMarkFragment extends MyLazyFragment {
     public static final String ARGUMENT = "argument";
@@ -36,7 +36,6 @@ public class BookMarkFragment extends MyLazyFragment {
     RecyclerView rvBookmark;
 
     private String bookpath;
-    private String mArgument;
     private List<BookMarks> bookMarksList;
     private MarkAdapter markAdapter;
     private PageFactory pageFactory;
@@ -69,7 +68,7 @@ public class BookMarkFragment extends MyLazyFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_bookmark;
+        return R.layout.reader_fragment_bookmark;
     }
 
     @Override

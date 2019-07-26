@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,8 +19,6 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zyb.base.base.BaseDialog;
 import com.zyb.base.base.activity.MVPActivity;
 import com.zyb.base.di.component.AppComponent;
@@ -31,7 +28,6 @@ import com.zyb.base.router.RouterConstants;
 import com.zyb.base.router.RouterUtils;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.LogUtil;
-import com.zyb.base.utils.QMUIViewHelper;
 import com.zyb.base.utils.constant.ApiConstants;
 import com.zyb.base.widget.WebActivity;
 import com.zyb.base.widget.decoration.GridItemSpaceDecoration;
@@ -91,6 +87,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             if (position < books.size() - 1) {
+                if (isAnimating) return;
                 bookPosition = position;
                 onBookItemClick(position, view);
             } else {
@@ -107,12 +104,6 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                 showRemoveDialog();
             }
             return true;
-        }
-    };
-    private OnRefreshListener onRefreshListener = new OnRefreshListener() {
-        @Override
-        public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-            refreshBooks();
         }
     };
 
@@ -154,8 +145,6 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         rvBooks.setAdapter(booksAdapter);
 
         rvBooks.addOnScrollListener(onFlingListener);
-
-        smartRefresh.setOnRefreshListener(onRefreshListener);
     }
 
     @Override

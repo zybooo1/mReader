@@ -17,7 +17,6 @@ import com.zyb.reader.R2;
 import com.zyb.reader.adapter.CatalogueAdapter;
 import com.zyb.reader.util.PageFactory;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -27,7 +26,7 @@ import butterknife.BindView;
 
 
 /**
- * Created by Administrator on 2016/8/31 0031.
+ * 目录
  */
 public class CatalogFragment extends MyLazyFragment {
     public static final String ARGUMENT = "argument";
@@ -48,7 +47,7 @@ public class CatalogFragment extends MyLazyFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_catalog;
+        return R.layout.reader_fragment_catalog;
     }
 
     @Override

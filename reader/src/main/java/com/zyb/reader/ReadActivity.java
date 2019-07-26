@@ -3,16 +3,12 @@ package com.zyb.reader;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -29,6 +25,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.gyf.barlibrary.ImmersionBar;
+import com.hjq.toast.ToastUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xw.repo.VectorCompatTextView;
 import com.zyb.base.base.activity.MyActivity;
@@ -49,18 +46,13 @@ import com.zyb.reader.dialog.SettingDialog;
 import com.zyb.reader.fragment.BookMarkFragment;
 import com.zyb.reader.fragment.CatalogFragment;
 import com.zyb.reader.util.BrightnessUtil;
-import com.zyb.reader.util.FileUtils;
 import com.zyb.reader.util.PageFactory;
 import com.zyb.reader.view.PageWidget;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,10 +70,9 @@ public class ReadActivity extends MyActivity {
 
     private static final String TAG = "ReadActivity";
     public final static String EXTRA_BOOK = "bookList";
-    private final static int MESSAGE_CHANGEPROGRESS = 1;
 
     @BindView(R2.id.bookpage)
-    PageWidget bookpage;
+    PageWidget pageWidget;
     @BindView(R2.id.rl_top_root)
     RelativeLayout rlTopRoot;
     @BindView(R2.id.rl_top_bar)
@@ -112,10 +103,8 @@ public class ReadActivity extends MyActivity {
     ConstraintLayout rl_read_bottom;
 
     private Config config;
-    private WindowManager.LayoutParams lp;
     private Book book;
     private PageFactory pageFactory;
-    // popwindow是否显示
     private SettingDialog mSettingDialog;
     private PageModeDialog mPageModeDialog;
     private Boolean mDayOrNight;
@@ -138,104 +127,7 @@ public class ReadActivity extends MyActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_read;
-    }
-
-    @Override
-    protected boolean isRegisterEventBus() {
-        return true;
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventReceived(BaseEvent<Object> event) {
-        if (event == null) return;
-        switch (event.getCode()) {
-            case EventConstants.EVENT_CLOSE_READ_DRAWER:
-                drawerLayout.closeDrawer(Gravity.START);
-                break;
-            case EventConstants.EVENT_SPEECH_STOP:
-                isSpeaking = false;
-                break;
-            case EventConstants.EVENT_SPEECH_FINISH_PAGE:
-                pageFactory.nextPage();
-                if (pageFactory.islastPage()) {
-                    isSpeaking = false;
-                    showMsg("小说已经读完了");
-                } else {
-                    isSpeaking = true;
-                    //继续朗读
-                    BaseEvent<String> e = new BaseEvent<>(EventConstants.EVENT_SPEECH_STRING_DATA,
-                            pageFactory.getCurrentPage().getLineToString());
-                    EventBusUtil.sendStickyEvent(e);
-                }
-                break;
-        }
-    }
-
-    /**
-     * 将sample工程需要的资源文件拷贝到SD卡中使用（授权文件为临时授权文件，请注册正式授权）
-     *
-     * @param isCover 是否覆盖已存在的目标文件
-     */
-    private void copyFromAssetsToSdcard(boolean isCover, String source, String dest) {
-        File file = new File(dest);
-        if (isCover || (!isCover && !file.exists())) {
-            InputStream is = null;
-            FileOutputStream fos = null;
-            try {
-                is = getResources().getAssets().open(source);
-                String path = dest;
-                fos = new FileOutputStream(path);
-                byte[] buffer = new byte[1024];
-                int size = 0;
-                while ((size = is.read(buffer, 0, 1024)) >= 0) {
-                    fos.write(buffer, 0, size);
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (fos != null) {
-                    try {
-                        fos.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                try {
-                    if (is != null) {
-                        is.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private String mSampleDirPath;
-
-    private void initialEnv() {
-        if (mSampleDirPath == null) {
-            String sdcardPath = Environment.getExternalStorageDirectory().toString();
-            mSampleDirPath = sdcardPath + "/" + FileUtils.SAMPLE_DIR_NAME;
-        }
-        makeDir(mSampleDirPath);
-        copyFromAssetsToSdcard(false, FileUtils.SPEECH_FEMALE_MODEL_NAME, mSampleDirPath + "/" + FileUtils.SPEECH_FEMALE_MODEL_NAME);
-        copyFromAssetsToSdcard(false, FileUtils.SPEECH_MALE_MODEL_NAME, mSampleDirPath + "/" + FileUtils.SPEECH_MALE_MODEL_NAME);
-        copyFromAssetsToSdcard(false, FileUtils.TEXT_MODEL_NAME, mSampleDirPath + "/" + FileUtils.TEXT_MODEL_NAME);
-    }
-
-    private void makeDir(String dirPath) {
-        File file = new File(dirPath);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-    }
-
-    public String getTTPath() {
-        return mSampleDirPath;
+        return R.layout.reader_activity_read;
     }
 
     @Override
@@ -246,8 +138,6 @@ public class ReadActivity extends MyActivity {
 
         Config.createConfig(this);
         PageFactory.createPageFactory(this);
-
-        initialEnv();
 
         config = Config.getInstance();
         pageFactory = PageFactory.getInstance();
@@ -271,11 +161,14 @@ public class ReadActivity extends MyActivity {
 
         tvTitle.setText(book.getTitle());
 
-        bookpage.setPageMode(config.getPageMode());
-        bookpage.post(new Runnable() {
+        sbSpeed.setOnSeekBarChangeListener(onSpeedChangeListener);
+        sbTiming.setOnSeekBarChangeListener(onTimingChangeListener);
+
+        pageWidget.setPageMode(config.getPageMode());
+        pageWidget.post(new Runnable() {
             @Override
             public void run() {
-                pageFactory.setPageWidget(bookpage);
+                pageFactory.setPageWidget(pageWidget);
 
                 try {
                     pageFactory.openBook(book);
@@ -301,7 +194,10 @@ public class ReadActivity extends MyActivity {
         sb_progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             float pro;
 
-            // 拖动
+            /**
+             * 拖动
+             * @param fromUser 是否是用户拖动 否则就是 setProgress()的方式
+             */
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 pro = (float) (progress / 10000.0);
@@ -316,7 +212,6 @@ public class ReadActivity extends MyActivity {
             // 表示进度条刚开始拖动，开始拖动时候触发的操作
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             // 停止拖动时候
@@ -327,26 +222,28 @@ public class ReadActivity extends MyActivity {
             }
         });
 
-        mPageModeDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                hideSystemUI();
-            }
-        });
+        // TODO: 2019/7/25
+//        mPageModeDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//            @Override
+//            public void onCancel(DialogInterface dialog) {
+//                hideSystemUI();
+//            }
+//        });
 
         mPageModeDialog.setPageModeListener(new PageModeDialog.PageModeListener() {
             @Override
             public void changePageMode(int pageMode) {
-                bookpage.setPageMode(pageMode);
+                pageWidget.setPageMode(pageMode);
             }
         });
 
-        mSettingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                hideSystemUI();
-            }
-        });
+        // TODO: 2019/7/25
+//        mSettingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//            @Override
+//            public void onCancel(DialogInterface dialog) {
+//                hideSystemUI();
+//            }
+//        });
 
         mSettingDialog.setSettingListener(new SettingDialog.SettingListener() {
             @Override
@@ -378,14 +275,15 @@ public class ReadActivity extends MyActivity {
         pageFactory.setPageEvent(new PageFactory.PageEvent() {
             @Override
             public void changeProgress(float progress) {
-                Message message = new Message();
-                message.what = MESSAGE_CHANGEPROGRESS;
-                message.obj = progress;
-                mHandler.sendMessage(message);
+//                Message message = new Message();
+//                message.what = MESSAGE_CHANGEPROGRESS;
+//                message.obj = progress;
+//                mHandler.sendMessage(message);
+                setSeekBarProgress(progress);
             }
         });
 
-        bookpage.setTouchListener(new PageWidget.TouchListener() {
+        pageWidget.setTouchListener(new PageWidget.TouchListener() {
             @Override
             public void center() {
                 toggleMenu();
@@ -441,18 +339,18 @@ public class ReadActivity extends MyActivity {
 
     }
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case MESSAGE_CHANGEPROGRESS:
-                    float progress = (float) msg.obj;
-                    setSeekBarProgress(progress);
-                    break;
-            }
-        }
-    };
+//    private Handler mHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            switch (msg.what) {
+//                case MESSAGE_CHANGEPROGRESS:
+//                    float progress = (float) msg.obj;
+//                    setSeekBarProgress(progress);
+//                    break;
+//            }
+//        }
+//    };
 
 
     @OnClick(R2.id.btnAddBookMark)
@@ -519,7 +417,6 @@ public class ReadActivity extends MyActivity {
         }
     }
 
-
     /**
      * 设置阅读进度条进度
      */
@@ -555,30 +452,17 @@ public class ReadActivity extends MyActivity {
         }
     }
 
+    /**
+     * 当前是否有菜单UI显示
+     */
+    // TODO: 2019/7/25 考虑朗读菜单、设置菜单
     private boolean getMenuIsShowing() {
         return rlTopRoot.getVisibility() == View.VISIBLE;
     }
 
-    @Override
-    public void onBackPressed() {
-        if (getMenuIsShowing()) {
-            toggleMenu();
-            return;
-        }
-        if (mSettingDialog.isShowing()) {
-            mSettingDialog.hide();
-            return;
-        }
-        if (mPageModeDialog.isShowing()) {
-            mPageModeDialog.hide();
-            return;
-        }
-        super.onBackPressed();
-    }
-
     @OnClick({R2.id.tv_pre, R2.id.tv_next, R2.id.tv_directory, R2.id.tv_dayornight,
             R2.id.tv_pagemode, R2.id.tv_setting, R2.id.bookpop_bottom, R2.id.rl_bottom,
-            R2.id.tv_stop_read})
+            R2.id.tv_stop_read, R2.id.ivSearch})
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.tv_pre) {
@@ -598,6 +482,9 @@ public class ReadActivity extends MyActivity {
             mSettingDialog.show();
         } else if (i == R.id.tv_stop_read) {
             stopSpeechService();
+            toggleMenu();
+        } else if (i == R.id.ivSearch) {
+            drawerLayout.openDrawer(Gravity.END);
             toggleMenu();
         }
 
@@ -656,6 +543,7 @@ public class ReadActivity extends MyActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            speechService = null;
         }
     };
 
@@ -673,9 +561,96 @@ public class ReadActivity extends MyActivity {
      * 停止朗读
      */
     private void stopSpeechService() {
-        if (serviceConnection != null) {
+        if (serviceConnection != null && speechService != null) {
             unbindService(serviceConnection);
         }
+    }
+
+    /**
+     * 事件
+     */
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventReceived(BaseEvent<Object> event) {
+        if (event == null) return;
+        switch (event.getCode()) {
+            case EventConstants.EVENT_CLOSE_READ_DRAWER:
+                drawerLayout.closeDrawer(Gravity.START);
+                break;
+            case EventConstants.EVENT_SPEECH_STOP:
+                isSpeaking = false;
+                toggleMenu();
+                break;
+            case EventConstants.EVENT_SPEECH_FINISH_PAGE:
+                pageFactory.nextPage();
+                if (pageFactory.islastPage()) {
+                    isSpeaking = false;
+                    toggleMenu();
+                    showMsg("小说已经读完了");
+                } else {
+                    isSpeaking = true;
+                    //继续朗读
+                    BaseEvent<String> e = new BaseEvent<>(EventConstants.EVENT_SPEECH_STRING_DATA,
+                            pageFactory.getCurrentPage().getLineToString());
+                    EventBusUtil.sendStickyEvent(e);
+                }
+                break;
+        }
+    }
+
+    /**
+     * 朗读设置
+     */
+    @BindView(R2.id.tvSpeaker)
+    TextView tvSpeaker;
+    @BindView(R2.id.sbSpeed)
+    SeekBar sbSpeed;
+    @BindView(R2.id.sbTiming)
+    SeekBar sbTiming;
+    private SeekBar.OnSeekBarChangeListener onSpeedChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            speechService.changeSpeed(seekBar.getProgress());
+        }
+    };
+    private SeekBar.OnSeekBarChangeListener onTimingChangeListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
+
+    @OnClick(R2.id.speakerChangeLeft)
+    public void speakerChangeLeft() {
+        ToastUtils.show("aaaaaaa");
+        speechService.switchVoice(OfflineResource.VOICE_DUYY);
+    }
+
+    @OnClick(R2.id.speakerChangeRight)
+    public void speakerChangeRight() {
     }
 
     /**
@@ -689,15 +664,30 @@ public class ReadActivity extends MyActivity {
         }
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         pageFactory.clear();
-        bookpage = null;
+        pageWidget = null;
         unregisterReceiver(myReceiver);
         stopSpeechService();
+    }
 
+    @Override
+    public void onBackPressed() {
+        if (getMenuIsShowing()) {
+            toggleMenu();
+            return;
+        }
+        if (mSettingDialog.isShowing()) {
+            mSettingDialog.hide();
+            return;
+        }
+        if (mPageModeDialog.isShowing()) {
+            mPageModeDialog.hide();
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override

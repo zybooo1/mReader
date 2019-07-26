@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 朗读服务
+ */
 public class SpeechService extends Service {
 
     private final IBinder mBinder = new SpeechBinder();
@@ -35,16 +38,16 @@ public class SpeechService extends Service {
     // assets目录下bd_etts_common_speech_m15_mand_eng_high_am-mix_v3.0.0_20170505.dat为离线男声模型；
     // assets目录下bd_etts_common_speech_f7_mand_eng_high_am-mix_v3.0.0_20170512.dat为离线女声模型
     protected String offlineVoice = OfflineResource.VOICE_FEMALE;
+    // TODO: 2019/7/25
     // 切换离线资源
-//                map.put("离线女声", OfflineResource.VOICE_FEMALE);
-//                map.put("离线男声", OfflineResource.VOICE_MALE);
-//                map.put("离线度逍遥", OfflineResource.VOICE_DUXY);
-//                map.put("离线度丫丫", OfflineResource.VOICE_DUYY);
+    //map.put("离线女声", OfflineResource.VOICE_FEMALE);
+    //map.put("离线男声", OfflineResource.VOICE_MALE);
+    //map.put("离线度逍遥", OfflineResource.VOICE_DUXY);
+    //map.put("离线度丫丫", OfflineResource.VOICE_DUYY);
     protected SpeechSynthesizer mSpeechSynthesizer;
     private SpeechSynthesizerListener speechSynthesizerListener = new SpeechSynthesizerListener() {
         @Override
         public void onSynthesizeStart(String s) {
-
         }
 
         /**
@@ -55,7 +58,6 @@ public class SpeechService extends Service {
          */
         @Override
         public void onSynthesizeDataArrived(String s, byte[] bytes, int i) {
-
         }
 
         /**
@@ -63,7 +65,6 @@ public class SpeechService extends Service {
          */
         @Override
         public void onSynthesizeFinish(String s) {
-
         }
 
         /**
@@ -71,7 +72,6 @@ public class SpeechService extends Service {
          */
         @Override
         public void onSpeechStart(String s) {
-
         }
 
         /**
@@ -81,7 +81,6 @@ public class SpeechService extends Service {
          */
         @Override
         public void onSpeechProgressChanged(String s, int i) {
-
         }
 
         /**
@@ -117,12 +116,15 @@ public class SpeechService extends Service {
         EventBusUtil.register(this);
     }
 
+    private String currentString = "";
+
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onEventReceived(BaseEvent<Object> event) {
         if (event == null) return;
         switch (event.getCode()) {
             case EventConstants.EVENT_SPEECH_STRING_DATA:
-                mSpeechSynthesizer.speak((String) event.getData());
+                currentString = (String) event.getData();
+                mSpeechSynthesizer.speak(currentString);
                 break;
         }
     }
@@ -219,17 +221,26 @@ public class SpeechService extends Service {
     /**
      * 切换离线发音。注意需要添加额外的判断：引擎在合成时该方法不能调用
      */
-    private void switchVoice(String mode) {
+    public void switchVoice(String mode) {
+        stop();
         offlineVoice = mode;
         OfflineResource offlineResource = createOfflineResource(offlineVoice);
         int result = mSpeechSynthesizer.loadModel(offlineResource.getModelFilename(), offlineResource.getTextFilename());
+        mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_SPEAKER, "1");
         checkResult(result, "loadModel");
+        if (!currentString.isEmpty()) mSpeechSynthesizer.speak(currentString);
     }
 
     /**
-     * 更新参数（语速、语调等）
+     * 更新参数（语速）
      */
-    private void changeParams(String mode) {
+    public void changeSpeed(int speed) {
+        if (speed > 9) speed = 9;
+        if (speed < 0) speed = 0;
+        stop();
+        // 设置合成的语速，0-9 ，默认 5
+        mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_SPEED, speed + "");
+        if (!currentString.isEmpty()) mSpeechSynthesizer.speak(currentString);
     }
 
     private void checkResult(int result, String method) {
@@ -254,7 +265,7 @@ public class SpeechService extends Service {
         checkResult(result, "resume");
     }
 
-    /*
+    /**
      * 停止合成引擎。即停止播放，合成，清空内部合成队列。
      */
     private void stop() {

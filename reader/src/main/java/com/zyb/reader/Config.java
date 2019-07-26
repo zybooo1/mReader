@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 
 /**
- * Created by Administrator on 2016/7/18 0018.
+ * 阅读设置
  */
 public class Config {
     private final static String SP_NAME = "config";

@@ -21,10 +21,6 @@ import cc.shinichi.library.tool.utility.file.FileUtil;
  * Created by Administrator on 2016/7/11 0011.
  */
 public class FileUtils {
-    public static final String SAMPLE_DIR_NAME = "baiduTTS";
-    public static final String SPEECH_FEMALE_MODEL_NAME = "bd_etts_speech_female.dat";
-    public static final String SPEECH_MALE_MODEL_NAME = "bd_etts_speech_male.dat";
-    public static final String TEXT_MODEL_NAME = "bd_etts_text.dat";
     /**
      * 获取文件编码
      * @param fileName

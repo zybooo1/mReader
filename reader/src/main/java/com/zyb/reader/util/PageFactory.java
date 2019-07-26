@@ -23,6 +23,7 @@ import com.zyb.common.db.bean.Book;
 import com.zyb.common.db.bean.BookCatalogue;
 import com.zyb.reader.Config;
 import com.zyb.reader.R;
+import com.zyb.reader.bean.TRPage;
 import com.zyb.reader.view.PageWidget;
 
 import java.io.IOException;
@@ -32,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/7/20 0020.
  */
 public class PageFactory {
     private static final String TAG = "PageFactory";
