@@ -62,7 +62,7 @@ public class CatalogFragment extends MyLazyFragment {
         rvCatalogue.setAdapter(catalogueAdapter);
         rvCatalogue.setLayoutManager(new LinearLayoutManager(mActivity));
         VerticalItemLineDecoration decoration= new VerticalItemLineDecoration.Builder(mActivity)
-                .colorRes(R.color.list_item_divider)
+                .colorRes(R.color.reader_list_item_divider)
                 .build();
         rvCatalogue.addItemDecoration(decoration);
         catalogueAdapter.setOnItemClickListener(onItemClickListener);

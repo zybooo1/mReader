@@ -35,6 +35,10 @@ public class Config {
     public final static int PAGE_MODE_COVER = 1;
     public final static int PAGE_MODE_SLIDE = 2;
     public final static int PAGE_MODE_NONE = 3;
+    private static final String SPEAK_SPEED_KEY = "speak_speed";
+    private static final String SPEAKER_KEY = "speaker";
+    private static final String TIMING_TIME_KEY = "timing_time";
+    private static final String IS_AUTO_TIMING_KEY = "is_auto_timing";
 
     private Context mContext;
     private static Config config;
@@ -47,77 +51,77 @@ public class Config {
     private float light = 0;
     private int bookBG;
 
-    private Config(Context mContext){
+    private Config(Context mContext) {
         this.mContext = mContext.getApplicationContext();
-        sp = this.mContext.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        sp = this.mContext.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
     }
 
-    public static synchronized Config getInstance(){
+    public static synchronized Config getInstance() {
         return config;
     }
 
-    public static synchronized Config createConfig(Context context){
-        if (config == null){
+    public static synchronized Config createConfig(Context context) {
+        if (config == null) {
             config = new Config(context);
         }
 
         return config;
     }
 
-    public int getPageMode(){
-        return sp.getInt(PAGE_MODE_KEY,PAGE_MODE_SIMULATION);
+    public int getPageMode() {
+        return sp.getInt(PAGE_MODE_KEY, PAGE_MODE_SIMULATION);
     }
 
-    public void setPageMode(int pageMode){
-        sp.edit().putInt(PAGE_MODE_KEY,pageMode).commit();
+    public void setPageMode(int pageMode) {
+        sp.edit().putInt(PAGE_MODE_KEY, pageMode).commit();
     }
 
-    public int getBookBgType(){
-        return sp.getInt(BOOK_BG_KEY,BOOK_BG_DEFAULT);
+    public int getBookBgType() {
+        return sp.getInt(BOOK_BG_KEY, BOOK_BG_DEFAULT);
     }
 
-    public void setBookBg(int type){
-        sp.edit().putInt(BOOK_BG_KEY,type).commit();
+    public void setBookBg(int type) {
+        sp.edit().putInt(BOOK_BG_KEY, type).commit();
     }
 
-    public Typeface getTypeface(){
+    public Typeface getTypeface() {
         if (typeface == null) {
-            String typePath = sp.getString(FONT_TYPE_KEY,FONTTYPE_QIHEI);
+            String typePath = sp.getString(FONT_TYPE_KEY, FONTTYPE_QIHEI);
             typeface = getTypeface(typePath);
         }
         return typeface;
     }
 
-    public String getTypefacePath(){
-        String path = sp.getString(FONT_TYPE_KEY,FONTTYPE_QIHEI);
+    public String getTypefacePath() {
+        String path = sp.getString(FONT_TYPE_KEY, FONTTYPE_QIHEI);
         return path;
     }
 
-    public Typeface getTypeface(String typeFacePath){
+    public Typeface getTypeface(String typeFacePath) {
         Typeface mTypeface;
-        if (typeFacePath.equals(FONTTYPE_DEFAULT)){
+        if (typeFacePath.equals(FONTTYPE_DEFAULT)) {
             mTypeface = Typeface.DEFAULT;
-        }else{
-            mTypeface = Typeface.createFromAsset(mContext.getAssets(),typeFacePath);
+        } else {
+            mTypeface = Typeface.createFromAsset(mContext.getAssets(), typeFacePath);
         }
         return mTypeface;
     }
 
-    public void setTypeface(String typefacePath){
+    public void setTypeface(String typefacePath) {
         typeface = getTypeface(typefacePath);
-        sp.edit().putString(FONT_TYPE_KEY,typefacePath).commit();
+        sp.edit().putString(FONT_TYPE_KEY, typefacePath).commit();
     }
 
-    public float getFontSize(){
-        if (mFontSize == 0){
-            mFontSize = sp.getFloat(FONT_SIZE_KEY, mContext.getResources().getDimension(R.dimen.reading_default_text_size));
+    public float getFontSize() {
+        if (mFontSize == 0) {
+            mFontSize = sp.getFloat(FONT_SIZE_KEY, mContext.getResources().getDimension(R.dimen.reader_reading_default_text_size));
         }
         return mFontSize;
     }
 
-    public void setFontSize(float fontSize){
+    public void setFontSize(float fontSize) {
         mFontSize = fontSize;
-        sp.edit().putFloat(FONT_SIZE_KEY,fontSize).commit();
+        sp.edit().putFloat(FONT_SIZE_KEY, fontSize).commit();
     }
 
     /**
@@ -127,29 +131,86 @@ public class Config {
         return sp.getBoolean(NIGHT_KEY, false);
     }
 
-    public void setDayOrNight(boolean isNight){
-        sp.edit().putBoolean(NIGHT_KEY,isNight).commit();
+    public void setDayOrNight(boolean isNight) {
+        sp.edit().putBoolean(NIGHT_KEY, isNight).commit();
     }
 
-    public Boolean isSystemLight(){
-       return sp.getBoolean(SYSTEM_LIGHT_KEY,true);
+    public Boolean isSystemLight() {
+        return sp.getBoolean(SYSTEM_LIGHT_KEY, true);
     }
 
-    public void setSystemLight(Boolean isSystemLight){
-        sp.edit().putBoolean(SYSTEM_LIGHT_KEY,isSystemLight).commit();
+    public void setSystemLight(Boolean isSystemLight) {
+        sp.edit().putBoolean(SYSTEM_LIGHT_KEY, isSystemLight).commit();
     }
 
-    public float getLight(){
-        if (light == 0){
-            light = sp.getFloat(LIGHT_KEY,0.1f);
+    public float getLight() {
+        if (light == 0) {
+            light = sp.getFloat(LIGHT_KEY, 0.1f);
         }
         return light;
     }
+
     /**
      * 记录配置文件中亮度值
      */
     public void setLight(float light) {
         this.light = light;
-        sp.edit().putFloat(LIGHT_KEY,light).commit();
+        sp.edit().putFloat(LIGHT_KEY, light).commit();
     }
+
+    //=======================朗读配置记录 Begin=================================
+    /**
+     * 语速
+     */
+    public int getSpeakSpeed() {
+        return sp.getInt(SPEAK_SPEED_KEY, SpeechService.DEFAULT_SPEED);
+    }
+
+    public void setSpeakSpeed(int speed) {
+        sp.edit().putInt(SPEAK_SPEED_KEY, speed).commit();
+    }
+
+    /**
+     * 发音人
+     */
+    public OfflineResource.Speaker getSpeaker() {
+        String speaker = sp.getString(SPEAKER_KEY, OfflineResource.Speaker.FEMALE.getOffline());
+        if (OfflineResource.Speaker.MALE.getOffline().equals(speaker)) {
+            return OfflineResource.Speaker.MALE;
+        } else if (OfflineResource.Speaker.DUXY.getOffline().equals(speaker)) {
+            return OfflineResource.Speaker.DUXY;
+        } else if (OfflineResource.Speaker.DUYY.getOffline().equals(speaker)) {
+            return OfflineResource.Speaker.DUYY;
+        } else {
+            return OfflineResource.Speaker.FEMALE;
+        }
+    }
+
+    public void setSpeaker(String offlineSpeaker) {
+        sp.edit().putString(SPEAKER_KEY, offlineSpeaker).commit();
+    }
+
+    /**
+     * 上次定时时间
+     */
+    public int getTimingTime() {
+        return sp.getInt(TIMING_TIME_KEY, 0);
+    }
+
+    public void setTimingTime(int time) {
+        sp.edit().putInt(TIMING_TIME_KEY, time).commit();
+    }
+
+    /**
+     * 是否自动定时
+     */
+    public boolean getIsAutoTiming() {
+        return sp.getBoolean(IS_AUTO_TIMING_KEY, false);
+    }
+
+    public void setIsAutoTiming(boolean isAutoTiming) {
+        sp.edit().putBoolean(IS_AUTO_TIMING_KEY, isAutoTiming).commit();
+    }
+    //=======================朗读配置记录 End=================================
+
 }

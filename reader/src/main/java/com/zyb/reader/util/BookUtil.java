@@ -1,6 +1,5 @@
 package com.zyb.reader.util;
 
-import android.content.ContentValues;
 import android.text.TextUtils;
 
 import com.tencent.bugly.crashreport.CrashReport;
@@ -13,6 +12,7 @@ import com.zyb.common.db.DBFactory;
 import com.zyb.common.db.bean.Book;
 import com.zyb.common.db.bean.BookCatalogue;
 import com.zyb.reader.bean.Cache;
+import com.zyb.reader.bean.SearchResultBean;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -194,10 +194,6 @@ public class BookUtil {
             if (m_strCharsetName == null) {
                 m_strCharsetName = "utf-8";
             }
-            ContentValues values = new ContentValues();
-            values.put("charset", m_strCharsetName);
-            // TODO: 2019/7/13
-//            DataSupport.update(BookList.class,values,bookList.getId());
             book.setCharset(m_strCharsetName);
             DBFactory.getInstance().getBooksManage().insertOrUpdate(book);
         } else {
@@ -356,7 +352,8 @@ public class BookUtil {
 
 
     //内容搜索
-    public synchronized void searchContent(String key) {
+    public  List<SearchResultBean> searchContent(String key) {
+        List<SearchResultBean> searchResultBeanList = new ArrayList<>();
         try {
             long size = 0;
 
@@ -365,14 +362,13 @@ public class BookUtil {
                 String bufStr = new String(buf);
                 String[] paragraphs = bufStr.split("\r\n");
                 for (String str : paragraphs) {
-                    if (str.contains(key)) LogUtil.e("searchContent---", str);
 
-                    if (true) {
-//                        BookCatalogue bookCatalogue = new BookCatalogue();
-//                        bookCatalogue.setBookCatalogueStartPos(size);
-//                        bookCatalogue.setBookCatalogue(str.replaceAll("\\s*", ""));
-//                        bookCatalogue.setBookpath(bookPath);
-//                        directoryList.add(bookCatalogue);
+                    if (str.contains(key)) {
+                        LogUtil.e("searchContent---", str);
+                        SearchResultBean searchResultBean = new SearchResultBean();
+                        searchResultBean.setBegin(size);
+                        searchResultBean.setText(str.replaceAll("\\s*", ""));
+                        searchResultBeanList.add(searchResultBean);
                     }
                     if (str.contains("\u3000\u3000")) {
                         size += str.length() + 2;
@@ -387,6 +383,7 @@ public class BookUtil {
             CrashReport.postCatchedException(e);
             e.printStackTrace();
         }
+        return searchResultBeanList;
     }
 
 }

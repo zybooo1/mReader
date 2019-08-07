@@ -89,7 +89,7 @@ public class BookMarkFragment extends MyLazyFragment {
         rvBookmark.setAdapter(markAdapter);
         rvBookmark.setLayoutManager(new LinearLayoutManager(mActivity));
         VerticalItemLineDecoration decoration = new VerticalItemLineDecoration.Builder(mActivity)
-                .colorRes(R.color.list_item_divider)
+                .colorRes(R.color.reader_list_item_divider)
                 .build();
         rvBookmark.addItemDecoration(decoration);
         markAdapter.setOnItemClickListener(onItemClickListener);

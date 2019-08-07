@@ -62,6 +62,7 @@ dependencies {
     api rootProject.ext.dependencies["greendao"]
     api rootProject.ext.dependencies["EventBus"]
     api rootProject.ext.dependencies["pagerslidingtabstrip"]
+    api rootProject.ext.dependencies["countdownview"]
     //json
     api rootProject.ext.dependencies["gson"]
     //network

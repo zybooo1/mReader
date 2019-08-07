@@ -25,7 +25,7 @@ import io.reactivex.functions.Consumer;
  */
 public class LauncherActivity extends MyActivity
         implements OnPermission, ViewTreeObserver.OnGlobalLayoutListener {
-    private static final int DELAY_TIME = 500;
+    private static final int DELAY_TIME = 200;
 
     @BindView(R.id.iv_launcher_bg)
     View mImageView;
@@ -78,12 +78,12 @@ public class LauncherActivity extends MyActivity
      */
     @Override
     public void hasPermission(List<String> granted, boolean isAll) {
-     toMain();
+        toMain();
     }
 
     private void toMain() {
         startActivityFinish(MainActivity.class);
-        overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     @Override

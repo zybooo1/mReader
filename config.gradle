@@ -128,6 +128,7 @@ ext {
             "okdownload_okhttp"         : "com.liulishuo.okdownload:okhttp:1.0.4-SNAPSHOT",
             "PersistentCookieJar"       : "com.github.franmontiel:PersistentCookieJar:v1.0.1",
             "XBanner"                   : "com.github.xiaohaibin:XBanner:1.6.6",
+            "countdownview"             : "com.github.iwgang:countdownview:2.1.6",
             "greendao"                  : "org.greenrobot:greendao:3.2.2",
             "pagerslidingtabstrip"                  : "com.astuetz:pagerslidingtabstrip:1.0.1",
     ]

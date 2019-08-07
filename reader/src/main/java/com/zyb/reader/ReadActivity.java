@@ -15,17 +15,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.barlibrary.ImmersionBar;
-import com.hjq.toast.ToastUtils;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xw.repo.VectorCompatTextView;
 import com.zyb.base.base.activity.MyActivity;
@@ -36,12 +43,15 @@ import com.zyb.base.utils.EventBusUtil;
 import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.QMUIViewHelper;
 import com.zyb.base.utils.TimeUtil;
+import com.zyb.base.widget.ClearEditText;
 import com.zyb.base.widget.RoundButton;
+import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
 import com.zyb.common.db.DBFactory;
 import com.zyb.common.db.bean.Book;
 import com.zyb.common.db.bean.BookMarks;
 import com.zyb.common.db.bean.BookMarksDao;
-import com.zyb.reader.dialog.PageModeDialog;
+import com.zyb.reader.adapter.SearchAdapter;
+import com.zyb.reader.bean.SearchResultBean;
 import com.zyb.reader.dialog.SettingDialog;
 import com.zyb.reader.fragment.BookMarkFragment;
 import com.zyb.reader.fragment.CatalogFragment;
@@ -58,7 +68,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import cn.iwgang.countdownview.CountdownView;
 
 
 /**
@@ -106,7 +118,6 @@ public class ReadActivity extends MyActivity {
     private Book book;
     private PageFactory pageFactory;
     private SettingDialog mSettingDialog;
-    private PageModeDialog mPageModeDialog;
     private Boolean mDayOrNight;
     private boolean isSpeaking = false;
 
@@ -114,11 +125,11 @@ public class ReadActivity extends MyActivity {
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
+            if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
                 LogUtil.e(TAG, Intent.ACTION_BATTERY_CHANGED);
                 int level = intent.getIntExtra("level", 0);
                 pageFactory.updateBattery(level);
-            } else if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
+            } else if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
                 LogUtil.e(TAG, Intent.ACTION_TIME_TICK);
                 pageFactory.updateTime();
             }
@@ -148,7 +159,6 @@ public class ReadActivity extends MyActivity {
         registerReceiver(myReceiver, mfilter);
 
         mSettingDialog = new SettingDialog(this);
-        mPageModeDialog = new PageModeDialog(this);
         //保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //改变屏幕亮度
@@ -164,31 +174,40 @@ public class ReadActivity extends MyActivity {
         sbSpeed.setOnSeekBarChangeListener(onSpeedChangeListener);
         sbTiming.setOnSeekBarChangeListener(onTimingChangeListener);
 
-        pageWidget.setPageMode(config.getPageMode());
-        pageWidget.post(new Runnable() {
-            @Override
-            public void run() {
-                pageFactory.setPageWidget(pageWidget);
+        searchAdapter = new SearchAdapter(searchResultList);
+        rvSearch.setLayoutManager(new LinearLayoutManager(getActivity()));
+        VerticalItemLineDecoration decoration = new VerticalItemLineDecoration.Builder(this)
+                .colorRes(R.color.reader_list_item_divider)
+                .build();
+        rvSearch.addItemDecoration(decoration);
+        rvSearch.setAdapter(searchAdapter);
+        searchAdapter.bindToRecyclerView(rvSearch);
+        searchAdapter.setOnItemClickListener(searchItemClicklistener);
+        smartRefresh.setOnLoadMoreListener(loadMoreListener);
+        etSearch.setOnKeyListener(onKeyListener);
 
-                try {
-                    pageFactory.openBook(book);
-                    tabLayout.addTab(tabLayout.newTab().setText("目录"));
-                    tabLayout.addTab(tabLayout.newTab().setText("书签"));
-                    tabLayout.addOnTabSelectedListener(onTabSelectedListener);
-                    ArrayList<Fragment> fragments = new ArrayList<>();
-                    fragments.add(CatalogFragment.newInstance(pageFactory.getBookPath()));
-                    fragments.add(BookMarkFragment.newInstance(pageFactory.getBookPath()));
-                    adapter = new BaseFragmentStateAdapter(getSupportFragmentManager(), fragments);
-                    viewPager.setAdapter(adapter);
-                    viewPager.addOnPageChangeListener(onPageChangeListener);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    CrashReport.postCatchedException(e);
-                    showError("打开电子书失败");
-                }
-                mDayOrNight = config.getDayOrNight();
-                toggleDayOrNight();
+        pageWidget.setPageMode(config.getPageMode());
+        pageWidget.post(() -> {
+            pageFactory.setPageWidget(pageWidget);
+
+            try {
+                pageFactory.openBook(book);
+                tabLayout.addTab(tabLayout.newTab().setText("目录"));
+                tabLayout.addTab(tabLayout.newTab().setText("书签"));
+                tabLayout.addOnTabSelectedListener(onTabSelectedListener);
+                ArrayList<Fragment> fragments = new ArrayList<>();
+                fragments.add(CatalogFragment.newInstance(pageFactory.getBookPath()));
+                fragments.add(BookMarkFragment.newInstance(pageFactory.getBookPath()));
+                adapter = new BaseFragmentStateAdapter(getSupportFragmentManager(), fragments);
+                viewPager.setAdapter(adapter);
+                viewPager.addOnPageChangeListener(onPageChangeListener);
+            } catch (IOException e) {
+                e.printStackTrace();
+                CrashReport.postCatchedException(e);
+                showError("打开电子书失败");
             }
+            mDayOrNight = config.getDayOrNight();
+            toggleDayOrNight();
         });
 
         sb_progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -222,28 +241,6 @@ public class ReadActivity extends MyActivity {
             }
         });
 
-        // TODO: 2019/7/25
-//        mPageModeDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//            @Override
-//            public void onCancel(DialogInterface dialog) {
-//                hideSystemUI();
-//            }
-//        });
-
-        mPageModeDialog.setPageModeListener(new PageModeDialog.PageModeListener() {
-            @Override
-            public void changePageMode(int pageMode) {
-                pageWidget.setPageMode(pageMode);
-            }
-        });
-
-        // TODO: 2019/7/25
-//        mSettingDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//            @Override
-//            public void onCancel(DialogInterface dialog) {
-//                hideSystemUI();
-//            }
-//        });
 
         mSettingDialog.setSettingListener(new SettingDialog.SettingListener() {
             @Override
@@ -270,18 +267,14 @@ public class ReadActivity extends MyActivity {
             public void changeBookBg(int type) {
                 pageFactory.changeBookBg(type);
             }
-        });
 
-        pageFactory.setPageEvent(new PageFactory.PageEvent() {
             @Override
-            public void changeProgress(float progress) {
-//                Message message = new Message();
-//                message.what = MESSAGE_CHANGEPROGRESS;
-//                message.obj = progress;
-//                mHandler.sendMessage(message);
-                setSeekBarProgress(progress);
+            public void changePageMode(int mode) {
+                pageWidget.setPageMode(mode);
             }
         });
+
+        pageFactory.setPageEvent(this::setSeekBarProgress);
 
         pageWidget.setTouchListener(new PageWidget.TouchListener() {
             @Override
@@ -296,11 +289,7 @@ public class ReadActivity extends MyActivity {
                 }
 
                 pageFactory.prePage();
-                if (pageFactory.isfirstPage()) {
-                    return false;
-                }
-
-                return true;
+                return !pageFactory.isfirstPage();
             }
 
             @Override
@@ -311,10 +300,7 @@ public class ReadActivity extends MyActivity {
                 }
 
                 pageFactory.nextPage();
-                if (pageFactory.islastPage()) {
-                    return false;
-                }
-                return true;
+                return !pageFactory.islastPage();
             }
 
             @Override
@@ -365,14 +351,14 @@ public class ReadActivity extends MyActivity {
                 return;
             }
             BookMarks bookMarks = new BookMarks();
-            String word = "";
+            StringBuilder word = new StringBuilder();
             for (String line : pageFactory.getCurrentPage().getLines()) {
-                word += line;
+                word.append(line);
             }
             bookMarks.setId(pageFactory.getBookPath() + pageFactory.getCurrentPage().getBegin());
             bookMarks.setTime(TimeUtil.parseDateTime(System.currentTimeMillis()));
             bookMarks.setBegin(pageFactory.getCurrentPage().getBegin());
-            bookMarks.setText(word);
+            bookMarks.setText(word.toString());
             bookMarks.setBookpath(pageFactory.getBookPath());
             DBFactory.getInstance().getBookMarksManage().insertOrUpdate(bookMarks);
             showMsg("书签添加成功");
@@ -406,13 +392,13 @@ public class ReadActivity extends MyActivity {
      */
     public void toggleDayOrNight() {
         if (mDayOrNight) {
-            tv_dayornight.setText(getResources().getString(R.string.read_setting_day));
-            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.svg_brightness_up);
+            tv_dayornight.setText(getResources().getString(R.string.reader_read_setting_day));
+            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.reader_svg_brightness_up);
             tv_dayornight.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
 
         } else {
-            tv_dayornight.setText(getResources().getString(R.string.read_setting_night));
-            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.svg_night);
+            tv_dayornight.setText(getResources().getString(R.string.reader_read_setting_night));
+            Drawable drawable = ContextCompat.getDrawable(this, R.drawable.reader_svg_night);
             tv_dayornight.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
         }
     }
@@ -461,8 +447,8 @@ public class ReadActivity extends MyActivity {
     }
 
     @OnClick({R2.id.tv_pre, R2.id.tv_next, R2.id.tv_directory, R2.id.tv_dayornight,
-            R2.id.tv_pagemode, R2.id.tv_setting, R2.id.bookpop_bottom, R2.id.rl_bottom,
-            R2.id.tv_stop_read, R2.id.ivSearch})
+            R2.id.tv_setting, R2.id.bookpop_bottom, R2.id.rl_bottom, R2.id.tv_stop_read,
+            R2.id.ivSearch})
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.tv_pre) {
@@ -474,14 +460,11 @@ public class ReadActivity extends MyActivity {
             toggleMenu();
         } else if (i == R.id.tv_dayornight) {
             changeDayOrNight();
-        } else if (i == R.id.tv_pagemode) {
-            toggleMenu();
-            mPageModeDialog.show();
         } else if (i == R.id.tv_setting) {
             toggleMenu();
             mSettingDialog.show();
         } else if (i == R.id.tv_stop_read) {
-            stopSpeechService();
+            stopSpeech();
             toggleMenu();
         } else if (i == R.id.ivSearch) {
             drawerLayout.openDrawer(Gravity.END);
@@ -491,7 +474,7 @@ public class ReadActivity extends MyActivity {
     }
 
     /**
-     * 侧滑
+     * 左侧滑：目录&书签
      */
     @BindView(R2.id.drawerLayout)
     DrawerLayout drawerLayout;
@@ -531,6 +514,64 @@ public class ReadActivity extends MyActivity {
     };
 
     /**
+     * 右侧滑：搜索
+     */
+    @BindView(R2.id.etSearch)
+    ClearEditText etSearch;
+    @BindView(R2.id.smartRefresh)
+    SmartRefreshLayout smartRefresh;
+    @BindView(R2.id.rvSearch)
+    RecyclerView rvSearch;
+    private int page = 0;
+    private SearchAdapter searchAdapter;
+    List<SearchResultBean> searchResultList = new ArrayList<>();
+    BaseQuickAdapter.OnItemClickListener searchItemClicklistener = new BaseQuickAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+            drawerLayout.closeDrawer(Gravity.END);
+            pageFactory.changeChapter(searchResultList.get(position).getBegin());
+        }
+    };
+    OnLoadMoreListener loadMoreListener = refreshLayout -> {
+    };
+    private View.OnKeyListener onKeyListener = (v, keyCode, event) -> {
+        if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
+            search();
+        }
+        return false;
+    };
+
+
+    public void hideKeyboard() {
+        etSearch.clearFocus();
+        InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (manager != null) {
+            manager.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+        }
+    }
+
+    public void loadComplete() {
+        smartRefresh.finishLoadMore();
+    }
+
+    public void onSearchLoaded(List<SearchResultBean> beans) {
+        if (page == 0) searchResultList.clear();
+        searchResultList.addAll(beans);
+        searchAdapter.notifyDataSetChanged();
+        page++;
+    }
+
+
+    private void search() {
+        page = 0;
+        String text = etSearch.getText().toString();
+        if (text.trim().isEmpty()) return;
+        searchResultList.clear();
+        searchResultList.addAll(pageFactory.mBookUtil.searchContent(text));
+        searchAdapter.notifyDataSetChanged();
+    }
+
+    /**
      * 朗读
      */
     private SpeechService speechService;
@@ -548,6 +589,14 @@ public class ReadActivity extends MyActivity {
     };
 
     private void initSpeech() {
+        cbAutoTiming.setChecked(config.getIsAutoTiming());
+        if (config.getIsAutoTiming() && config.getTimingTime() > 0) {
+            sbTiming.setProgress(config.getTimingTime());
+            showTimer(config.getTimingTime());
+        }
+        sbSpeed.setProgress(config.getSpeakSpeed());
+        changeSpeaker(config.getSpeaker());
+
         Intent intent = new Intent(this, SpeechService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
@@ -560,7 +609,9 @@ public class ReadActivity extends MyActivity {
     /**
      * 停止朗读
      */
-    private void stopSpeechService() {
+    private void stopSpeech() {
+        toggleMenu();
+        isSpeaking = false;
         if (serviceConnection != null && speechService != null) {
             unbindService(serviceConnection);
         }
@@ -582,14 +633,12 @@ public class ReadActivity extends MyActivity {
                 drawerLayout.closeDrawer(Gravity.START);
                 break;
             case EventConstants.EVENT_SPEECH_STOP:
-                isSpeaking = false;
-                toggleMenu();
+                stopSpeech();
                 break;
             case EventConstants.EVENT_SPEECH_FINISH_PAGE:
                 pageFactory.nextPage();
                 if (pageFactory.islastPage()) {
-                    isSpeaking = false;
-                    toggleMenu();
+                    stopSpeech();
                     showMsg("小说已经读完了");
                 } else {
                     isSpeaking = true;
@@ -605,8 +654,21 @@ public class ReadActivity extends MyActivity {
     /**
      * 朗读设置
      */
-    @BindView(R2.id.tvSpeaker)
-    TextView tvSpeaker;
+    @BindView(R2.id.cbAutoTiming)
+    public CheckBox cbAutoTiming;
+    //计时器的布局
+    @BindView(R2.id.timer_layout)
+    public LinearLayout timerLayout;
+    @BindView(R2.id.countDownView)
+    public CountdownView countDownView;
+    @BindView(R2.id.speaker1)
+    TextView speakerFemale;
+    @BindView(R2.id.speaker2)
+    TextView speakerMale;
+    @BindView(R2.id.speaker3)
+    TextView speakerDuXY;
+    @BindView(R2.id.speaker4)
+    TextView speakerDuYY;
     @BindView(R2.id.sbSpeed)
     SeekBar sbSpeed;
     @BindView(R2.id.sbTiming)
@@ -639,18 +701,91 @@ public class ReadActivity extends MyActivity {
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-
+            int progress = seekBar.getProgress();
+            int trueProgress;
+            if (progress <= 7) {
+                trueProgress = 0;
+            } else if (progress <= 22) {
+                trueProgress = 15;
+            } else if (progress <= 37) {
+                trueProgress = 30;
+            } else if (progress <= 52) {
+                trueProgress = 45;
+            } else {
+                trueProgress = 60;
+            }
+            sbTiming.setProgress(trueProgress);
+            if (trueProgress != 0) {
+                ReadActivity.this.showMsg(trueProgress + "分钟后停止");
+                config.setTimingTime(progress);
+            }
+            showTimer(trueProgress);
         }
     };
 
-    @OnClick(R2.id.speakerChangeLeft)
-    public void speakerChangeLeft() {
-        ToastUtils.show("aaaaaaa");
-        speechService.switchVoice(OfflineResource.VOICE_DUYY);
+    @OnClick(R2.id.speaker1)
+    public void speakerChange1() {
+        speechService.switchVoice(OfflineResource.Speaker.FEMALE);
+        changeSpeaker(OfflineResource.Speaker.FEMALE);
     }
 
-    @OnClick(R2.id.speakerChangeRight)
-    public void speakerChangeRight() {
+    private void changeSpeaker(OfflineResource.Speaker speaker) {
+        speakerFemale.setTextColor(ContextCompat.getColor(this, R.color.gray5));
+        speakerMale.setTextColor(ContextCompat.getColor(this, R.color.gray5));
+        speakerDuXY.setTextColor(ContextCompat.getColor(this, R.color.gray5));
+        speakerDuYY.setTextColor(ContextCompat.getColor(this, R.color.gray5));
+        if (OfflineResource.Speaker.MALE.equals(speaker)) {
+            speakerMale.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        } else if (OfflineResource.Speaker.FEMALE.equals(speaker)) {
+            speakerFemale.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        } else if (OfflineResource.Speaker.DUXY.equals(speaker)) {
+            speakerDuXY.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        } else if (OfflineResource.Speaker.DUYY.equals(speaker)) {
+            speakerDuYY.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        }
+    }
+
+    @OnClick(R2.id.speaker2)
+    public void speakerChange2() {
+        speechService.switchVoice(OfflineResource.Speaker.MALE);
+        changeSpeaker(OfflineResource.Speaker.MALE);
+    }
+
+    @OnClick(R2.id.speaker3)
+    public void speakerChange3() {
+        speechService.switchVoice(OfflineResource.Speaker.DUXY);
+        changeSpeaker(OfflineResource.Speaker.DUXY);
+    }
+
+    @OnClick(R2.id.speaker4)
+    public void speakerChange4() {
+        speechService.switchVoice(OfflineResource.Speaker.DUYY);
+        changeSpeaker(OfflineResource.Speaker.DUYY);
+    }
+
+    @OnCheckedChanged(R2.id.cbAutoTiming)
+    void onAutoTimingChecked(boolean checked) {
+        config.setIsAutoTiming(checked);
+    }
+
+    //显示行走计时器
+    public void showTimer(int time) {
+        timerLayout.setVisibility(View.VISIBLE);
+        if (time <= 0) {
+            hideTimer();
+            return;
+        }
+        countDownView.start((long) (time * 60000));
+        countDownView.setOnCountdownEndListener(cv -> {
+            hideTimer();
+            stopSpeech();
+        });
+    }
+
+    //隐藏计时器
+    public void hideTimer() {
+        timerLayout.setVisibility(View.GONE);
+        countDownView.stop();
     }
 
     /**
@@ -666,25 +801,29 @@ public class ReadActivity extends MyActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         pageFactory.clear();
         pageWidget = null;
         unregisterReceiver(myReceiver);
-        stopSpeechService();
+        stopSpeech();
+        super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.END)) {
+            drawerLayout.closeDrawer(Gravity.END);
+            return;
+        }
+        if (drawerLayout.isDrawerOpen(Gravity.START)) {
+            drawerLayout.closeDrawer(Gravity.START);
+            return;
+        }
         if (getMenuIsShowing()) {
             toggleMenu();
             return;
         }
         if (mSettingDialog.isShowing()) {
             mSettingDialog.hide();
-            return;
-        }
-        if (mPageModeDialog.isShowing()) {
-            mPageModeDialog.hide();
             return;
         }
         super.onBackPressed();

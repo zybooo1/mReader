@@ -27,20 +27,12 @@ import butterknife.OnClick;
  */
 public class SettingDialog extends Dialog {
 
-    @BindView(R2.id.tv_dark)
-    TextView tv_dark;
     @BindView(R2.id.sb_brightness)
     SeekBar sb_brightness;
-    @BindView(R2.id.tv_bright)
-    TextView tv_bright;
     @BindView(R2.id.tv_xitong)
     TextView tv_xitong;
-    @BindView(R2.id.tv_subtract)
-    TextView tv_subtract;
     @BindView(R2.id.tv_size)
     TextView tv_size;
-    @BindView(R2.id.tv_add)
-    TextView tv_add;
     @BindView(R2.id.tv_qihei)
     TextView tv_qihei;
     @BindView(R2.id.tv_default)
@@ -57,12 +49,19 @@ public class SettingDialog extends Dialog {
     CircleImageView iv_bg4;
     @BindView(R2.id.tv_size_default)
     TextView tv_size_default;
-    @BindView(R2.id.tv_fzxinghei)
-    TextView tv_fzxinghei;
     @BindView(R2.id.tv_fzkatong)
     TextView tv_fzkatong;
     @BindView(R2.id.tv_bysong)
     TextView tv_bysong;
+
+    @BindView(R2.id.tv_simulation)
+    TextView tv_simulation;
+    @BindView(R2.id.tv_cover)
+    TextView tv_cover;
+    @BindView(R2.id.tv_slide)
+    TextView tv_slide;
+    @BindView(R2.id.tv_none)
+    TextView tv_none;
 
 
     private Config config;
@@ -77,7 +76,7 @@ public class SettingDialog extends Dialog {
     }
 
     public SettingDialog(Context context) {
-        this(context, R.style.setting_dialog);
+        this(context, R.style.reader_setting_dialog);
     }
 
     public SettingDialog(Context context, int themeResId) {
@@ -99,28 +98,25 @@ public class SettingDialog extends Dialog {
         p.width = d.getWidth();
         getWindow().setAttributes(p);
 
-        FONT_SIZE_MIN = (int) getContext().getResources().getDimension(R.dimen.reading_min_text_size);
-        FONT_SIZE_MAX = (int) getContext().getResources().getDimension(R.dimen.reading_max_text_size);
+        FONT_SIZE_MIN = (int) getContext().getResources().getDimension(R.dimen.reader_reading_min_text_size);
+        FONT_SIZE_MAX = (int) getContext().getResources().getDimension(R.dimen.reader_reading_max_text_size);
 
         config = Config.getInstance();
 
         //初始化亮度
         isSystem = config.isSystemLight();
         setTextViewSelect(tv_xitong, isSystem);
+        setPageMode(config.getPageMode());
         setBrightness(config.getLight());
+
+
 
         //初始化字体大小
         currentFontSize = (int) config.getFontSize();
         tv_size.setText(currentFontSize + "");
 
         //初始化字体
-        tv_default.setTypeface(config.getTypeface(Config.FONTTYPE_DEFAULT));
-        tv_qihei.setTypeface(config.getTypeface(Config.FONTTYPE_QIHEI));
-//        tv_fzxinghei.setTypeface(config.getTypeface(Config.FONTTYPE_FZXINGHEI));
-        tv_fzkatong.setTypeface(config.getTypeface(Config.FONTTYPE_FZKATONG));
-        tv_bysong.setTypeface(config.getTypeface(Config.FONTTYPE_BYSONG));
-//        tv_xinshou.setTypeface(config.getTypeface(Config.FONTTYPE_XINSHOU));
-//        tv_wawa.setTypeface(config.getTypeface(Config.FONTTYPE_WAWA));
+//        tv_default.setTypeface(config.getTypeface(Config.FONTTYPE_DEFAULT));
         selectTypeface(config.getTypefacePath());
 
         selectBg(config.getBookBgType());
@@ -147,41 +143,26 @@ public class SettingDialog extends Dialog {
 
     //选择背景
     private void selectBg(int type) {
+        iv_bg_default.setBorderWidth(CommonUtils.dp2px(0));
+        iv_bg1.setBorderWidth(CommonUtils.dp2px(0));
+        iv_bg2.setBorderWidth(CommonUtils.dp2px(0));
+        iv_bg3.setBorderWidth(CommonUtils.dp2px(0));
+        iv_bg4.setBorderWidth(CommonUtils.dp2px(0));
         switch (type) {
             case Config.BOOK_BG_DEFAULT:
-                iv_bg_default.setBorderWidth(CommonUtils.dp2px( 2));
-                iv_bg1.setBorderWidth(CommonUtils.dp2px(0));
-                iv_bg2.setBorderWidth(CommonUtils.dp2px(0));
-                iv_bg3.setBorderWidth(CommonUtils.dp2px(0));
-                iv_bg4.setBorderWidth(CommonUtils.dp2px(0));
+                iv_bg_default.setBorderWidth(CommonUtils.dp2px(2));
                 break;
             case Config.BOOK_BG_1:
-                iv_bg_default.setBorderWidth(CommonUtils.dp2px( 0));
-                iv_bg1.setBorderWidth(CommonUtils.dp2px( 2));
-                iv_bg2.setBorderWidth(CommonUtils.dp2px( 0));
-                iv_bg3.setBorderWidth(CommonUtils.dp2px( 0));
-                iv_bg4.setBorderWidth(CommonUtils.dp2px( 0));
+                iv_bg1.setBorderWidth(CommonUtils.dp2px(2));
                 break;
             case Config.BOOK_BG_2:
-                iv_bg_default.setBorderWidth(CommonUtils.dp2px( 0));
-                iv_bg1.setBorderWidth(CommonUtils.dp2px( 0));
-                iv_bg2.setBorderWidth(CommonUtils.dp2px( 2));
-                iv_bg3.setBorderWidth(CommonUtils.dp2px( 0));
-                iv_bg4.setBorderWidth(CommonUtils.dp2px( 0));
+                iv_bg2.setBorderWidth(CommonUtils.dp2px(2));
                 break;
             case Config.BOOK_BG_3:
-                iv_bg_default.setBorderWidth(CommonUtils.dp2px(0));
-                iv_bg1.setBorderWidth(CommonUtils.dp2px(0));
-                iv_bg2.setBorderWidth(CommonUtils.dp2px(0));
                 iv_bg3.setBorderWidth(CommonUtils.dp2px(2));
-                iv_bg4.setBorderWidth(CommonUtils.dp2px(0));
                 break;
             case Config.BOOK_BG_4:
-                iv_bg_default.setBorderWidth(CommonUtils.dp2px( 0));
-                iv_bg1.setBorderWidth(CommonUtils.dp2px( 0));
-                iv_bg2.setBorderWidth(CommonUtils.dp2px( 0));
-                iv_bg3.setBorderWidth(CommonUtils.dp2px( 0));
-                iv_bg4.setBorderWidth(CommonUtils.dp2px( 2));
+                iv_bg4.setBorderWidth(CommonUtils.dp2px(2));
                 break;
         }
     }
@@ -197,46 +178,18 @@ public class SettingDialog extends Dialog {
 
     //选择字体
     private void selectTypeface(String typeface) {
+        setTextViewSelect(tv_default, false);
+        setTextViewSelect(tv_qihei, false);
+        setTextViewSelect(tv_fzkatong, false);
+        setTextViewSelect(tv_bysong, false);
         if (typeface.equals(Config.FONTTYPE_DEFAULT)) {
             setTextViewSelect(tv_default, true);
-            setTextViewSelect(tv_qihei, false);
-            setTextViewSelect(tv_fzxinghei, false);
-            setTextViewSelect(tv_fzkatong, false);
-            setTextViewSelect(tv_bysong, false);
-//            setTextViewSelect(tv_xinshou, false);
-//            setTextViewSelect(tv_wawa, false);
         } else if (typeface.equals(Config.FONTTYPE_QIHEI)) {
-            setTextViewSelect(tv_default, false);
             setTextViewSelect(tv_qihei, true);
-            setTextViewSelect(tv_fzxinghei, false);
-            setTextViewSelect(tv_fzkatong, false);
-            setTextViewSelect(tv_bysong, false);
-//            setTextViewSelect(tv_xinshou, false);
-//            setTextViewSelect(tv_wawa, false);
-        } else if (typeface.equals(Config.FONTTYPE_FZXINGHEI)) {
-            setTextViewSelect(tv_default, false);
-            setTextViewSelect(tv_qihei, false);
-            setTextViewSelect(tv_fzxinghei, true);
-            setTextViewSelect(tv_fzkatong, false);
-            setTextViewSelect(tv_bysong, false);
-//            setTextViewSelect(tv_xinshou, true);
-//            setTextViewSelect(tv_wawa, false);
         } else if (typeface.equals(Config.FONTTYPE_FZKATONG)) {
-            setTextViewSelect(tv_default, false);
-            setTextViewSelect(tv_qihei, false);
-            setTextViewSelect(tv_fzxinghei, false);
             setTextViewSelect(tv_fzkatong, true);
-            setTextViewSelect(tv_bysong, false);
-//            setTextViewSelect(tv_xinshou, false);
-//            setTextViewSelect(tv_wawa, true);
         } else if (typeface.equals(Config.FONTTYPE_BYSONG)) {
-            setTextViewSelect(tv_default, false);
-            setTextViewSelect(tv_qihei, false);
-            setTextViewSelect(tv_fzxinghei, false);
-            setTextViewSelect(tv_fzkatong, false);
             setTextViewSelect(tv_bysong, true);
-//            setTextViewSelect(tv_xinshou, false);
-//            setTextViewSelect(tv_wawa, true);
         }
     }
 
@@ -257,10 +210,10 @@ public class SettingDialog extends Dialog {
     //设置按钮选择的背景
     private void setTextViewSelect(TextView textView, Boolean isSelect) {
         if (isSelect) {
-            textView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.button_select_bg));
-            textView.setTextColor(getContext().getResources().getColor(R.color.read_dialog_button_select));
+            textView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.reader_button_select_bg));
+            textView.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
         } else {
-            textView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.button_bg));
+            textView.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.reader_button_bg));
             textView.setTextColor(getContext().getResources().getColor(R.color.white));
         }
     }
@@ -278,7 +231,7 @@ public class SettingDialog extends Dialog {
     }
 
 
-    @OnClick({R2.id.tv_dark, R2.id.tv_bright, R2.id.tv_xitong, R2.id.tv_subtract, R2.id.tv_add, R2.id.tv_size_default, R2.id.tv_qihei, R2.id.tv_fzxinghei, R2.id.tv_fzkatong, R2.id.tv_bysong,
+    @OnClick({R2.id.tv_dark, R2.id.tv_bright, R2.id.tv_xitong, R2.id.tv_subtract, R2.id.tv_add, R2.id.tv_size_default, R2.id.tv_qihei, R2.id.tv_fzkatong, R2.id.tv_bysong,
             R2.id.tv_default, R2.id.iv_bg_default, R2.id.iv_bg_1, R2.id.iv_bg_2, R2.id.iv_bg_3, R2.id.iv_bg_4})
     public void onClick(View view) {
         int i = view.getId();
@@ -296,23 +249,12 @@ public class SettingDialog extends Dialog {
         } else if (i == R.id.tv_qihei) {
             selectTypeface(Config.FONTTYPE_QIHEI);
             setTypeface(Config.FONTTYPE_QIHEI);
-        } else if (i == R.id.tv_fzxinghei) {
-            selectTypeface(Config.FONTTYPE_FZXINGHEI);
-            setTypeface(Config.FONTTYPE_FZXINGHEI);
         } else if (i == R.id.tv_fzkatong) {
             selectTypeface(Config.FONTTYPE_FZKATONG);
             setTypeface(Config.FONTTYPE_FZKATONG);
         } else if (i == R.id.tv_bysong) {
             selectTypeface(Config.FONTTYPE_BYSONG);
             setTypeface(Config.FONTTYPE_BYSONG);
-            //            case R.id.tv_xinshou:
-//                selectTypeface(Config.FONTTYPE_XINSHOU);
-//                setTypeface(Config.FONTTYPE_XINSHOU);
-//                break;
-//            case R.id.tv_wawa:
-//                selectTypeface(Config.FONTTYPE_WAWA);
-//                setTypeface(Config.FONTTYPE_WAWA);
-//                break;
         } else if (i == R.id.tv_default) {
             selectTypeface(Config.FONTTYPE_DEFAULT);
             setTypeface(Config.FONTTYPE_DEFAULT);
@@ -334,6 +276,42 @@ public class SettingDialog extends Dialog {
         }
     }
 
+    @OnClick({R2.id.tv_simulation, R2.id.tv_cover, R2.id.tv_slide, R2.id.tv_none})
+    public void onClickPageMode(View view) {
+        int i = view.getId();
+        if (i == R.id.tv_simulation) {
+            setPageMode(Config.PAGE_MODE_SIMULATION);
+        } else if (i == R.id.tv_cover) {
+            setPageMode(Config.PAGE_MODE_COVER);
+        } else if (i == R.id.tv_slide) {
+            setPageMode(Config.PAGE_MODE_SLIDE);
+        } else if (i == R.id.tv_none) {
+            setPageMode(Config.PAGE_MODE_NONE);
+        }
+    }
+
+    //设置翻页
+    public void setPageMode(int pageMode) {
+        config.setPageMode(pageMode);
+        if (mSettingListener != null) {
+            mSettingListener.changePageMode(pageMode);
+        }
+
+        setTextViewSelect(tv_simulation, false);
+        setTextViewSelect(tv_cover, false);
+        setTextViewSelect(tv_slide, false);
+        setTextViewSelect(tv_none, false);
+        if (pageMode == Config.PAGE_MODE_SIMULATION) {
+            setTextViewSelect(tv_simulation, true);
+        } else if (pageMode == Config.PAGE_MODE_COVER) {
+            setTextViewSelect(tv_cover, true);
+        } else if (pageMode == Config.PAGE_MODE_SLIDE) {
+            setTextViewSelect(tv_slide, true);
+        } else if (pageMode == Config.PAGE_MODE_NONE) {
+            setTextViewSelect(tv_none, true);
+        }
+    }
+
     //变大书本字体
     private void addFontSize() {
         if (currentFontSize < FONT_SIZE_MAX) {
@@ -347,7 +325,7 @@ public class SettingDialog extends Dialog {
     }
 
     private void defaultFontSize() {
-        currentFontSize = (int) getContext().getResources().getDimension(R.dimen.reading_default_text_size);
+        currentFontSize = (int) getContext().getResources().getDimension(R.dimen.reader_reading_default_text_size);
         tv_size.setText(currentFontSize + "");
         config.setFontSize(currentFontSize);
         if (mSettingListener != null) {
@@ -390,6 +368,8 @@ public class SettingDialog extends Dialog {
         void changeTypeFace(Typeface typeface);
 
         void changeBookBg(int type);
+
+        void changePageMode(int mode);
     }
 
 }

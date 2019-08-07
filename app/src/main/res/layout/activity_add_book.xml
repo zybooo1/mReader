@@ -14,7 +14,6 @@
             android:id="@+id/titleBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:theme="@style/AppTheme.AppBarOverlay"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:title="添加书籍" />
 

@@ -298,19 +298,19 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     private void initPageColor() {
         switch (Config.getInstance().getBookBgType()) {
             case Config.BOOK_BG_DEFAULT:
-                mContent.setBackground(ContextCompat.getDrawable(this, com.zyb.reader.R.drawable.paper));
+                mContent.setBackground(ContextCompat.getDrawable(this, com.zyb.reader.R.drawable.reader_paper));
                 break;
             case Config.BOOK_BG_1:
-                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.read_bg_1));
+                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.reader_read_bg_1));
                 break;
             case Config.BOOK_BG_2:
-                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.read_bg_2));
+                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.reader_read_bg_2));
                 break;
             case Config.BOOK_BG_3:
-                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.read_bg_3));
+                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.reader_read_bg_3));
                 break;
             case Config.BOOK_BG_4:
-                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.read_bg_4));
+                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.reader_read_bg_4));
                 break;
         }
         if (Config.getInstance().getDayOrNight())
@@ -393,8 +393,8 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         LogUtil.e("left:" + mFirst.getLeft() + "top:" + mFirst.getTop());
 
         mContent.clearAnimation();
-        mContent.startAnimation(scaleAnimation);
         mFirst.clearAnimation();
+        mContent.startAnimation(scaleAnimation);
         mFirst.startAnimation(threeDAnimation);
     }
 

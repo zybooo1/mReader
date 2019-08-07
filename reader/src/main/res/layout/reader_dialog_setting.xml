@@ -1,175 +1,254 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:background="@color/read_dialog_bg"
+    android:background="@color/reader_MenucolorReadMenu"
+    android:orientation="vertical"
     android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:orientation="vertical">
-    
+    android:paddingRight="10dp">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_height"
+        android:layout_height="@dimen/reader_setting_height"
         android:orientation="horizontal">
+
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="亮度"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <ImageView
             android:id="@+id/tv_dark"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/setting_dark"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            android:textColor="@color/white"
             android:layout_gravity="center_vertical"
-            />
+            android:layout_marginLeft="20dp"
+            android:gravity="center"
+            android:paddingRight="10dp"
+            app:srcCompat="@drawable/reader_svg_brightness_down" />
 
         <SeekBar
             android:id="@+id/sb_brightness"
-            android:layout_width="150dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:gravity="center"
             android:max="100"
-            android:layout_gravity="center_vertical">
-        </SeekBar>
+            android:maxHeight="3dp"
+            android:minHeight="3dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:progressDrawable="@drawable/reader_seekbar_bg"
+            android:thumb="@drawable/reader_seekbar_thumb"
+            android:thumbOffset="0dp"
+            tools:progress="50" />
 
-        <TextView
+        <ImageView
             android:id="@+id/tv_bright"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:text="@string/setting_bright"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:layout_gravity="center_vertical"
-            />
-        
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            app:srcCompat="@drawable/reader_svg_brightness_up" />
+
         <TextView
             android:id="@+id/tv_xitong"
-            style="@style/setting_dialog_button"
+            style="@style/reader_setting_dialog_button"
             android:layout_marginLeft="10dp"
-            android:textSize="16sp"
-            android:text="@string/setting_system" />
+            android:text="@string/reader_setting_system" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_height"
+        android:layout_height="@dimen/reader_setting_height"
+        android:gravity="center"
         android:orientation="horizontal">
+
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="字号"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <ImageView
             android:id="@+id/tv_subtract"
-            style="@style/setting_dialog_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
             android:layout_weight="1"
-            android:textSize="30sp"
-            android:background="@null"
-            android:textColor="@color/read_dialog_button_select"
-            android:text="@string/setting_subtract" />
+            android:background="@drawable/reader_button_bg"
+            app:srcCompat="@drawable/reader_svg_font_size_down" />
+
         <TextView
             android:id="@+id/tv_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
             android:layout_gravity="center_vertical"
+            android:layout_weight="3"
             android:gravity="center"
+            android:text="64"
             android:textColor="@color/white"
-            android:textSize="16sp"
-            android:text="64" />
+            android:textSize="16sp" />
 
-        <TextView
+        <ImageView
             android:id="@+id/tv_add"
-            style="@style/setting_dialog_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="30sp"
-            android:background="@null"
-            android:textColor="@color/read_dialog_button_select"
-            android:text="@string/setting_add" />
+            android:background="@drawable/reader_button_bg"
+            app:srcCompat="@drawable/reader_svg_font_size_add" />
 
         <TextView
             android:id="@+id/tv_size_default"
-            style="@style/setting_dialog_button"
+            style="@style/reader_setting_dialog_button"
             android:layout_marginLeft="20dp"
-            android:text="@string/setting_default" />
+            android:text="@string/reader_setting_default" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_height"
+        android:layout_height="@dimen/reader_setting_height"
         android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="字体"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
         <TextView
             android:id="@+id/tv_default"
-            style="@style/setting_dialog_button"
+            style="@style/reader_setting_dialog_button"
+            android:layout_marginLeft="20dp"
             android:layout_weight="1"
-            android:textSize="14sp"
-            android:text="@string/font_default" />
+            android:text="@string/reader_font_default"
+            android:textSize="14sp" />
+
         <TextView
             android:id="@+id/tv_qihei"
-            style="@style/setting_dialog_button"
+            style="@style/reader_setting_dialog_button"
+            android:layout_marginLeft="20dp"
             android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:textSize="14sp"
-            android:text="@string/font_qihei" />
-        <TextView
-            android:id="@+id/tv_fzxinghei"
-            style="@style/setting_dialog_button"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:textSize="14sp"
-            android:text="@string/font_fzxinghei"
-            android:visibility="gone"/>
+            android:text="@string/reader_font_qihei"
+            android:textSize="14sp" />
+
+
         <TextView
             android:id="@+id/tv_fzkatong"
-            style="@style/setting_dialog_button"
+            style="@style/reader_setting_dialog_button"
+            android:layout_marginLeft="20dp"
             android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:textSize="14sp"
-            android:text="@string/font_fzkatong" />
+            android:text="@string/reader_font_fzkatong"
+            android:textSize="14sp" />
+
         <TextView
             android:id="@+id/tv_bysong"
-            style="@style/setting_dialog_button"
+            style="@style/reader_setting_dialog_button"
+            android:layout_marginLeft="20dp"
             android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:textSize="14sp"
-            android:text="@string/font_bysong" />
+            android:text="@string/reader_font_bysong"
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_height"
+        android:layout_height="@dimen/reader_setting_height"
         android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="翻页"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_simulation"
+            style="@style/reader_setting_dialog_button"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:text="@string/reader_page_mode_simulation"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_cover"
+            style="@style/reader_setting_dialog_button"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:text="@string/reader_page_mode_cover"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_slide"
+            style="@style/reader_setting_dialog_button"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:text="@string/reader_page_mode_slide"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_none"
+            style="@style/reader_setting_dialog_button"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:text="@string/reader_page_mode_none"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/reader_setting_height"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="背景"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
 
         <com.zyb.reader.view.CircleImageView
             android:id="@+id/iv_bg_default"
-            style="@style/setting_dialog_iv"
+            style="@style/reader_setting_dialog_iv"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:src="@color/read_bg_default" />
+            android:src="@color/reader_read_bg_default" />
 
         <com.zyb.reader.view.CircleImageView
             android:id="@+id/iv_bg_1"
-            style="@style/setting_dialog_iv"
+            style="@style/reader_setting_dialog_iv"
             android:layout_weight="1"
-            android:src="@color/read_bg_1" />
+            android:src="@color/reader_read_bg_1" />
 
         <com.zyb.reader.view.CircleImageView
             android:id="@+id/iv_bg_2"
-            style="@style/setting_dialog_iv"
+            style="@style/reader_setting_dialog_iv"
             android:layout_weight="1"
-            android:src="@color/read_bg_2" />
+            android:src="@color/reader_read_bg_2" />
 
         <com.zyb.reader.view.CircleImageView
             android:id="@+id/iv_bg_3"
-            style="@style/setting_dialog_iv"
+            style="@style/reader_setting_dialog_iv"
             android:layout_weight="1"
-            android:src="@color/read_bg_3" />
+            android:src="@color/reader_read_bg_3" />
 
         <com.zyb.reader.view.CircleImageView
             android:id="@+id/iv_bg_4"
-            style="@style/setting_dialog_iv"
+            style="@style/reader_setting_dialog_iv"
             android:layout_weight="1"
-            android:src="@color/read_bg_4" />
+            android:src="@color/reader_read_bg_4" />
     </LinearLayout>
 </LinearLayout>

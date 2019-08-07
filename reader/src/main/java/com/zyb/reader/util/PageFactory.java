@@ -8,11 +8,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
  */
 public class PageFactory {
     private static final String TAG = "PageFactory";
@@ -57,7 +59,7 @@ public class PageFactory {
     //进度格式
     private DecimalFormat df;
     //电池边界宽度
-    private float mBorderWidth;
+    private float mBorderWidth = 3;
     // 上下与边缘的距离
     private float marginHeight;
     // 左右与边缘的距离
@@ -76,20 +78,24 @@ public class PageFactory {
     private Typeface typeface;
     //文字画笔
     private Paint mPaint;
-    //加载画笔
-    private Paint waitPaint;
+    //标题、时间等的画笔
+    private Paint mTipPaint;
+    //时间、标题等字体大小
+    private float mTipTextSize;
+    //时间、标题等颜色
+    private int mTipColor;
     //文字颜色
-    private int m_textColor = Color.rgb(50, 65, 78);
+    private int mTextColor = Color.rgb(50, 65, 78);
     // 绘制内容的宽
     private float mVisibleHeight;
     // 绘制内容的宽
     private float mVisibleWidth;
     // 每页可以显示的行数
     private int mLineCount;
+    //电池边框画笔
+    private Paint mBatterryBorderPaint;
     //电池画笔
     private Paint mBatterryPaint;
-    //电池字体大小
-    private float mBatterryFontSize;
     //背景图片
     private Bitmap m_book_bg = null;
     //当前显示的文字
@@ -110,9 +116,9 @@ public class PageFactory {
     //电池电量百分比
     private float mBatteryPercentage;
     //电池外边框
-    private RectF rect1 = new RectF();
+    private RectF batteryBorderRect = new RectF();
     //电池内边框
-    private RectF rect2 = new RectF();
+    private RectF batteryRect = new RectF();
     //文件编码
 //    private String m_strCharsetName = "GBK";
     //当前是否为第一页
@@ -138,7 +144,7 @@ public class PageFactory {
     private int currentCharter = 0;
     //当前电量
     private int level = 0;
-    private BookUtil mBookUtil;
+    public BookUtil mBookUtil;
     private PageEvent mPageEvent;
     private TRPage currentPage;
     private TRPage prePage;
@@ -177,38 +183,44 @@ public class PageFactory {
         date = sdf.format(new java.util.Date());
         df = new DecimalFormat("#0.0");
 
-        marginWidth = mContext.getResources().getDimension(R.dimen.readingMarginWidth);
-        marginHeight = mContext.getResources().getDimension(R.dimen.readingMarginHeight);
-        statusMarginBottom = mContext.getResources().getDimension(R.dimen.reading_status_margin_bottom);
-        lineSpace = context.getResources().getDimension(R.dimen.reading_line_spacing);
-        paragraphSpace = context.getResources().getDimension(R.dimen.reading_paragraph_spacing);
+        marginWidth = mContext.getResources().getDimension(R.dimen.reader_readingMarginWidth);
+        marginHeight = mContext.getResources().getDimension(R.dimen.reader_readingMarginHeight);
+        statusMarginBottom = CommonUtils.getStatusBarHeight(context);
+        lineSpace = context.getResources().getDimension(R.dimen.reader_reading_line_spacing);
+        paragraphSpace = context.getResources().getDimension(R.dimen.reader_reading_paragraph_spacing);
         mVisibleWidth = mWidth - marginWidth * 2;
-        mVisibleHeight = mHeight - marginHeight * 2;
+        mVisibleHeight = mHeight - marginHeight * 2-statusMarginBottom*2;
 
         typeface = config.getTypeface();
         m_fontSize = config.getFontSize();
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);// 画笔
         mPaint.setTextAlign(Paint.Align.LEFT);// 左对齐
         mPaint.setTextSize(m_fontSize);// 字体大小
-        mPaint.setColor(m_textColor);// 字体颜色
+        mPaint.setColor(mTextColor);// 字体颜色
         mPaint.setTypeface(typeface);
         mPaint.setSubpixelText(true);// 设置该项为true，将有助于文本在LCD屏幕上的显示效果
 
-        waitPaint = new Paint(Paint.ANTI_ALIAS_FLAG);// 画笔
-        waitPaint.setTextAlign(Paint.Align.LEFT);// 左对齐
-        waitPaint.setTextSize(mContext.getResources().getDimension(R.dimen.reading_default_text_size));// 字体大小
-        waitPaint.setColor(m_textColor);// 字体颜色
-        waitPaint.setTypeface(typeface);
-        waitPaint.setSubpixelText(true);// 设置该项为true，将有助于文本在LCD屏幕上的显示效果
         calculateLineCount();
 
-        mBorderWidth = mContext.getResources().getDimension(R.dimen.reading_board_battery_border_width);
+        mTipColor = ContextCompat.getColor(context, R.color.reader_reading_tip_text);
+        mBatterryBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mBatterryBorderPaint.setColor(mTipColor);
+        mBatterryBorderPaint.setStyle(Paint.Style.STROKE);
+        mBatterryBorderPaint.setStrokeWidth(2f);
+        mBatterryBorderPaint.setStrokeJoin(Paint.Join.ROUND);
+
+        mTipPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mTipTextSize = CommonUtils.sp2px(14);
+        mTipPaint.setColor(mTipColor);
+        mTipPaint.setTextSize(mTipTextSize);
+        mTipPaint.setTypeface(typeface);
+        mTipPaint.setTextAlign(Paint.Align.LEFT);
+
         mBatterryPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mBatterryFontSize = CommonUtils.sp2px(12);
-        mBatterryPaint.setTextSize(mBatterryFontSize);
-        mBatterryPaint.setTypeface(typeface);
-        mBatterryPaint.setTextAlign(Paint.Align.LEFT);
-        mBatterryPaint.setColor(m_textColor);
+        mBatterryPaint.setColor(mTipColor);
+        mBatterryPaint.setStyle(Paint.Style.FILL);
+
+
         batteryInfoIntent = context.getApplicationContext().registerReceiver(null,
                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));//注册广播,随时获取到电池电量信息
 
@@ -220,14 +232,6 @@ public class PageFactory {
         float wordWidth = mPaint.measureText("\u3000");
         float width = mVisibleWidth % wordWidth;
         measureMarginWidth = marginWidth + width / 2;
-
-//        Rect rect = new Rect();
-//        mPaint.getTextBounds("好", 0, 1, rect);
-//        float wordHeight = rect.height();
-//        float wordW = rect.width();
-//        Paint.FontMetrics fm = mPaint.getFontMetrics();
-//        float wrodH = (float) (Math.ceil(fm.top + fm.bottom + fm.leading));
-//        String a = "";
 
     }
 
@@ -242,7 +246,7 @@ public class PageFactory {
             canvas.drawColor(Color.BLACK);
             setBgBitmap(bitmap);
             //设置字体颜色
-            setM_textColor(Color.rgb(128, 128, 128));
+            setmTextColor(Color.rgb(128, 128, 128));
             setBookPageBg(Color.BLACK);
         } else {
             //设置背景
@@ -258,27 +262,23 @@ public class PageFactory {
         String status = "";
         switch (mStatus) {
             case OPENING:
-                status = "正在打开书本...";
+                status = "加载中...";
                 break;
             case FAIL:
-                status = "打开书本失败！";
+                status = "出现了错误";
                 break;
         }
 
-        Canvas c = new Canvas(bitmap);
-        c.drawBitmap(getBgBitmap(), 0, 0, null);
-        waitPaint.setColor(getTextColor());
-        waitPaint.setTextAlign(Paint.Align.CENTER);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawBitmap(getBgBitmap(), 0, 0, null);
 
         Rect targetRect = new Rect(0, 0, mWidth, mHeight);
-//        c.drawRect(targetRect, waitPaint);
-        Paint.FontMetricsInt fontMetrics = waitPaint.getFontMetricsInt();
+//        canvas.drawRect(targetRect, mPaint);
+        Paint.FontMetricsInt fontMetrics = mPaint.getFontMetricsInt();
         // 转载请注明出处：http://blog.csdn.net/hursing
         int baseline = (targetRect.bottom + targetRect.top - fontMetrics.bottom - fontMetrics.top) / 2;
         // 下面这行是实现水平居中，drawText对应改为传入targetRect.centerX()
-        waitPaint.setTextAlign(Paint.Align.CENTER);
-        c.drawText(status, targetRect.centerX(), baseline, waitPaint);
-//        c.drawText("正在打开书本...", mHeight / 2, 0, waitPaint);
+        canvas.drawText(status, targetRect.centerX() - (mPaint.measureText(status) / 2), baseline, mPaint);
         mBookPageWidget.postInvalidate();
     }
 
@@ -293,80 +293,73 @@ public class PageFactory {
                 public void run() {
                     super.run();
                     values.put("begin", currentPage.getBegin());
-                    // TODO: 2019/7/13
-//                    DataSupport.update(BookList.class,values,bookList.getId());
                     book.setBegin(currentPage.getBegin());
                     DBFactory.getInstance().getBooksManage().insertOrUpdate(book);
                 }
             }.start();
         }
 
-        Canvas c = new Canvas(bitmap);
-        c.drawBitmap(getBgBitmap(), 0, 0, null);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawBitmap(getBgBitmap(), 0, 0, null);
 //        word.setLength(0);
         mPaint.setTextSize(getFontSize());
         mPaint.setColor(getTextColor());
-        mBatterryPaint.setColor(getTextColor());
         if (m_lines.size() == 0) {
             return;
         }
 
-        if (m_lines.size() > 0) {
-            float y = marginHeight;
-            for (String strLine : m_lines) {
-                y += m_fontSize + lineSpace;
-                c.drawText(strLine, measureMarginWidth, y, mPaint);
+        float y = marginHeight+statusMarginBottom;
+        for (String strLine : m_lines) {
+            y += m_fontSize + lineSpace;
+            canvas.drawText(strLine, measureMarginWidth, y, mPaint);
 //                word.append(strLine);
-            }
         }
 
-        //画进度及时间
-        int dateWith = (int) (mBatterryPaint.measureText(date) + mBorderWidth);//时间宽度
+        // 画电池
+        level = batteryInfoIntent.getIntExtra("level", 50);
+        int scale = batteryInfoIntent.getIntExtra("scale", 100);
+        mBatteryPercentage = (float) level / scale;
+        //模拟电量变化
+//        mBatteryPercentage = new Random().nextFloat();
+        //画电池外框
+        float batteryWidth = CommonUtils.dp2px(20);//电池宽
+        float batteryHeight = CommonUtils.dp2px(10);//电池高
+        float batteryLeft = marginWidth;//电池外框left位置
+        float batteryTop = mHeight - batteryHeight - statusMarginBottom;//电池外框Top位置
+        float batteryBottom = mHeight - statusMarginBottom;//电池外框Bottom位置
+        batteryBorderRect.set(batteryLeft, batteryTop, batteryLeft + batteryWidth, batteryBottom);
+        canvas.drawRoundRect(batteryBorderRect, batteryHeight / 2, batteryHeight / 2, mBatterryBorderPaint);
+        //画电量部分
+        Path path = new Path();
+        float radius = batteryRect.height() / 2;
+        float[] radiusArray = new float[]{radius, radius, radius, radius, radius, radius, radius, radius};
+        RectF clipRect = new RectF(batteryLeft + mBorderWidth, batteryTop + mBorderWidth, batteryLeft + batteryWidth - mBorderWidth, mHeight - statusMarginBottom - mBorderWidth);
+        path.addRoundRect(clipRect, radiusArray, Path.Direction.CW);
+        //这个rect大小根据电量变化
+        batteryRect.set(batteryLeft + mBorderWidth, batteryTop + mBorderWidth, batteryLeft + batteryWidth * mBatteryPercentage - mBorderWidth, mHeight - statusMarginBottom - mBorderWidth);
+        //根据电量值裁剪
+        canvas.save();
+        canvas.clipPath(path);
+        canvas.drawRect(batteryRect, mBatterryPaint);
+        canvas.restore();
+
+        //画时间及进度
         float fPercent = (float) (currentPage.getBegin() * 1.0 / mBookUtil.getBookLen());//进度
         currentProgress = fPercent;
         if (mPageEvent != null) {
             mPageEvent.changeProgress(fPercent);
         }
         String strPercent = df.format(fPercent * 100) + "%";//进度文字
-        int nPercentWidth = (int) mBatterryPaint.measureText("999.9%") + 1;  //Paint.measureText直接返回參數字串所佔用的寬度
-        c.drawText(strPercent, mWidth - nPercentWidth, mHeight - statusMarginBottom, mBatterryPaint);//x y为坐标值
-        c.drawText(date, marginWidth, mHeight - statusMarginBottom, mBatterryPaint);
-        // 画电池
-        level = batteryInfoIntent.getIntExtra("level", 0);
-        int scale = batteryInfoIntent.getIntExtra("scale", 100);
-        mBatteryPercentage = (float) level / scale;
-        float rect1Left = marginWidth + dateWith + statusMarginBottom;//电池外框left位置
-        //画电池外框
-        float width = CommonUtils.dp2px(20) - mBorderWidth;
-        float height = CommonUtils.dp2px(10);
-        rect1.set(rect1Left, mHeight - height - statusMarginBottom, rect1Left + width, mHeight - statusMarginBottom);
-        rect2.set(rect1Left + mBorderWidth, mHeight - height + mBorderWidth - statusMarginBottom, rect1Left + width - mBorderWidth, mHeight - mBorderWidth - statusMarginBottom);
-        c.save();
-        c.clipRect(rect2, Region.Op.DIFFERENCE);
-        c.drawRect(rect1, mBatterryPaint);
-        c.restore();
-        //画电量部分
-        rect2.left += mBorderWidth;
-        rect2.right -= mBorderWidth;
-        rect2.right = rect2.left + rect2.width() * mBatteryPercentage;
-        rect2.top += mBorderWidth;
-        rect2.bottom -= mBorderWidth;
-        c.drawRect(rect2, mBatterryPaint);
-        //画电池头
-        int poleHeight = (int) CommonUtils.dp2px(10) / 2;
-        rect2.left = rect1.right;
-        rect2.top = rect2.top + poleHeight / 4;
-        rect2.right = rect1.right + mBorderWidth;
-        rect2.bottom = rect2.bottom - poleHeight / 4;
-        c.drawRect(rect2, mBatterryPaint);
-        //画书名
-        c.drawText(CommonUtils.subString(bookName, 12), marginWidth, statusMarginBottom + mBatterryFontSize, mBatterryPaint);
-        //画章
-        if (getDirectoryList().size() > 0) {
-            String charterName = CommonUtils.subString(getDirectoryList().get(currentCharter).getBookCatalogue(), 12);
-            int nChaterWidth = (int) mBatterryPaint.measureText(charterName) + 1;
-            c.drawText(charterName, mWidth - marginWidth - nChaterWidth, statusMarginBottom + mBatterryFontSize, mBatterryPaint);
-        }
+        int nPercentWidth = (int) mTipPaint.measureText("99.99%") + 1;  //Paint.measureText直接返回參數字串所佔用的寬度
+        //文字保持和电池居中对齐
+        Paint.FontMetrics fontMetrics = mTipPaint.getFontMetrics();
+        float textY = (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent
+                + (batteryBottom - batteryTop) / 2 + batteryTop;
+        canvas.drawText(strPercent, mWidth - nPercentWidth, textY, mTipPaint);//x y为坐标值
+        canvas.drawText(date, batteryLeft + batteryWidth + 10, textY, mTipPaint);
+
+        //画标题
+        canvas.drawText(CommonUtils.subString(bookName, 12), marginWidth, statusMarginBottom + mTipTextSize, mTipPaint);
 
         mBookPageWidget.postInvalidate();
     }
@@ -729,7 +722,7 @@ public class PageFactory {
     public void changeTypeface(Typeface typeface) {
         this.typeface = typeface;
         mPaint.setTypeface(typeface);
-        mBatterryPaint.setTypeface(typeface);
+        mBatterryBorderPaint.setTypeface(typeface);
         calculateLineCount();
         measureMarginWidth();
         currentPage = getPageForBegin(currentPage.getBegin());
@@ -755,37 +748,37 @@ public class PageFactory {
                     getBgBitmap().recycle();
                 }
                 bitmap = BitmapUtil.decodeSampledBitmapFromResource(
-                        mContext.getResources(), R.drawable.paper, mWidth, mHeight);
-                color = mContext.getResources().getColor(R.color.read_font_default);
-                setBookPageBg(mContext.getResources().getColor(R.color.read_bg_default));
+                        mContext.getResources(), R.drawable.reader_paper, mWidth, mHeight);
+                color = mContext.getResources().getColor(R.color.reader_read_font_default);
+                setBookPageBg(mContext.getResources().getColor(R.color.reader_read_bg_default));
                 break;
             case Config.BOOK_BG_1:
-                canvas.drawColor(mContext.getResources().getColor(R.color.read_bg_1));
-                color = mContext.getResources().getColor(R.color.read_font_1);
-                setBookPageBg(mContext.getResources().getColor(R.color.read_bg_1));
+                canvas.drawColor(mContext.getResources().getColor(R.color.reader_read_bg_1));
+                color = mContext.getResources().getColor(R.color.reader_read_font_1);
+                setBookPageBg(mContext.getResources().getColor(R.color.reader_read_bg_1));
                 break;
             case Config.BOOK_BG_2:
-                canvas.drawColor(mContext.getResources().getColor(R.color.read_bg_2));
-                color = mContext.getResources().getColor(R.color.read_font_2);
-                setBookPageBg(mContext.getResources().getColor(R.color.read_bg_2));
+                canvas.drawColor(mContext.getResources().getColor(R.color.reader_read_bg_2));
+                color = mContext.getResources().getColor(R.color.reader_read_font_2);
+                setBookPageBg(mContext.getResources().getColor(R.color.reader_read_bg_2));
                 break;
             case Config.BOOK_BG_3:
-                canvas.drawColor(mContext.getResources().getColor(R.color.read_bg_3));
-                color = mContext.getResources().getColor(R.color.read_font_3);
+                canvas.drawColor(mContext.getResources().getColor(R.color.reader_read_bg_3));
+                color = mContext.getResources().getColor(R.color.reader_read_font_3);
                 if (mBookPageWidget != null) {
-                    mBookPageWidget.setBgColor(mContext.getResources().getColor(R.color.read_bg_3));
+                    mBookPageWidget.setBgColor(mContext.getResources().getColor(R.color.reader_read_bg_3));
                 }
                 break;
             case Config.BOOK_BG_4:
-                canvas.drawColor(mContext.getResources().getColor(R.color.read_bg_4));
-                color = mContext.getResources().getColor(R.color.read_font_4);
-                setBookPageBg(mContext.getResources().getColor(R.color.read_bg_4));
+                canvas.drawColor(mContext.getResources().getColor(R.color.reader_read_bg_4));
+                color = mContext.getResources().getColor(R.color.reader_read_font_4);
+                setBookPageBg(mContext.getResources().getColor(R.color.reader_read_bg_4));
                 break;
         }
 
         setBgBitmap(bitmap);
         //设置字体颜色
-        setM_textColor(color);
+        setmTextColor(color);
     }
 
     public void setBookPageBg(int color) {
@@ -854,13 +847,13 @@ public class PageFactory {
     }
 
     //设置文字颜色
-    public void setM_textColor(int m_textColor) {
-        this.m_textColor = m_textColor;
+    public void setmTextColor(int mTextColor) {
+        this.mTextColor = mTextColor;
     }
 
     //获取文字颜色
     public int getTextColor() {
-        return this.m_textColor;
+        return this.mTextColor;
     }
 
     //获取文字大小
