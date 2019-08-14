@@ -3,16 +3,15 @@ package com.zyb.mreader.module.main;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -71,25 +70,13 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     private BooksAdapter booksAdapter;
     List<com.zyb.common.db.bean.Book> books = new ArrayList<>();
 
-    private RecyclerView.OnScrollListener onFlingListener = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            LogUtil.e("onScrolled dy:" + dy);
-            if (dy <= 0) {
-                MainActivity.this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //显示状态栏
-            } else {
-                MainActivity.this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
-            }
-        }
-    };
     private BaseQuickAdapter.OnItemClickListener onItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             if (position < books.size() - 1) {
                 if (isAnimating) return;
                 bookPosition = position;
-                onBookItemClick(position, view);
+                onBookItemClick(view);
             } else {
                 toAddBook();
             }
@@ -143,8 +130,6 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         int space = CommonUtils.dp2px(20);
         rvBooks.addItemDecoration(new GridItemSpaceDecoration(3, space, true, 0));
         rvBooks.setAdapter(booksAdapter);
-
-        rvBooks.addOnScrollListener(onFlingListener);
     }
 
     @Override
@@ -267,12 +252,12 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     public ImageView mContent;
     // 封面
     @BindView(R.id.img_first)
-    public RelativeLayout mFirst;
+    public RelativeLayout mPage;
     @BindView(R.id.book_title)
     public TextView tvBookTitle;
     // 缩放动画
     private ContentScaleAnimation scaleAnimation;
-    // 3D旋转动画
+    // 3D旋转动画0
     private Rotate3DAnimation threeDAnimation;
     // 是否打开书籍 其实是是否离开当前界面，跳转到其他的界面
     private boolean isOpenBook = false;
@@ -288,8 +273,8 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
             initPageColor();
             scaleAnimation.reverse();
             threeDAnimation.reverse();
-            mFirst.clearAnimation();
-            mFirst.startAnimation(threeDAnimation);
+            mPage.clearAnimation();
+            mPage.startAnimation(threeDAnimation);
             mContent.clearAnimation();
             mContent.startAnimation(scaleAnimation);
         }
@@ -353,9 +338,9 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                 readBook();
             } else {
                 isOpenBook = false;
-                mFirst.clearAnimation();
+                mPage.clearAnimation();
                 mContent.clearAnimation();
-                mFirst.setVisibility(View.GONE);
+                mPage.setVisibility(View.GONE);
                 mContent.setVisibility(View.GONE);
             }
         }
@@ -367,22 +352,27 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
 
     }
 
-    public void onBookItemClick(int pos, View view) {
-        mFirst.setVisibility(View.VISIBLE);
+    public void onBookItemClick(View view) {
+        mPage.setVisibility(View.VISIBLE);
         mContent.setVisibility(View.VISIBLE);
 
         // 计算当前的位置坐标
         view.getLocationInWindow(location);
         int width = view.getWidth();
         int height = view.getHeight();
+//        location[1] = location[1] + height  > CommonUtils.getOriginScreenHight() ? CommonUtils.getOriginScreenHight() - height : location[1];
 
         // 两个ImageView设置大小和位置
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFirst.getLayoutParams();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, height);
         params.leftMargin = location[0];
         params.topMargin = location[1];
-        params.width = width;
-        params.height = height;
-        mFirst.setLayoutParams(params);
+//        mContent.setX(location[0]);
+//        mContent.setY(location[1]);
+//        mPage.setX(location[0]);
+//        mPage.setY(location[1]);
+//        params.width = width;
+//        params.height = height;
+        mPage.setLayoutParams(params);
         mContent.setLayoutParams(params);
 
         initPageColor();
@@ -390,12 +380,12 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         tvBookTitle.setText(books.get(bookPosition).getTitle());
 
         initAnimation(view);
-        LogUtil.e("left:" + mFirst.getLeft() + "top:" + mFirst.getTop());
+        LogUtil.e("left:" + mPage.getLeft() + "top:" + mPage.getTop());
 
         mContent.clearAnimation();
-        mFirst.clearAnimation();
+        mPage.clearAnimation();
         mContent.startAnimation(scaleAnimation);
-        mFirst.startAnimation(threeDAnimation);
+        mPage.startAnimation(threeDAnimation);
     }
 
     // 初始化动画
@@ -410,13 +400,14 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         float verScale = screenHeight / viewHeight;
         float scale = horScale > verScale ? horScale : verScale;
 
-        scaleAnimation = new ContentScaleAnimation(location[0], location[1], scale, false);
+        scaleAnimation = new ContentScaleAnimation(viewWidth, viewHeight,
+                location[0], location[1], scale, false);
         scaleAnimation.setInterpolator(new DecelerateInterpolator());  //设置插值器
         scaleAnimation.setDuration(1000);
         scaleAnimation.setFillAfter(true);  //动画停留在最后一帧
         scaleAnimation.setAnimationListener(this);
 
-        threeDAnimation = new Rotate3DAnimation(this, -180, 0
+        threeDAnimation = new Rotate3DAnimation(viewWidth, viewHeight, this, -180, 0
                 , location[0], location[1], scale, true);
         threeDAnimation.setDuration(1000);                         //设置动画时长
         threeDAnimation.setFillAfter(true);                        //保持旋转后效果
