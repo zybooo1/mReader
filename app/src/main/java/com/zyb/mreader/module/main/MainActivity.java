@@ -3,6 +3,7 @@ package com.zyb.mreader.module.main;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,7 +12,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,6 +33,7 @@ import com.zyb.base.widget.decoration.GridItemSpaceDecoration;
 import com.zyb.base.widget.dialog.MenuDialog;
 import com.zyb.common.db.DBFactory;
 import com.zyb.common.db.bean.Book;
+import com.zyb.mreader.AboutActivity;
 import com.zyb.mreader.R;
 import com.zyb.mreader.di.component.DaggerActivityComponent;
 import com.zyb.mreader.di.module.ActivityModule;
@@ -165,7 +166,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         smartRefresh.finishRefresh();
     }
 
-    @OnClick({R.id.addBook, R.id.feedBack})
+    @OnClick({R.id.addBook, R.id.feedBack, R.id.about})
     public void addBookClick(View view) {
         drawerLayout.closeDrawers();
         switch (view.getId()) {
@@ -174,6 +175,9 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                 break;
             case R.id.feedBack:
                 mPresenter.drawerAction(MainContract.DRAWER_ACTION.TO_FEED_BACK);
+                break;
+            case R.id.about:
+                mPresenter.drawerAction(MainContract.DRAWER_ACTION.TO_ABOUT);
                 break;
         }
     }
@@ -190,8 +194,13 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                 .navigation();
     }
 
+    @Override
+    public void toAbout() {
+        startActivity(AboutActivity.class);
+    }
+
     BaseDialog removeDialog;
-    com.zyb.common.db.bean.Book longClickBook;
+    Book longClickBook;
     MenuDialog.OnListener removeListener = new MenuDialog.OnListener() {
 
         @Override
@@ -283,7 +292,9 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     private void initPageColor() {
         switch (Config.getInstance().getBookBgType()) {
             case Config.BOOK_BG_DEFAULT:
-                mContent.setBackground(ContextCompat.getDrawable(this, com.zyb.reader.R.drawable.reader_paper));
+                //为了性能 不设置图片了
+//                mContent.setBackgroundResource(com.zyb.reader.R.drawable.reader_paper);
+                mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.reader_read_bg_default));
                 break;
             case Config.BOOK_BG_1:
                 mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.reader_read_bg_1));
@@ -363,15 +374,13 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
 //        location[1] = location[1] + height  > CommonUtils.getOriginScreenHight() ? CommonUtils.getOriginScreenHight() - height : location[1];
 
         // 两个ImageView设置大小和位置
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, height);
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mPage.getLayoutParams();
         params.leftMargin = location[0];
         params.topMargin = location[1];
 //        mContent.setX(location[0]);
 //        mContent.setY(location[1]);
-//        mPage.setX(location[0]);
-//        mPage.setY(location[1]);
-//        params.width = width;
-//        params.height = height;
+        params.width = width;
+        params.height = height;
         mPage.setLayoutParams(params);
         mContent.setLayoutParams(params);
 

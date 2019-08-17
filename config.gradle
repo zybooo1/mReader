@@ -23,14 +23,6 @@ ext {
             junitVersion           : "4.12"
     ]
 
-    //合并到主程序运行的组件,没有填写的组件则可以独立运行
-    merge = [
-            "base",
-            "reader",
-            "read",
-            "common",
-    ]
-
     //依赖库统一管理
     dependencies = [
             //base
@@ -94,8 +86,9 @@ ext {
             "test-espresso"             : "com.android.support.test.espresso:espresso-core:3.0.1",
             "mockito-core"              : "org.mockito:mockito-core:1.+",
             "timber"                    : "com.jakewharton.timber:timber:4.1.2",
-            //umeng
-            "umeng"                     : "com.umeng.analytics:analytics:6.1.1",
+            //umeng-analytics
+            "umeng-analytics"                     : "com.umeng.umsdk:analytics:8.0.0",
+            "umeng-common"                     : "com.umeng.umsdk:common:2.0.0",
             //canary
             "blockcanary-android"       : "com.github.markzhai:blockcanary-android:${dependVersion.blockcanary}",
             "blockcanary-no-op"         : "com.github.markzhai:blockcanary-no-op:${dependVersion.blockcanary}",

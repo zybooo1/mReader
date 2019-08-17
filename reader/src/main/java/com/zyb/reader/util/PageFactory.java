@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -210,7 +211,7 @@ public class PageFactory {
         mBatterryBorderPaint.setStrokeJoin(Paint.Join.ROUND);
 
         mTipPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mTipTextSize = CommonUtils.sp2px(14);
+        mTipTextSize = CommonUtils.sp2px(12);
         mTipPaint.setColor(mTipColor);
         mTipPaint.setTextSize(mTipTextSize);
         mTipPaint.setTypeface(typeface);
@@ -270,7 +271,9 @@ public class PageFactory {
         }
 
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawBitmap(getBgBitmap(), 0, 0, null);
+//        canvas.drawBitmap(getBgBitmap(), 0, 0, null);
+        RectF rectF = new RectF(0, 0, mWidth, mHeight);
+        canvas.drawBitmap(getBgBitmap(), null, rectF, null);
 
         Rect targetRect = new Rect(0, 0, mWidth, mHeight);
 //        canvas.drawRect(targetRect, mPaint);
@@ -300,7 +303,9 @@ public class PageFactory {
         }
 
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawBitmap(getBgBitmap(), 0, 0, null);
+        RectF rectF = new RectF(0, 0, mWidth, mHeight);
+        canvas.drawBitmap(getBgBitmap(), null, rectF, null);
+//        canvas.drawBitmap(getBgBitmap(), 0, 0, null);
 //        word.setLength(0);
         mPaint.setTextSize(getFontSize());
         mPaint.setColor(getTextColor());
@@ -324,7 +329,7 @@ public class PageFactory {
         //画电池外框
         float batteryWidth = CommonUtils.dp2px(20);//电池宽
         float batteryHeight = CommonUtils.dp2px(10);//电池高
-        float batteryLeft = marginWidth;//电池外框left位置
+        float batteryLeft = measureMarginWidth;//电池外框left位置
         float batteryTop = mHeight - batteryHeight - statusMarginBottom;//电池外框Top位置
         float batteryBottom = mHeight - statusMarginBottom;//电池外框Bottom位置
         batteryBorderRect.set(batteryLeft, batteryTop, batteryLeft + batteryWidth, batteryBottom);
@@ -350,12 +355,12 @@ public class PageFactory {
             mPageEvent.changeProgress(fPercent);
         }
         String strPercent = df.format(fPercent * 100) + "%";//进度文字
-        int nPercentWidth = (int) mTipPaint.measureText("99.99%") + 1;  //Paint.measureText直接返回參數字串所佔用的寬度
+        int nPercentWidth = (int) mTipPaint.measureText(strPercent);  //Paint.measureText直接返回參數字串所佔用的寬度
         //文字保持和电池居中对齐
         Paint.FontMetrics fontMetrics = mTipPaint.getFontMetrics();
         float textY = (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent
                 + (batteryBottom - batteryTop) / 2 + batteryTop;
-        canvas.drawText(strPercent, mWidth - nPercentWidth, textY, mTipPaint);//x y为坐标值
+        canvas.drawText(strPercent, mWidth - nPercentWidth-measureMarginWidth, textY, mTipPaint);//x y为坐标值
         canvas.drawText(date, batteryLeft + batteryWidth + 10, textY, mTipPaint);
 
         //画标题

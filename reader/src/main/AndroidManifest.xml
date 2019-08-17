@@ -9,7 +9,9 @@
     <application>
         <activity
             android:name=".ReadActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+
+        </activity>
         <service android:name=".SpeechService" />
     </application>
 

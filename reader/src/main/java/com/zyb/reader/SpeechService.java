@@ -224,12 +224,12 @@ public class SpeechService extends Service {
      * 更新参数（语速）
      */
     public void changeSpeed(int speed) {
+        Config.getInstance().setSpeakSpeed(speed);
         if (speed > 9) speed = 9;
         if (speed < 0) speed = 0;
         stop();
         // 设置合成的语速，0-9 ，默认 5
         mSpeechSynthesizer.setParam(SpeechSynthesizer.PARAM_SPEED, speed + "");
-        Config.getInstance().setSpeakSpeed(speed);
         if (!currentString.isEmpty()) mSpeechSynthesizer.speak(currentString);
     }
 

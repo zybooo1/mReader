@@ -4,16 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
-import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.LogUtil;
 import com.zyb.reader.Config;
 import com.zyb.reader.util.PageFactory;
@@ -47,7 +44,7 @@ public class PageWidget extends View {
     private int moveX = 0;
     private int moveY = 0;
     //翻页动画是否在执行
-    private Boolean isRuning =false;
+    private Boolean isRuning = false;
 
     Bitmap mCurPageBitmap = null; // 当前页
     Bitmap mNextPageBitmap = null;
@@ -58,27 +55,27 @@ public class PageWidget extends View {
     private TouchListener mTouchListener;
 
     public PageWidget(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public PageWidget(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public PageWidget(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-}
+    }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-mScreenWidth=w;
-mScreenHeight=h;
+        mScreenWidth = w;
+        mScreenHeight = h;
         initPage();
     }
 
-    private void initPage(){
+    private void initPage() {
 //        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 //        DisplayMetrics metric = new DisplayMetrics();
 //        wm.getDefaultDisplay().getMetrics(metric);
@@ -86,43 +83,43 @@ mScreenHeight=h;
 //        mScreenHeight = metric.heightPixels;
 //        mScreenWidth= CommonUtils.getScreenWidth();
 //        mScreenHeight= CommonUtils.getScreenHeight();
-        LogUtil.e("initPage:mScreenWidth="+mScreenWidth+"mScreenHeight="+mScreenHeight);
+        LogUtil.e("initPage:mScreenWidth=" + mScreenWidth + "mScreenHeight=" + mScreenHeight);
         mCurPageBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);      //android:LargeHeap=true  use in  manifest application
         mNextPageBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);
 
-        mScroller = new Scroller(getContext(),new LinearInterpolator());
-        mAnimationProvider = new SimulationAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
+        mScroller = new Scroller(getContext(), new LinearInterpolator());
+        mAnimationProvider = new SimulationAnimation(mCurPageBitmap, mNextPageBitmap, mScreenWidth, mScreenHeight);
 
     }
 
-    public void setPageMode(int pageMode){
-        switch (pageMode){
+    public void setPageMode(int pageMode) {
+        switch (pageMode) {
             case Config.PAGE_MODE_SIMULATION:
-                mAnimationProvider = new SimulationAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
+                mAnimationProvider = new SimulationAnimation(mCurPageBitmap, mNextPageBitmap, mScreenWidth, mScreenHeight);
                 break;
             case Config.PAGE_MODE_COVER:
-                mAnimationProvider = new CoverAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
+                mAnimationProvider = new CoverAnimation(mCurPageBitmap, mNextPageBitmap, mScreenWidth, mScreenHeight);
                 break;
             case Config.PAGE_MODE_SLIDE:
-                mAnimationProvider = new SlideAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
+                mAnimationProvider = new SlideAnimation(mCurPageBitmap, mNextPageBitmap, mScreenWidth, mScreenHeight);
                 break;
             case Config.PAGE_MODE_NONE:
-                mAnimationProvider = new NoneAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
+                mAnimationProvider = new NoneAnimation(mCurPageBitmap, mNextPageBitmap, mScreenWidth, mScreenHeight);
                 break;
             default:
-                mAnimationProvider = new SimulationAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
+                mAnimationProvider = new SimulationAnimation(mCurPageBitmap, mNextPageBitmap, mScreenWidth, mScreenHeight);
         }
     }
 
-    public Bitmap getCurPage(){
+    public Bitmap getCurPage() {
         return mCurPageBitmap;
     }
 
-    public Bitmap getNextPage(){
+    public Bitmap getNextPage() {
         return mNextPageBitmap;
     }
 
-    public void setBgColor(int color){
+    public void setBgColor(int color) {
         mBgColor = color;
     }
 
@@ -130,7 +127,7 @@ mScreenHeight=h;
     protected void onDraw(Canvas canvas) {
 //        canvas.drawColor(0xFFAAAAAA);
         canvas.drawColor(mBgColor);
-        Log.e("onDraw","isNext:" + isNext + "          isRuning:" + isRuning);
+        Log.e("onDraw", "isNext:" + isNext + "          isRuning:" + isRuning);
         if (isRuning) {
             mAnimationProvider.drawMove(canvas);
         } else {
@@ -141,15 +138,15 @@ mScreenHeight=h;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
-        if (PageFactory.getStatus() == PageFactory.Status.OPENING){
+        if (PageFactory.getStatus() == PageFactory.Status.OPENING) {
             return true;
         }
 
-        int x = (int)event.getX();
-        int y = (int)event.getY();
+        int x = (int) event.getX();
+        int y = (int) event.getY();
 
-        mAnimationProvider.setTouchPoint(x,y);
-        if (event.getAction() == MotionEvent.ACTION_DOWN){
+        mAnimationProvider.setTouchPoint(x, y);
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             downX = (int) event.getX();
             downY = (int) event.getY();
             moveX = 0;
@@ -159,10 +156,10 @@ mScreenHeight=h;
             noNext = false;
             isNext = false;
             isRuning = false;
-            mAnimationProvider.setStartPoint(downX,downY);
+            mAnimationProvider.setStartPoint(downX, downY);
             abortAnimation();
-            Log.e(TAG,"ACTION_DOWN");
-        }else if (event.getAction() == MotionEvent.ACTION_MOVE){
+            Log.e(TAG, "ACTION_DOWN");
+        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 
             final int slop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
             //判断是否移动了
@@ -170,14 +167,14 @@ mScreenHeight=h;
                 isMove = Math.abs(downX - x) > slop || Math.abs(downY - y) > slop;
             }
 
-            if (isMove){
+            if (isMove) {
                 isMove = true;
-                if (moveX == 0 && moveY ==0) {
-                    Log.e(TAG,"isMove");
+                if (moveX == 0 && moveY == 0) {
+                    Log.e(TAG, "isMove");
                     //判断翻得是上一页还是下一页
-                    if (x - downX >0){
+                    if (x - downX > 0) {
                         isNext = false;
-                    }else{
+                    } else {
                         isNext = true;
                     }
                     cancelPage = false;
@@ -199,27 +196,27 @@ mScreenHeight=h;
                             return true;
                         }
                     }
-                    Log.e(TAG,"isNext:" + isNext);
-                }else{
+                    Log.e(TAG, "isNext:" + isNext);
+                } else {
                     //判断是否取消翻页
-                    if (isNext){
-                        if (x - moveX > 0){
+                    if (isNext) {
+                        if (x - moveX > 0) {
                             cancelPage = true;
                             mAnimationProvider.setCancel(true);
-                        }else {
+                        } else {
                             cancelPage = false;
                             mAnimationProvider.setCancel(false);
                         }
-                    }else{
-                        if (x - moveX < 0){
+                    } else {
+                        if (x - moveX < 0) {
                             mAnimationProvider.setCancel(true);
                             cancelPage = true;
-                        }else {
+                        } else {
                             mAnimationProvider.setCancel(false);
                             cancelPage = false;
                         }
                     }
-                    Log.e(TAG,"cancelPage:" + cancelPage);
+                    Log.e(TAG, "cancelPage:" + cancelPage);
                 }
 
                 moveX = x;
@@ -227,24 +224,24 @@ mScreenHeight=h;
                 isRuning = true;
                 this.postInvalidate();
             }
-        }else if (event.getAction() == MotionEvent.ACTION_UP){
-            Log.e(TAG,"ACTION_UP");
-            if (!isMove){
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            Log.e(TAG, "ACTION_UP");
+            if (!isMove) {
                 cancelPage = false;
                 //是否点击了中间
-                if (downX > mScreenWidth / 5 && downX < mScreenWidth * 4 / 5 && downY > mScreenHeight / 3 && downY < mScreenHeight * 2 / 3){
-                    if (mTouchListener != null){
+                if (downX > mScreenWidth / 5 && downX < mScreenWidth * 4 / 5 && downY > mScreenHeight / 3 && downY < mScreenHeight * 2 / 3) {
+                    if (mTouchListener != null) {
                         mTouchListener.center();
                     }
-                    Log.e(TAG,"center");
+                    Log.e(TAG, "center");
 //                    mCornerX = 1; // 拖拽点对应的页脚
 //                    mCornerY = 1;
 //                    mTouch.x = 0.1f;
 //                    mTouch.y = 0.1f;
                     return true;
-                }else if (x < mScreenWidth / 2){
+                } else if (x < mScreenWidth / 2) {
                     isNext = false;
-                }else{
+                } else {
                     isNext = true;
                 }
 
@@ -263,11 +260,11 @@ mScreenHeight=h;
                 }
             }
 
-            if (cancelPage && mTouchListener != null){
+            if (cancelPage && mTouchListener != null) {
                 mTouchListener.cancel();
             }
 
-            Log.e(TAG,"isNext:" + isNext);
+            Log.e(TAG, "isNext:" + isNext);
             if (!noNext) {
                 isRuning = true;
                 mAnimationProvider.startAnimation(mScroller);
@@ -283,8 +280,8 @@ mScreenHeight=h;
         if (mScroller.computeScrollOffset()) {
             float x = mScroller.getCurrX();
             float y = mScroller.getCurrY();
-            mAnimationProvider.setTouchPoint(x,y);
-            if (mScroller.getFinalX() == x && mScroller.getFinalY() == y){
+            mAnimationProvider.setTouchPoint(x, y);
+            if (mScroller.getFinalX() == x && mScroller.getFinalY() == y) {
                 isRuning = false;
             }
             postInvalidate();
@@ -295,23 +292,26 @@ mScreenHeight=h;
     public void abortAnimation() {
         if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
-            mAnimationProvider.setTouchPoint(mScroller.getFinalX(),mScroller.getFinalY());
+            mAnimationProvider.setTouchPoint(mScroller.getFinalX(), mScroller.getFinalY());
             postInvalidate();
         }
     }
 
-    public boolean isRunning(){
+    public boolean isRunning() {
         return isRuning;
     }
 
-    public void setTouchListener(TouchListener mTouchListener){
+    public void setTouchListener(TouchListener mTouchListener) {
         this.mTouchListener = mTouchListener;
     }
 
-    public interface TouchListener{
+    public interface TouchListener {
         void center();
+
         Boolean prePage();
+
         Boolean nextPage();
+
         void cancel();
     }
 

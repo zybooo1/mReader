@@ -3,7 +3,6 @@ package com.zyb.mreader;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
-import com.gyf.barlibrary.BarHide;
 import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
@@ -42,12 +41,6 @@ public class LauncherActivity extends MyActivity
 
     @Override
     protected void initView() {
-        //设置状态栏和导航栏参数
-        getStatusBarConfig()
-                .fullScreen(true)//有导航栏的情况下，activity全屏显示，也就是activity最下面被导航栏覆盖，不写默认非全屏
-                .hideBar(BarHide.FLAG_HIDE_STATUS_BAR)//隐藏状态栏
-                .transparentNavigationBar()//透明导航栏，不写默认黑色(设置此方法，fullScreen()方法自动为true)
-                .init();
         Disposable disposable = Observable.just(true)
                 .delay(DELAY_TIME, TimeUnit.MILLISECONDS)
                 .compose(RxUtil.rxObservableSchedulerHelper())
@@ -89,7 +82,7 @@ public class LauncherActivity extends MyActivity
     @Override
     public void noPermission(List<String> denied, boolean quick) {
         if (quick) {
-            ToastUtils.show("没有获取必要权限，请手动授予权限");
+            ToastUtils.show("缺少必要权限，请手动授予权限");
             XXPermissions.gotoPermissionSettings(LauncherActivity.this, true);
         } else {
             ToastUtils.show("请先授予应用权限");
@@ -104,7 +97,7 @@ public class LauncherActivity extends MyActivity
 
     @Override
     public void onBackPressed() {
-        //禁用返回键
+        //注释这行禁用返回键
         //super.onBackPressed();
     }
 
@@ -117,6 +110,5 @@ public class LauncherActivity extends MyActivity
             requestPermission();
         }
     }
-
 
 }

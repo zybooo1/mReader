@@ -435,7 +435,7 @@
                         android:padding="20dp"
                         android:text="@string/reader_read_setting_pre"
                         android:textAlignment="center"
-                        android:textColor="@color/gray40"
+                        android:textColor="@color/gray20"
                         android:textSize="16sp" />
 
                     <SeekBar
@@ -464,7 +464,7 @@
                         android:padding="20dp"
                         android:text="@string/reader_read_setting_next"
                         android:textAlignment="center"
-                        android:textColor="@color/gray40"
+                        android:textColor="@color/gray20"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -597,33 +597,68 @@
         android:clickable="true"
         android:orientation="vertical">
 
-        <FrameLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="30dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/reader_search_edit_bg">
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp">
 
-            <com.zyb.base.widget.ClearEditText
-                android:id="@+id/etSearch"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/ll1"
+                android:layout_width="0dp"
+                android:layout_marginRight="10dp"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:focusable="true"
-                android:hint="搜索"
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:maxLength="20"
-                android:maxLines="1"
+                android:background="@drawable/reader_search_edit_bg"
+                android:gravity="center"
+                android:paddingLeft="5dp"
+                android:orientation="horizontal"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/btnCancelSearch"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tint="@color/white"
+                    app:srcCompat="@drawable/svg_search" />
+
+                <com.zyb.base.widget.ClearEditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:hint="搜索"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLength="20"
+                    android:maxLines="1"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="5dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/black20"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <com.zyb.base.widget.RoundButton
+                android:id="@+id/btnCancelSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
                 android:paddingLeft="10dp"
-                android:paddingTop="5dp"
+                android:text="取消"
                 android:paddingRight="10dp"
-                android:paddingBottom="5dp"
-                android:textColor="@color/gray80"
-                android:textColorHint="@color/gray50"
-                android:textSize="16sp" />
-        </FrameLayout>
+                app:btnCornerRadius="5dp"
+                app:btnSolidColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/ll1"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ll1" />
+        </android.support.constraint.ConstraintLayout>
 
         <com.scwang.smartrefresh.layout.SmartRefreshLayout
             android:id="@+id/smartRefresh"

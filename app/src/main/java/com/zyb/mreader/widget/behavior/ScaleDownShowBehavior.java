@@ -30,6 +30,8 @@ import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.zyb.base.utils.LogUtil;
+
 /**
  * FAB 行为控制器
   */
@@ -64,6 +66,8 @@ public class ScaleDownShowBehavior extends FloatingActionButton.Behavior {
                                int dxUnconsumed, int dyUnconsumed) {
         // 手指上滑，隐藏FAB
         if ((dyConsumed > 0 || dyUnconsumed > 0) && !isAnimateIng && isShow) {
+            LogUtil.e("手指上滑，隐藏FAB");
+
             AnimatorUtil.translateHide(child, new StateListener() {
                 @Override
                 public void onAnimationStart(View view) {
@@ -73,6 +77,7 @@ public class ScaleDownShowBehavior extends FloatingActionButton.Behavior {
             });
         } else if ((dyConsumed < 0 || dyUnconsumed < 0 && !isAnimateIng && !isShow)) {
             // 手指下滑，显示FAB
+            LogUtil.e("手指下滑，显示FAB");
             AnimatorUtil.translateShow(child, new StateListener() {
                 @Override
                 public void onAnimationStart(View view) {

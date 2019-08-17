@@ -13,6 +13,7 @@ public interface MainContract {
         void onBooksLoaded(List<Book> books);
         void toAddBook();
         void toFeedBack();
+        void toAbout();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -23,5 +24,6 @@ public interface MainContract {
      enum DRAWER_ACTION{
         TO_ADD_BOOK,
         TO_FEED_BACK,
+        TO_ABOUT,
     }
 }

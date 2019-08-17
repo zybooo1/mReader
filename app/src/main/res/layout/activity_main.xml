@@ -6,11 +6,12 @@
     android:layout_height="match_parent">
 
     <!--Content-->
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.hjq.bar.TitleBar
+            app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/titleBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -20,27 +21,23 @@
         <com.scwang.smartrefresh.layout.SmartRefreshLayout
             android:id="@+id/smartRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/titleBar"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleBar"
             app:srlDragRate="0.3"
-            app:srlEnablePureScrollMode="true"
-            app:srlEnableLoadMore="false">
+            app:srlEnableLoadMore="false"
+            app:srlEnablePureScrollMode="true">
 
-            <FrameLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_books"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_books"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </FrameLayout>
+                android:layout_height="wrap_content" />
 
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
         <ImageView
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/img_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,6 +45,8 @@
             android:visibility="gone" />
 
         <RelativeLayout
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/img_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,7 +74,7 @@
                 android:textColor="@color/gray60" />
         </RelativeLayout>
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <!--Drawer-->
     <include layout="@layout/layout_main_drawer" />

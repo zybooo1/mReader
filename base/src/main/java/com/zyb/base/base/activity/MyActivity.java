@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import com.hjq.bar.OnTitleBarListener;
 import com.hjq.bar.TitleBar;
 import com.hjq.toast.ToastUtils;
+import com.umeng.analytics.MobclickAgent;
 import com.zyb.base.R;
 import com.zyb.base.base.BaseDialog;
 import com.zyb.base.mvp.AbstractPresenter;
@@ -114,11 +115,13 @@ public abstract class MyActivity extends UIActivity
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override

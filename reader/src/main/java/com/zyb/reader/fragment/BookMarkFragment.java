@@ -21,6 +21,10 @@ import com.zyb.reader.R2;
 import com.zyb.reader.adapter.MarkAdapter;
 import com.zyb.reader.util.PageFactory;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -36,7 +40,7 @@ public class BookMarkFragment extends MyLazyFragment {
     RecyclerView rvBookmark;
 
     private String bookpath;
-    private List<BookMarks> bookMarksList;
+    private List<BookMarks> bookMarksList = new ArrayList<>();
     private MarkAdapter markAdapter;
     private PageFactory pageFactory;
     private BaseQuickAdapter.OnItemClickListener onItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
@@ -54,12 +58,12 @@ public class BookMarkFragment extends MyLazyFragment {
                         @Override
                         public void onConfirm(Dialog dialog) {
                             DBFactory.getInstance().getBookMarksManage().delete(bookMarksList.get(position));
-                            bookMarksList.clear();
-                            bookMarksList.addAll(queryAllMarks());
-                            markAdapter.notifyDataSetChanged();
+                            queryAllMarks();
                         }
+
                         @Override
-                        public void onCancel(Dialog dialog) { }
+                        public void onCancel(Dialog dialog) {
+                        }
                     });
             return false;
         }
@@ -83,7 +87,6 @@ public class BookMarkFragment extends MyLazyFragment {
         if (bundle != null) {
             bookpath = bundle.getString(ARGUMENT);
         }
-        bookMarksList = queryAllMarks();
 
         markAdapter = new MarkAdapter(bookMarksList);
         rvBookmark.setAdapter(markAdapter);
@@ -95,13 +98,16 @@ public class BookMarkFragment extends MyLazyFragment {
         markAdapter.setOnItemClickListener(onItemClickListener);
         markAdapter.setOnItemLongClickListener(onItemLongClickListener);
 
+        queryAllMarks();
     }
 
-    private List<BookMarks> queryAllMarks() {
-        return DBFactory.getInstance().getBookMarksManage()
+    private void queryAllMarks() {
+        bookMarksList.clear();
+        bookMarksList.addAll(DBFactory.getInstance().getBookMarksManage()
                 .getQueryBuilder()
                 .where(BookMarksDao.Properties.Bookpath.eq(bookpath))
-                .list();
+                .list());
+        markAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -116,6 +122,21 @@ public class BookMarkFragment extends MyLazyFragment {
         BookMarkFragment bookMarkFragment = new BookMarkFragment();
         bookMarkFragment.setArguments(bundle);
         return bookMarkFragment;
+    }
+
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventReceived(BaseEvent<Object> event) {
+        if (event == null) return;
+        switch (event.getCode()) {
+            case EventConstants.EVENT_MARKS_REFRESH:
+                queryAllMarks();
+                break;
+        }
     }
 
 }

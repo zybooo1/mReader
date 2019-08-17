@@ -5,6 +5,7 @@ buildscript {
         google()
         jcenter()
         mavenCentral()
+        maven { url 'https://dl.bintray.com/umsdk/release' }
         // TODO remove after butterknife 9 graduates to stable
         maven {
             name 'Sonatype SNAPSHOTs';
@@ -24,6 +25,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://dl.bintray.com/umsdk/release' }
         //阿里镜像仓库
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/releases/' }
         maven { url "https://jitpack.io" }

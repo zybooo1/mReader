@@ -16,6 +16,7 @@ import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.umeng.commonsdk.UMConfigure;
 import com.zyb.base.BuildConfig;
 import com.zyb.base.R;
 import com.zyb.base.di.component.AppComponent;
@@ -86,6 +87,10 @@ public class BaseApplication extends MultiDexApplication {
         //init utils
         Utils.init(sInstance);
         TitleBar.initStyle(new MyTitleBarStyle(this));
+        /**
+         * 注意：如果您已经在AndroidManifest.xml中配置过appkey和channel值，可以调用此版本初始化函数。
+         */
+        UMConfigure.init(sInstance, UMConfigure.DEVICE_TYPE_PHONE,"");
     }
 
 

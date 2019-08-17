@@ -29,7 +29,10 @@ public class Rotate3DAnimation extends Animation {
 
     private float scale = 1;    // <------- 像素密度
 
-    public Rotate3DAnimation(Context context, float mFromDegrees, float mToDegrees, float mMarginLeft, float mMarginTop,
+    private float viewWidth;
+    private float viewHeight;
+
+    public Rotate3DAnimation(float viewWidth, float viewHeight,Context context, float mFromDegrees, float mToDegrees, float mMarginLeft, float mMarginTop,
                              float animationScale, boolean reverse) {
         this.mFromDegrees = mFromDegrees;
         this.mToDegrees = mToDegrees;
@@ -37,6 +40,8 @@ public class Rotate3DAnimation extends Animation {
         this.mMarginTop = mMarginTop;
         this.mAnimationScale = animationScale;
         this.reverse = reverse;
+        this.viewWidth = viewWidth;
+        this.viewHeight = viewHeight;
 
         // 获取手机像素密度 （即dp与px的比例）
         scale = context.getResources().getDisplayMetrics().density;
@@ -47,8 +52,8 @@ public class Rotate3DAnimation extends Animation {
         super.initialize(width, height, parentWidth, parentHeight);
 
         mCamera = new Camera();
-        mPivotX = calculatePivotX(mMarginLeft, parentWidth, width);
-        mPivotY = calculatePivotY(mMarginTop, parentHeight, height);
+        mPivotX = calculatePivotX(mMarginLeft, parentWidth, viewWidth);
+        mPivotY = calculatePivotY(mMarginTop, parentHeight, viewHeight);
         Log.i(TAG,"width:"+width+",height:"+height+",pw:"+parentWidth+",ph:"+parentHeight);
         Log.i(TAG,"中心点x:"+mPivotX+",中心点y:"+mPivotY);
     }

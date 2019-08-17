@@ -63,6 +63,8 @@ dependencies {
     api rootProject.ext.dependencies["EventBus"]
     api rootProject.ext.dependencies["pagerslidingtabstrip"]
     api rootProject.ext.dependencies["countdownview"]
+    api rootProject.ext.dependencies["umeng-analytics"]
+    api rootProject.ext.dependencies["umeng-common"]
     //json
     api rootProject.ext.dependencies["gson"]
     //network

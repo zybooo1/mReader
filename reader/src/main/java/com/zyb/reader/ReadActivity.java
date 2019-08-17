@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -146,6 +147,7 @@ public class ReadActivity extends MyActivity {
         ImmersionBar.setTitleBarMarginTop(this, rlTopBar);
         //禁止手势滑动
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        drawerLayout.addDrawerListener(drawerListener);
 
         Config.createConfig(this);
         PageFactory.createPageFactory(this);
@@ -362,6 +364,7 @@ public class ReadActivity extends MyActivity {
             bookMarks.setBookpath(pageFactory.getBookPath());
             DBFactory.getInstance().getBookMarksManage().insertOrUpdate(bookMarks);
             showMsg("书签添加成功");
+            EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_MARKS_REFRESH));
         }
     }
 
@@ -465,7 +468,6 @@ public class ReadActivity extends MyActivity {
             mSettingDialog.show();
         } else if (i == R.id.tv_stop_read) {
             stopSpeech();
-            toggleMenu();
         } else if (i == R.id.ivSearch) {
             drawerLayout.openDrawer(Gravity.END);
             toggleMenu();
@@ -540,6 +542,24 @@ public class ReadActivity extends MyActivity {
         }
         return false;
     };
+    DrawerLayout.DrawerListener drawerListener = new DrawerLayout.DrawerListener() {
+        @Override
+        public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+        }
+
+        @Override
+        public void onDrawerOpened(@NonNull View drawerView) {
+        }
+
+        @Override
+        public void onDrawerClosed(@NonNull View drawerView) {
+            hideKeyboard();
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+        }
+    };
 
 
     public void hideKeyboard() {
@@ -569,6 +589,11 @@ public class ReadActivity extends MyActivity {
         searchResultList.clear();
         searchResultList.addAll(pageFactory.mBookUtil.searchContent(text));
         searchAdapter.notifyDataSetChanged();
+    }
+
+    @OnClick(R2.id.btnCancelSearch)
+    public void cancelSearch() {
+        drawerLayout.closeDrawer(Gravity.END);
     }
 
     /**
@@ -614,6 +639,8 @@ public class ReadActivity extends MyActivity {
         isSpeaking = false;
         if (serviceConnection != null && speechService != null) {
             unbindService(serviceConnection);
+            serviceConnection = null;
+            speechService = null;
         }
     }
 
@@ -717,7 +744,7 @@ public class ReadActivity extends MyActivity {
             sbTiming.setProgress(trueProgress);
             if (trueProgress != 0) {
                 ReadActivity.this.showMsg(trueProgress + "分钟后停止");
-                config.setTimingTime(progress);
+                config.setTimingTime(trueProgress);
             }
             showTimer(trueProgress);
         }

@@ -7,9 +7,9 @@
         android:id="@+id/catalogue_tv"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:singleLine="true"
+        android:layout_marginStart="10dp"
         android:gravity="center_vertical"
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/gray5"/>
+        android:singleLine="true"
+        android:textColor="@color/gray5" />
 
 </LinearLayout>

@@ -17,6 +17,7 @@
             android:background="@color/colorPrimary">
 
             <ImageView
+                android:id="@+id/ivLogo"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_centerInParent="true"
@@ -26,10 +27,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/ivLogo"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="10dp"
-                android:text="To be or not to be,that's a question."
+                android:layout_margin="20dp"
+                android:text="极简阅读"
                 android:textColor="@color/white" />
         </RelativeLayout>
 
@@ -40,23 +42,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/touch_bg"
-            android:drawablePadding="10dp"
+            android:drawablePadding="15dp"
             android:padding="15dp"
             android:text="添加书籍"
-            android:textColor="@color/gray60"
+            android:textColor="@color/gray70"
             android:textSize="15sp"
-            app:drawableCompatColor="@color/gray60"
+            app:drawableCompatColor="@color/gray70"
             app:drawableHeight="17dp"
             app:drawableLeftCompat="@drawable/svg_book_shelf"
             app:drawableWidth="17dp" />
 
+
+        <View style="@style/HorizontalSpaceStyle" />
 
         <com.xw.repo.VectorCompatTextView
             android:id="@+id/feedBack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/touch_bg"
-            android:drawablePadding="10dp"
+            android:drawablePadding="15dp"
             android:padding="15dp"
             android:text="意见反馈"
             android:textColor="@color/gray70"
@@ -65,5 +69,22 @@
             app:drawableHeight="17dp"
             app:drawableLeftCompat="@drawable/svg_feed_back"
             app:drawableWidth="17dp" />
+
+
+        <com.xw.repo.VectorCompatTextView
+            android:id="@+id/about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/touch_bg"
+            android:drawablePadding="15dp"
+            android:padding="15dp"
+            android:text="关于"
+            android:textColor="@color/gray70"
+            android:textSize="15sp"
+            app:drawableCompatColor="@color/gray70"
+            app:drawableHeight="20dp"
+            app:drawableLeftCompat="@drawable/svg_about"
+            app:drawableWidth="20dp" />
+
     </LinearLayout>
 </ScrollView>
