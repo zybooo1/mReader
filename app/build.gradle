@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.butterknife'
 apply from: "../base_compiler.gradle"
+// 依赖插件脚本
+//todo 暂时注释这行使tinker不再每次构建生成bakApk
+//apply from: 'tinker-support.gradle'
 
 //获取编译时间
 static def releaseTime() {

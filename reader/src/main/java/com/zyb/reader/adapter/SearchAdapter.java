@@ -34,6 +34,6 @@ public class SearchAdapter extends BaseQuickAdapter<SearchResultBean, BaseViewHo
 
         helper.setText(R.id.text_mark, bean.getText())
                 .setText(R.id.progress1, strPercent)
-                .setTypeface(R.id.text_mark, typeface);
+                .setTypeface(typeface, R.id.text_mark, R.id.progress1);
     }
 }

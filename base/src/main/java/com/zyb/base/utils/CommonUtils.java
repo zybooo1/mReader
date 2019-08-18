@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zyb.base.R;
-import com.zyb.base.base.app.BaseApplication;
+import com.zyb.base.base.app.BaseApplicationLike;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -43,7 +43,7 @@ public class CommonUtils {
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
      */
     public static int dp2px(float dpValue) {
-        final float scale = BaseApplication.getInstance().getResources().getDisplayMetrics().density;
+        final float scale = BaseApplicationLike.getInstance().getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
@@ -51,7 +51,7 @@ public class CommonUtils {
      * 根据手机的分辨率从 sp 的单位 转成为 px(像素)
      */
     public static int sp2px(float spValue) {
-        DisplayMetrics metrics = BaseApplication.getInstance().getResources().getDisplayMetrics();
+        DisplayMetrics metrics = BaseApplicationLike.getInstance().getResources().getDisplayMetrics();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, metrics);
     }
 
@@ -62,7 +62,7 @@ public class CommonUtils {
      * @return
      */
     public static float px2dp(float px) {
-        return px / BaseApplication.getInstance().getResources().getDisplayMetrics().density;
+        return px / BaseApplicationLike.getInstance().getResources().getDisplayMetrics().density;
     }
 
     /**
@@ -115,7 +115,7 @@ public class CommonUtils {
      * 检查是否有可用网络
      */
     public static boolean isNetworkConnected() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) BaseApplication.getInstance().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) BaseApplicationLike.getInstance().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         assert connectivityManager != null;
         return connectivityManager.getActiveNetworkInfo() != null;
     }
@@ -256,7 +256,7 @@ public class CommonUtils {
      */
     public static int getOriginScreenHight() {
         int dpi = getScreenHeight();
-        WindowManager windowManager = (WindowManager) BaseApplication.getInstance().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager windowManager = (WindowManager) BaseApplicationLike.getInstance().getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         @SuppressWarnings("rawtypes")
@@ -278,7 +278,7 @@ public class CommonUtils {
      * @return
      */
     public static int getScreenWidth() {
-        WindowManager wm = (WindowManager) BaseApplication.getInstance()
+        WindowManager wm = (WindowManager) BaseApplicationLike.getInstance()
                 .getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(outMetrics);
@@ -291,7 +291,7 @@ public class CommonUtils {
      * @return
      */
     public static int getScreenHeight() {
-        WindowManager wm = (WindowManager) BaseApplication.getInstance()
+        WindowManager wm = (WindowManager) BaseApplicationLike.getInstance()
                 .getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(outMetrics);

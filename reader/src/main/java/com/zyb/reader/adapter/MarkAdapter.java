@@ -35,6 +35,6 @@ public class MarkAdapter extends BaseQuickAdapter<BookMarks, BaseViewHolder> {
         helper.setText(R.id.text_mark, bean.getText())
                 .setText(R.id.progress1, strPercent)
                 .setText(R.id.mark_time, bean.getTime())
-                .setTypeface(R.id.text_mark, typeface);
+                .setTypeface(typeface, R.id.text_mark,R.id.progress1,R.id.mark_time);
     }
 }

@@ -2,6 +2,7 @@ package com.zyb.reader;
 
 import android.app.Service;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Binder;
 import android.os.IBinder;
 
@@ -17,6 +18,7 @@ import com.zyb.base.event.EventConstants;
 import com.zyb.base.utils.EventBusUtil;
 import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.constant.ApiConstants;
+import com.zyb.reader.util.AudioFocusManager;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -61,6 +63,7 @@ public class SpeechService extends Service {
          */
         @Override
         public void onSpeechStart(String s) {
+            EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_SPEECH_START));
         }
 
         /**
@@ -103,6 +106,8 @@ public class SpeechService extends Service {
         super.onCreate();
         initialTts(); // 初始化TTS引擎
         EventBusUtil.register(this);
+        audioManager = new AudioFocusManager(this, audioFocusChangeListener);
+        audioManager.requestAudioFocus();
     }
 
     private String currentString = "";
@@ -243,6 +248,7 @@ public class SpeechService extends Service {
      * 暂停播放。仅调用speak后生效
      */
     private void pause() {
+        EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_SPEECH_PAUSE));
         int result = mSpeechSynthesizer.pause();
         checkResult(result, "pause");
     }
@@ -250,7 +256,8 @@ public class SpeechService extends Service {
     /**
      * 继续播放。仅调用speak后生效，调用pause生效
      */
-    private void resume() {
+    public void resume() {
+        EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_SPEECH_START));
         int result = mSpeechSynthesizer.resume();
         checkResult(result, "resume");
     }
@@ -268,6 +275,7 @@ public class SpeechService extends Service {
         stop();
         mSpeechSynthesizer.release();
         LogUtil.e("speechservice 释放资源成功");
+        if (audioManager != null) audioManager.abandonAudioFocus();
         super.onDestroy();
     }
 
@@ -276,4 +284,35 @@ public class SpeechService extends Service {
             return SpeechService.this;
         }
     }
+
+    /**
+     * 音频焦点
+     */
+    private AudioFocusManager audioManager;
+    AudioManager.OnAudioFocusChangeListener audioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    //此状态表示，焦点被其他应用获取 AUDIOFOCUS_GAIN 时，触发此回调。
+                    LogUtil.e("AUDIOFOCUS_LOSS");
+                    pause();
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    //短暂性丢失焦点，如播放视频，打电话等，需要暂停播放
+                    pause();
+                    LogUtil.e("AUDIOFOCUS_LOSS_TRANSIENT");
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    //短暂性丢失焦点并作降音处理，看需求处理而定。
+                    LogUtil.e("AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+                    break;
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    //别的应用申请焦点之后又释放焦点时，就会触发此回调，恢复播放音乐
+                    LogUtil.e("AUDIOFOCUS_GAIN");
+                    resume();
+                    break;
+            }
+        }
+    };
 }

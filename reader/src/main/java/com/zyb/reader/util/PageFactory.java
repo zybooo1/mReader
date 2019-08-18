@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -33,6 +32,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -190,7 +191,7 @@ public class PageFactory {
         lineSpace = context.getResources().getDimension(R.dimen.reader_reading_line_spacing);
         paragraphSpace = context.getResources().getDimension(R.dimen.reader_reading_paragraph_spacing);
         mVisibleWidth = mWidth - marginWidth * 2;
-        mVisibleHeight = mHeight - marginHeight * 2-statusMarginBottom*2;
+        mVisibleHeight = mHeight - marginHeight * 2 - statusMarginBottom * 2;
 
         typeface = config.getTypeface();
         m_fontSize = config.getFontSize();
@@ -313,7 +314,7 @@ public class PageFactory {
             return;
         }
 
-        float y = marginHeight+statusMarginBottom;
+        float y = marginHeight + statusMarginBottom;
         for (String strLine : m_lines) {
             y += m_fontSize + lineSpace;
             canvas.drawText(strLine, measureMarginWidth, y, mPaint);
@@ -360,7 +361,7 @@ public class PageFactory {
         Paint.FontMetrics fontMetrics = mTipPaint.getFontMetrics();
         float textY = (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent
                 + (batteryBottom - batteryTop) / 2 + batteryTop;
-        canvas.drawText(strPercent, mWidth - nPercentWidth-measureMarginWidth, textY, mTipPaint);//x y为坐标值
+        canvas.drawText(strPercent, mWidth - nPercentWidth - measureMarginWidth, textY, mTipPaint);//x y为坐标值
         canvas.drawText(date, batteryLeft + batteryWidth + 10, textY, mTipPaint);
 
         //画标题
@@ -512,6 +513,39 @@ public class PageFactory {
         Log.e("begin", mBookUtil.getPosition() + "");
         trPage.setBegin(mBookUtil.getPosition());
         return trPage;
+    }
+
+    /**
+     * 获取下一页第一句（第一个标点符号前的字符）
+     * 用于拼接到当前页进行朗读
+     */
+    public String getNextPageFirstSentence() {
+        mBookUtil.setPostition(currentPage.getEnd());
+        String string = getNextPage().getLineToString();
+        //匹配标点符号
+        String[] strings=string.split("[\\p{P}\\p{Punct}]");
+        if(strings.length>0){
+            return strings[0];
+        }else {
+            return "";
+        }
+    }
+
+    /**
+     * 获取当前页去掉第一句（第一个标点符号前的字符）
+     * 用于朗读
+     */
+    public String getCurPageWithoutFirstSentence() {
+        mBookUtil.setPostition(currentPage.getEnd());
+
+        String string = getCurrentPage().getLineToString();
+        //匹配标点符号
+        String[] strings=string.split("[\\p{P}\\p{Punct}]");
+        if(strings.length>0){
+            return string.substring(strings[0].length());
+        }else {
+            return string;
+        }
     }
 
     public TRPage getPageForBegin(long begin) {

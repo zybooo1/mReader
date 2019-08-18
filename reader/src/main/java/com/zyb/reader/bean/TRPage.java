@@ -30,13 +30,13 @@ public class TRPage {
     }
 
     public String getLineToString(){
-        String text ="";
+        StringBuilder text = new StringBuilder();
         if (lines != null){
             for (String line : lines){
-                text += line;
+                text.append(line);
             }
         }
-        return text;
+        return text.toString();
     }
 
     public void setLines(List<String> lines) {

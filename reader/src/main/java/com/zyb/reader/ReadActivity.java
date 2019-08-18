@@ -110,8 +110,6 @@ public class ReadActivity extends MyActivity {
     ImageView btnStartSpeech;
     @BindView(R2.id.btnAddBookMark)
     ImageView btnAddBookMark;
-    @BindView(R2.id.tv_stop_read)
-    TextView tv_stop_read;
     @BindView(R2.id.rl_read_bottom)
     ConstraintLayout rl_read_bottom;
 
@@ -444,7 +442,6 @@ public class ReadActivity extends MyActivity {
     /**
      * 当前是否有菜单UI显示
      */
-    // TODO: 2019/7/25 考虑朗读菜单、设置菜单
     private boolean getMenuIsShowing() {
         return rlTopRoot.getVisibility() == View.VISIBLE;
     }
@@ -467,7 +464,11 @@ public class ReadActivity extends MyActivity {
             toggleMenu();
             mSettingDialog.show();
         } else if (i == R.id.tv_stop_read) {
-            stopSpeech();
+            if(isSpeechPause){
+                speechService.resume();
+            }else {
+                stopSpeech();
+            }
         } else if (i == R.id.ivSearch) {
             drawerLayout.openDrawer(Gravity.END);
             toggleMenu();
@@ -599,6 +600,7 @@ public class ReadActivity extends MyActivity {
     /**
      * 朗读
      */
+    private boolean isSpeechPause = false;
     private SpeechService speechService;
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -626,20 +628,25 @@ public class ReadActivity extends MyActivity {
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
         //开始朗读
+        String content = pageFactory.getCurrentPage().getLineToString() + pageFactory.getNextPageFirstSentence();
         BaseEvent<String> event = new BaseEvent<>(EventConstants.EVENT_SPEECH_STRING_DATA,
-                pageFactory.getCurrentPage().getLineToString());
+                content);
         EventBusUtil.sendStickyEvent(event);
+        LogUtil.e(content);
+
     }
 
     /**
      * 停止朗读
      */
     private void stopSpeech() {
-        toggleMenu();
+        if (rl_read_bottom.getVisibility() == View.VISIBLE) {
+            QMUIViewHelper.slideOut(rl_read_bottom, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
+        }
         isSpeaking = false;
+        isSpeechPause = false;
         if (serviceConnection != null && speechService != null) {
             unbindService(serviceConnection);
-            serviceConnection = null;
             speechService = null;
         }
     }
@@ -670,10 +677,20 @@ public class ReadActivity extends MyActivity {
                 } else {
                     isSpeaking = true;
                     //继续朗读
+                    String content = pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence();
                     BaseEvent<String> e = new BaseEvent<>(EventConstants.EVENT_SPEECH_STRING_DATA,
-                            pageFactory.getCurrentPage().getLineToString());
+                            content);
                     EventBusUtil.sendStickyEvent(e);
+                    LogUtil.e(content);
                 }
+                break;
+            case EventConstants.EVENT_SPEECH_PAUSE:
+                isSpeechPause = true;
+                btnStopSpeech.setText("继续播放");
+                break;
+            case EventConstants.EVENT_SPEECH_START:
+                isSpeechPause = false;
+                btnStopSpeech.setText("停止播放");
                 break;
         }
     }
@@ -700,6 +717,8 @@ public class ReadActivity extends MyActivity {
     SeekBar sbSpeed;
     @BindView(R2.id.sbTiming)
     SeekBar sbTiming;
+    @BindView(R2.id.tv_stop_read)
+    RoundButton btnStopSpeech;
     private SeekBar.OnSeekBarChangeListener onSpeedChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -845,7 +864,7 @@ public class ReadActivity extends MyActivity {
             drawerLayout.closeDrawer(Gravity.START);
             return;
         }
-        if (getMenuIsShowing()) {
+        if (getMenuIsShowing() || rl_read_bottom.getVisibility() == View.VISIBLE) {
             toggleMenu();
             return;
         }

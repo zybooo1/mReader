@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 
 
 import com.zyb.base.base.app.BaseApplication;
+import com.zyb.base.base.app.BaseApplicationLike;
 import com.zyb.base.utils.constant.MemoryConstants;
 
 import java.io.BufferedInputStream;
@@ -1588,7 +1589,7 @@ public final class FileUtils {
         Cursor cursor = null;
         try {
             String[] pro = {MediaStore.Files.FileColumns.DATA};
-            cursor = BaseApplication.getInstance().getContentResolver().query(contentUri, pro, null, null, null);
+            cursor = BaseApplicationLike.getInstance().getContentResolver().query(contentUri, pro, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);

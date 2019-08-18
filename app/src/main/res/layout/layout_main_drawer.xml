@@ -70,8 +70,8 @@
             app:drawableLeftCompat="@drawable/svg_feed_back"
             app:drawableWidth="17dp" />
 
-
         <com.xw.repo.VectorCompatTextView
+            android:layout_marginTop="2px"
             android:id="@+id/about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zyb.base.base.app.BaseApplication;
+import com.zyb.base.base.app.BaseApplicationLike;
 import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
 import com.zyb.base.utils.EventBusUtil;
@@ -29,7 +30,7 @@ import java.util.regex.Pattern;
  *
  */
 public class BookUtil {
-    private static final String cachedPath = BaseApplication.getInstance().getExternalCacheDir() + "/bookCache/";
+    private static final String cachedPath = BaseApplicationLike.getInstance().getExternalCacheDir() + "/bookCache/";
     //存储的字符数
     public static final int cachedSize = 30000;
 //    protected final ArrayList<WeakReference<char[]>> myArray = new ArrayList<>();

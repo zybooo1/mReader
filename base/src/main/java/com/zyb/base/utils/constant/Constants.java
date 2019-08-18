@@ -6,7 +6,7 @@ import android.os.Environment;
  * 静态常量
  */
 public class Constants {
-    public static String BUGLY_ID = "000";
+    public static String BUGLY_ID = "b7a7ef8d34";
     public static String DB_NAME = "base_db";
 
     //刷新完成后延迟多久隐藏刷新状态

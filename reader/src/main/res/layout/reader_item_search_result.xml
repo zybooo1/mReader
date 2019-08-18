@@ -19,28 +19,14 @@
         android:textSize="14sp"
         tools:text="极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读极简阅读" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/progress1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/progress1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:maxLines="1"
-            android:textColor="@color/gray20"
-            android:textSize="12sp"
-            tools:text="100%" />
-
-        <TextView
-            android:id="@+id/mark_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/gray20"
-            android:textSize="12sp"
-            tools:text="2019-10-10 12:25" />
-    </LinearLayout>
+        android:gravity="right"
+        android:maxLines="1"
+        android:textColor="@color/gray20"
+        android:textSize="12sp"
+        tools:text="100%" />
 
 </LinearLayout>

@@ -53,10 +53,12 @@ dependencies {
     api rootProject.ext.dependencies["VectorCompatTextView"]
     //test
     testImplementation rootProject.ext.dependencies["junit"]
+    //bugly
+    api rootProject.ext.dependencies["bugly-crashreport"]
+    api rootProject.ext.dependencies["bugly-nativecrashreport"]
+    api rootProject.ext.dependencies["bugly-tinker"]
     //other
     api rootProject.ext.dependencies["multidex"]
-    api rootProject.ext.dependencies["crashreport"]
-    api rootProject.ext.dependencies["nativecrashreport"]
     api rootProject.ext.dependencies["xxpermissions"]
     api rootProject.ext.dependencies["toast-util"]
     api rootProject.ext.dependencies["greendao"]

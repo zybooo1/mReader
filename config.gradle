@@ -43,9 +43,9 @@ ext {
             "logger"                    : "com.orhanobut:logger:2.1.1",
             "fragmentation"             : "me.yokeyword:fragmentation:1.1.9",
             //bugly
-            "crashreport"               : "com.tencent.bugly:crashreport_upgrade:latest.release",
-            "nativecrashreport"         : "com.tencent.bugly:nativecrashreport:latest.release",
-            "tinker"                    : "com.tencent.tinker:tinker-android-lib:1.9.9",
+            "bugly-crashreport"         : "com.tencent.bugly:crashreport_upgrade:latest.release",
+            "bugly-nativecrashreport"   : "com.tencent.bugly:nativecrashreport:latest.release",
+            "bugly-tinker"              : "com.tencent.tinker:tinker-android-lib:1.9.9",
             //json
             "gson"                      : "com.google.code.gson:gson:2.8.0",
             //jsoup
@@ -87,8 +87,8 @@ ext {
             "mockito-core"              : "org.mockito:mockito-core:1.+",
             "timber"                    : "com.jakewharton.timber:timber:4.1.2",
             //umeng-analytics
-            "umeng-analytics"                     : "com.umeng.umsdk:analytics:8.0.0",
-            "umeng-common"                     : "com.umeng.umsdk:common:2.0.0",
+            "umeng-analytics"           : "com.umeng.umsdk:analytics:8.0.0",
+            "umeng-common"              : "com.umeng.umsdk:common:2.0.0",
             //canary
             "blockcanary-android"       : "com.github.markzhai:blockcanary-android:${dependVersion.blockcanary}",
             "blockcanary-no-op"         : "com.github.markzhai:blockcanary-no-op:${dependVersion.blockcanary}",
@@ -123,6 +123,6 @@ ext {
             "XBanner"                   : "com.github.xiaohaibin:XBanner:1.6.6",
             "countdownview"             : "com.github.iwgang:countdownview:2.1.6",
             "greendao"                  : "org.greenrobot:greendao:3.2.2",
-            "pagerslidingtabstrip"                  : "com.astuetz:pagerslidingtabstrip:1.0.1",
+            "pagerslidingtabstrip"      : "com.astuetz:pagerslidingtabstrip:1.0.1",
     ]
 }

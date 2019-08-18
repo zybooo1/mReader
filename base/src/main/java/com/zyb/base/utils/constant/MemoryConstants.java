@@ -4,6 +4,7 @@ import android.support.annotation.IntDef;
 
 
 import com.zyb.base.base.app.BaseApplication;
+import com.zyb.base.base.app.BaseApplicationLike;
 
 import java.io.File;
 import java.lang.annotation.Retention;
@@ -45,7 +46,7 @@ public final class MemoryConstants {
     /**
      * Path
      */
-    private static final String PATH_DATA = BaseApplication.getInstance().getCacheDir().getAbsolutePath() + File.separator + "data";
+    private static final String PATH_DATA = BaseApplicationLike.getInstance().getCacheDir().getAbsolutePath() + File.separator + "data";
 
     public static final String PATH_CACHE = PATH_DATA + "/NetCache";
 }
