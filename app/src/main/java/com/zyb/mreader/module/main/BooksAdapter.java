@@ -14,15 +14,52 @@ import java.util.List;
  */
 public class BooksAdapter extends BaseQuickAdapter<Book, BaseViewHolder> {
 
+    private boolean canSelect;
+
     public BooksAdapter(@Nullable List<Book> datas) {
         super(R.layout.item_book, datas);
     }
 
+    public boolean isCanSelect() {
+        return canSelect;
+    }
+
+    /**
+     * 进入或退出选择模式
+     */
+    public void setCanSelect(boolean canSelect) {
+        this.canSelect = canSelect;
+
+        for (Book mDatum : mData) {
+            if (!canSelect) mDatum.setSelected(false);
+        }
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 若当前未全选则全选，反之取消全选
+     */
+    public void selectOrUnselectAll() {
+        int unselectedCount = 0;
+        for (Book mDatum : mData) {
+            if (!mDatum.isSelected()) unselectedCount++;
+        }
+        for (Book mDatum : mData) {
+            //未全选就全选
+            mDatum.setSelected(unselectedCount!=0);
+        }
+        notifyDataSetChanged();
+    }
+
 
     @Override
-    protected void convert(BaseViewHolder helper, Book item) {
-        int position = helper.getLayoutPosition();
-        helper.setText(R.id.item_title, item.getTitle())
-                .setGone(R.id.ivAdd, position == mData.size()-1);
+    protected void convert(BaseViewHolder helper, Book book) {
+        helper.setText(R.id.item_title, book.getTitle())
+                .setText(R.id.tvReadProgress, book.getProgress())
+                .setGone(R.id.btnSelected, book.isSelected() && canSelect)
+                .setGone(R.id.btnUnselected, canSelect)
+                .setGone(R.id.tvReadProgress, !book.getProgress().isEmpty() && !canSelect)
+                .setGone(R.id.v1, !book.getProgress().isEmpty() && !canSelect)
+                .setGone(R.id.v2, !book.getProgress().isEmpty() && !canSelect);
     }
 }

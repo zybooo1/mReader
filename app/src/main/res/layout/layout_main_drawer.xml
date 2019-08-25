@@ -31,7 +31,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="20dp"
-                android:text="极简阅读"
+                android:text="@string/mreader_app_name"
                 android:textColor="@color/white" />
         </RelativeLayout>
 
@@ -71,10 +71,10 @@
             app:drawableWidth="17dp" />
 
         <com.xw.repo.VectorCompatTextView
-            android:layout_marginTop="2px"
             android:id="@+id/about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2px"
             android:background="@drawable/touch_bg"
             android:drawablePadding="15dp"
             android:padding="15dp"
@@ -85,6 +85,22 @@
             app:drawableHeight="20dp"
             app:drawableLeftCompat="@drawable/svg_about"
             app:drawableWidth="20dp" />
+
+        <com.xw.repo.VectorCompatTextView
+            android:id="@+id/share"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2px"
+            android:background="@drawable/touch_bg"
+            android:drawablePadding="15dp"
+            android:padding="15dp"
+            android:text="推荐给朋友"
+            android:textColor="@color/gray70"
+            android:textSize="15sp"
+            app:drawableCompatColor="@color/gray70"
+            app:drawableHeight="17dp"
+            app:drawableLeftCompat="@drawable/svg_share"
+            app:drawableWidth="17dp" />
 
     </LinearLayout>
 </ScrollView>

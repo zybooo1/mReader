@@ -251,8 +251,6 @@ public class CommonUtils {
     /**
      * 获取屏幕原始尺寸高度，包括虚拟功能键高度
      *
-     * @param context
-     * @return
      */
     public static int getOriginScreenHight() {
         int dpi = getScreenHeight();
@@ -290,7 +288,7 @@ public class CommonUtils {
      *
      * @return
      */
-    public static int getScreenHeight() {
+    private static int getScreenHeight() {
         WindowManager wm = (WindowManager) BaseApplicationLike.getInstance()
                 .getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();

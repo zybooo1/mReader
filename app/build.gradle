@@ -104,7 +104,7 @@ android {
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.contains('release')) {
                 //获取每个打包产物
-                def fileName = "极简阅读_${variant.productFlavors[0].name}_${variant.versionName}_${releaseTime()}.apk"
+                def fileName = "猫豆阅读_${variant.productFlavors[0].name}_${variant.versionName}_${releaseTime()}.apk"
                 println "自定义输出apk的名字:" + fileName;
                 outputFileName = fileName;
                 println "输出apk地址:" + outputFile.parentFile.absolutePath + java.io.File.separator + fileName

@@ -52,7 +52,7 @@ public class AppDataManager implements HttpHelper, PreferenceHelper, DbHelper, B
     }
 
     @Override
-    public void removeBook(Book book) {
+    public void removeBook(List<Book> book) {
         mGreenDaoHelper.removeBook(book);
     }
 
@@ -69,5 +69,10 @@ public class AppDataManager implements HttpHelper, PreferenceHelper, DbHelper, B
     @Override
     public void updateBookFiles(List<BookFiles> books) {
         mGreenDaoHelper.updateBookFiles(books);
+    }
+
+    @Override
+    public void sortBook(Book book, int newPosition) {
+        mGreenDaoHelper.sortBook(book,newPosition);
     }
 }

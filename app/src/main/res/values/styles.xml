@@ -8,9 +8,21 @@
         <item name="colorAccent">@color/colorAccent</item>
         <!-- Set menu background and text color -->
         <item name="android:windowBackground">@color/window_bg</item>
+        <item name="android:windowAnimationStyle">@style/windowAnimation</item>
         <!--暂时注释，否则NavView Menu显示可能有问题-->
         <!--<item name="android:selectableItemBackground">@drawable/touch_bg</item>-->
     </style>
+    <style name="windowAnimation">
+        <!--当我们从 A1 启动 A2 时，A2 出现在屏幕上，这个动画叫做 android:activityOpenEnterAnimation-->
+        <!--当我们从 A1 启动 A2 时，A1 从屏幕上消失，这个动画叫做 android:activityOpenExitAnimation-->
+        <!--当我们从 A2 退出回到 A1 时，A1 出现在屏幕上，这个叫做 android:activityCloseEnterAnimation-->
+        <!--当我们从 A2 退出回到 A1 时，A2 从屏幕上消失，这个叫做 android:activityCloseExitAnimation-->
+        <item name="android:activityOpenEnterAnimation">@anim/activity_slide_in_rtl</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_scale_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_scale_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_slide_out_ltr</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="FullScreenTheme" parent="AppTheme">
         <!-- Customize your theme here. -->

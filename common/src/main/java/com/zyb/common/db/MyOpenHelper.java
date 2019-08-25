@@ -23,9 +23,8 @@ public class MyOpenHelper extends DaoMaster.OpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
-            DBMigrationHelper dbMigrationHelper = new DBMigrationHelper();
             Class[] classes = {BookDao.class};
-            dbMigrationHelper.onUpgrade(db, classes);
+            DBMigrationHelper.migrate(db, classes);
         }
     }
 }

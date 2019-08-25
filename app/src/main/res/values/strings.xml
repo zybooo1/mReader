@@ -1,9 +1,12 @@
 <resources>
-    <string name="mreader_app_name">极简阅读</string>
+    <string name="mreader_app_name">猫豆阅读</string>
 
     <string name="scale_down_show_behavior">com.mreader.zyb.mreader.widget.behavior.ScaleDownShowBehavior</string>
     <string name="add_book_files">文件</string>
     <string name="add_book_paths">目录</string>
 
     <string name="file_path">存储卡:%1$s</string>
+    <string name="github_url">https://github.com/zybooo1</string>
+    <string name="my_qq">739758058</string>
+    <string name="already_selected_book_num">已选择%d本书</string>
 </resources>

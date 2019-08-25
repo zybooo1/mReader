@@ -1,6 +1,5 @@
 package com.zyb.reader.util;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -32,8 +31,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -152,7 +149,6 @@ public class PageFactory {
     private TRPage prePage;
     private TRPage cancelPage;
     private BookTask bookTask;
-    ContentValues values = new ContentValues();
 
     private static Status mStatus = Status.OPENING;
 
@@ -292,15 +288,8 @@ public class PageFactory {
         }
         //更新数据库进度
         if (currentPage != null && book != null) {
-            new Thread() {
-                @Override
-                public void run() {
-                    super.run();
-                    values.put("begin", currentPage.getBegin());
-                    book.setBegin(currentPage.getBegin());
-                    DBFactory.getInstance().getBooksManage().insertOrUpdate(book);
-                }
-            }.start();
+            book.setBegin(currentPage.getBegin());
+            DBFactory.getInstance().getBooksManage().insertOrUpdate(book);
         }
 
         Canvas canvas = new Canvas(bitmap);
@@ -523,10 +512,10 @@ public class PageFactory {
         mBookUtil.setPostition(currentPage.getEnd());
         String string = getNextPage().getLineToString();
         //匹配标点符号
-        String[] strings=string.split("[\\p{P}\\p{Punct}]");
-        if(strings.length>0){
+        String[] strings = string.split("[\\p{P}\\p{Punct}]");
+        if (strings.length > 0) {
             return strings[0];
-        }else {
+        } else {
             return "";
         }
     }
@@ -540,10 +529,10 @@ public class PageFactory {
 
         String string = getCurrentPage().getLineToString();
         //匹配标点符号
-        String[] strings=string.split("[\\p{P}\\p{Punct}]");
-        if(strings.length>0){
+        String[] strings = string.split("[\\p{P}\\p{Punct}]");
+        if (strings.length > 0) {
             return string.substring(strings[0].length());
-        }else {
+        } else {
             return string;
         }
     }

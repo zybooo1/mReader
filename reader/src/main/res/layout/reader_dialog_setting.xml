@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:background="@color/reader_MenucolorReadMenu"
+    android:background="@drawable/reader_bg_reader_menu"
     android:orientation="vertical"
     android:paddingLeft="10dp"
     android:paddingRight="10dp">

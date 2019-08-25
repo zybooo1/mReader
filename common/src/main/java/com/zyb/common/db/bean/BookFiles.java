@@ -1,6 +1,7 @@
 package com.zyb.common.db.bean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.zyb.common.db.DBFactory;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -47,6 +48,10 @@ public class BookFiles implements MultiItemEntity {
         book.setTitle(getTitle());
         book.setPath(getPath());
         book.setSize(getSize());
+        long time = System.currentTimeMillis();
+        book.setAddTime(time);
+        book.setLastReadTime(time);
+        book.setSort((int) DBFactory.getInstance().getBooksManage().count());
         return book;
     }
 

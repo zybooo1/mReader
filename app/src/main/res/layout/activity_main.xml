@@ -11,47 +11,50 @@
         android:layout_height="match_parent">
 
         <com.hjq.bar.TitleBar
-            app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/titleBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:layout_constraintTop_toTopOf="parent"
             app:leftIcon="@drawable/svg_logo"
             app:title="@string/mreader_app_name" />
 
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
-            android:id="@+id/smartRefresh"
+        <com.hjq.bar.TitleBar
+            android:id="@+id/layoutActionTop"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:visibility="gone"
+            app:backButton="false"
+            app:barStyle="light"
+            app:layout_constraintTop_toTopOf="parent"
+            app:leftTitle="完成"
+            app:lineVisible="true"
+            app:rightTitle="全选"
+            app:title="已选择1本书" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_books"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleBar"
-            app:srlDragRate="0.3"
-            app:srlEnableLoadMore="false"
-            app:srlEnablePureScrollMode="true">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_books"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+            app:layout_constraintTop_toBottomOf="@+id/titleBar" />
 
         <ImageView
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/img_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <RelativeLayout
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/img_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/book_item_bg"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <View
                 android:layout_width="match_parent"
@@ -74,6 +77,24 @@
                 android:textColor="@color/gray60" />
         </RelativeLayout>
 
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/layoutActionBottom"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/book_selected_red"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="移除"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
     </android.support.constraint.ConstraintLayout>
 
     <!--Drawer-->

@@ -22,10 +22,12 @@ public interface DbHelper {
     void addBook(Book book);
     void addBooks(List<Book> books);
     boolean isBookAdded(BookFiles book);
-    void removeBook(Book book);
+    void removeBook(List<Book> book);
 
     boolean isBookFilesCached();
 
     List<BookFiles> getAllBookFiles();
     void updateBookFiles(List<BookFiles> books);
+
+    void sortBook(Book book, int newPosition);
 }

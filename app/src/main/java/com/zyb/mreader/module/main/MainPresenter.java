@@ -43,6 +43,9 @@ public class MainPresenter extends AbstractPresenter<MainContract.View, AppDataM
                     case TO_ABOUT:
                         mView.toAbout();
                         break;
+                    case TO_SHARE:
+                        mView.toShare();
+                        break;
                 }
             }
             @Override
@@ -53,12 +56,16 @@ public class MainPresenter extends AbstractPresenter<MainContract.View, AppDataM
     @Override
     public void getBooks() {
         List<Book> allBooks = mDataManager.getAllBooks();
-        allBooks.add(new Book());
         mView.onBooksLoaded(allBooks);
     }
 
     @Override
-    public void removeBook(Book book) {
+    public void removeBook(List<Book> book) {
         mDataManager.removeBook(book);
+    }
+
+    @Override
+    public void sortBook(Book book, int newPosition) {
+        mDataManager.sortBook(book,newPosition);
     }
 }

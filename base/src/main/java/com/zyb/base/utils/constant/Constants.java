@@ -9,9 +9,6 @@ public class Constants {
     public static String BUGLY_ID = "b7a7ef8d34";
     public static String DB_NAME = "base_db";
 
-    //刷新完成后延迟多久隐藏刷新状态
-    public static int REFRESH_COMPLETE_DELAY = 1500;
-
     //图片（压缩）缓存目录
     public static String IMG_CACHE_PATH = Environment.getExternalStorageDirectory() + "imageCache/";
     //文件缓存目录

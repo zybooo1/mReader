@@ -72,7 +72,7 @@
             android:id="@+id/rl_read_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/reader_MenucolorReadMenu"
+            android:background="@drawable/reader_bg_reader_menu"
             android:padding="15dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -416,7 +416,7 @@
                 android:id="@+id/bookpop_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/reader_MenucolorReadMenu"
+                android:background="@drawable/reader_bg_reader_menu"
                 android:baselineAligned="false"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent">

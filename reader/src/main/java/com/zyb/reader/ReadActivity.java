@@ -1,5 +1,6 @@
 package com.zyb.reader;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -47,6 +48,7 @@ import com.zyb.base.utils.TimeUtil;
 import com.zyb.base.widget.ClearEditText;
 import com.zyb.base.widget.RoundButton;
 import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
+import com.zyb.base.widget.dialog.MessageDialog;
 import com.zyb.common.db.DBFactory;
 import com.zyb.common.db.bean.Book;
 import com.zyb.common.db.bean.BookMarks;
@@ -408,6 +410,9 @@ public class ReadActivity extends MyActivity {
      * 设置阅读进度条进度
      */
     public void setSeekBarProgress(float progress) {
+        int p = (int) (progress * 100);
+        book.setProgress(p == 0 ? "" : p + "%");
+        DBFactory.getInstance().getBooksManage().insertOrUpdate(book);
         sb_progress.setProgress((int) (progress * 10000));
     }
 
@@ -464,9 +469,9 @@ public class ReadActivity extends MyActivity {
             toggleMenu();
             mSettingDialog.show();
         } else if (i == R.id.tv_stop_read) {
-            if(isSpeechPause){
+            if (isSpeechPause) {
                 speechService.resume();
-            }else {
+            } else {
                 stopSpeech();
             }
         } else if (i == R.id.ivSearch) {
@@ -600,7 +605,7 @@ public class ReadActivity extends MyActivity {
     /**
      * 朗读
      */
-    private boolean isSpeechPause = false;
+    private boolean isSpeechPause = false; //是否暂停朗读（音频焦点被抢占时会暂停）
     private SpeechService speechService;
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -847,6 +852,7 @@ public class ReadActivity extends MyActivity {
 
     @Override
     protected void onDestroy() {
+        EventBusUtil.sendStickyEvent(new BaseEvent(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
         pageFactory.clear();
         pageWidget = null;
         unregisterReceiver(myReceiver);
@@ -856,6 +862,7 @@ public class ReadActivity extends MyActivity {
 
     @Override
     public void onBackPressed() {
+        //注意顺序
         if (drawerLayout.isDrawerOpen(Gravity.END)) {
             drawerLayout.closeDrawer(Gravity.END);
             return;
@@ -870,6 +877,20 @@ public class ReadActivity extends MyActivity {
         }
         if (mSettingDialog.isShowing()) {
             mSettingDialog.hide();
+            return;
+        }
+        if (isSpeaking) {
+            showDialog(true, "是否确认退出？", "继续看书", "退出",
+                    new MessageDialog.OnListener() {
+                        @Override
+                        public void onConfirm(Dialog dialog) {
+                        }
+
+                        @Override
+                        public void onCancel(Dialog dialog) {
+                            ReadActivity.this.finish();
+                        }
+                    });
             return;
         }
         super.onBackPressed();

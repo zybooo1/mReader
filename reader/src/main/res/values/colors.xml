@@ -6,7 +6,7 @@
     <color name="reader_read_round_btn">#C40FB8CE</color>
 
 
-    <color name="reader_reading_tip_text">#F24D4D4D</color>
+    <color name="reader_reading_tip_text">#DE636363</color>
 
     <color name="reader_read_bg_default">#E0BF9C</color>
     <color name="reader_read_bg_1">#CDEAB9</color>
@@ -14,10 +14,10 @@
     <color name="reader_read_bg_3">#F8EACE</color>
     <color name="reader_read_bg_4">#001C27</color>
 
-    <color name="reader_read_font_default">#2C2C2C</color>
-    <color name="reader_read_font_1">#2F332D</color>
-    <color name="reader_read_font_2">#92918C</color>
-    <color name="reader_read_font_3">#383429</color>
-    <color name="reader_read_font_4">#627176</color>
+    <color name="reader_read_font_default">#AD000000</color>
+    <color name="reader_read_font_1">#AD000000</color>
+    <color name="reader_read_font_2">#ADFFFFFF</color>
+    <color name="reader_read_font_3">#AD000000</color>
+    <color name="reader_read_font_4">#8FFFFFFF</color>
 
 </resources>

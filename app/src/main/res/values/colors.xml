@@ -7,4 +7,6 @@
     <color name="book_item_bg">#ffffff</color>
     <color name="book_item_fill">#360FB8CE</color>
 
+    <color name="book_selected_red">#E8554D</color>
+
 </resources>

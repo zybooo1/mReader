@@ -7,7 +7,7 @@ ext {
     buildToolsVersion = '28.0.3'
     versionCode = 10
     versionName = "1.0"
-    databaseVersion = 1
+    databaseVersion = 3
 
     //依赖库版本号
     def dependVersion = [
