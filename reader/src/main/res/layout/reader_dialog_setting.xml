@@ -81,12 +81,13 @@
 
         <ImageView
             android:id="@+id/tv_subtract"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:layout_marginLeft="20dp"
             android:layout_weight="1"
-            android:background="@drawable/reader_button_bg"
-            app:srcCompat="@drawable/reader_svg_font_size_down" />
+            app:srcCompat="@drawable/svg_remove" />
 
         <TextView
             android:id="@+id/tv_size"
@@ -101,11 +102,12 @@
 
         <ImageView
             android:id="@+id/tv_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="40dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:layout_weight="1"
-            android:background="@drawable/reader_button_bg"
-            app:srcCompat="@drawable/reader_svg_font_size_add" />
+            app:srcCompat="@drawable/svg_add" />
 
         <TextView
             android:id="@+id/tv_size_default"

@@ -11,13 +11,14 @@ import android.widget.RelativeLayout;
 
 import com.hjq.bar.TitleBar;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
+import com.kongzue.dialog.v3.MessageDialog;
+import com.kongzue.dialog.v3.WaitDialog;
 import com.zyb.base.R;
-import com.zyb.base.base.BaseDialog;
 import com.zyb.base.mvp.AbstractPresenter;
 import com.zyb.base.mvp.BaseView;
+import com.zyb.base.umeng.UmengClient;
 import com.zyb.base.utils.LogUtil;
-import com.zyb.base.widget.dialog.MessageDialog;
-import com.zyb.base.widget.dialog.WaitDialog;
 
 import java.util.List;
 
@@ -51,11 +52,13 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
     @Override
     public void onResume() {
         super.onResume();
+        UmengClient.onResume(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        UmengClient.onPause(this);
     }
 
     @Override
@@ -122,52 +125,51 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
 
 
     /*----------Loading弹窗 Begin------------*/
-    BaseDialog loadingDialog;
+    com.kongzue.dialog.v3.WaitDialog loadingDialog;
 
     @Override
     public void showDialogLoading(String msg) {
         if (loadingDialog == null) {
-            loadingDialog = new WaitDialog.Builder(getFragmentActivity())
-                    .setMessage(msg)// 消息文本可以不用填写
-                    .create();
+            loadingDialog = (com.kongzue.dialog.v3.WaitDialog) WaitDialog.build(getFragmentActivity());
         }
+        loadingDialog.setMessage(msg);
         loadingDialog.show();
     }
 
     @Override
     public void showDialogLoading() {
-        if (loadingDialog == null) {
-            loadingDialog = new WaitDialog.Builder(getFragmentActivity())
-                    .setMessage(R.string.msg_loading)
-                    .create();
-        }
-        loadingDialog.show();
+        showDialogLoading("");
     }
 
     @Override
     public void hideDialogLoading() {
-        if (loadingDialog != null) loadingDialog.dismiss();
+        if (loadingDialog != null) loadingDialog.doDismiss();
     }
     /*----------Loading弹窗 End------------*/
 
 
     /*----------提示弹窗 Begin------------*/
-    BaseDialog messageDialog;
+    com.kongzue.dialog.v3.MessageDialog messageDialog;
 
     @Override
     public void showDialog(boolean canCancel, String title, String confirmText,
-                           String cancelText, MessageDialog.OnListener listener) {
-        messageDialog = new MessageDialog.Builder(getFragmentActivity())
-                .setMessage(title)
-                .setConfirm(confirmText)
-                .setCancel(cancelText) // 设置 null 表示不显示取消按钮
-                .setListener(listener)
+                           String cancelText, @Nullable OnDialogButtonClickListener cancelListener,
+                           @Nullable OnDialogButtonClickListener confirmListener) {
+
+        if (messageDialog == null) {
+            messageDialog = MessageDialog.build(getFragmentActivity());
+        }
+
+        messageDialog
+                .setCancelable(canCancel)
+                .setTitle(title)
+                .setCancelButton(cancelText, cancelListener)
+                .setOkButton(confirmText, confirmListener)
                 .show();
     }
-
     @Override
     public void hideDialog() {
-        if (messageDialog != null) messageDialog.dismiss();
+        if (messageDialog != null)messageDialog.doDismiss();
     }
     /*----------提示弹窗 End------------*/
 
@@ -256,7 +258,7 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
 
     @Override
     public void onFileDownloaded(String absoluteFilePath) {
-        LogUtil.e("onFileDownloaded"+absoluteFilePath);
+        LogUtil.e("onFileDownloaded" + absoluteFilePath);
         hideDialogLoading();
     }
 

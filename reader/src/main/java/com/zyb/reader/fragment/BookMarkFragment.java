@@ -7,12 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
+import com.kongzue.dialog.util.BaseDialog;
 import com.zyb.base.base.fragment.MyLazyFragment;
 import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
 import com.zyb.base.utils.EventBusUtil;
 import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
-import com.zyb.base.widget.dialog.MessageDialog;
 import com.zyb.common.db.DBFactory;
 import com.zyb.common.db.bean.BookMarks;
 import com.zyb.common.db.bean.BookMarksDao;
@@ -53,17 +54,11 @@ public class BookMarkFragment extends MyLazyFragment {
     private BaseQuickAdapter.OnItemLongClickListener onItemLongClickListener = new BaseQuickAdapter.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-            showDialog(true, "是否删除书签？", "删除", "取消",
-                    new MessageDialog.OnListener() {
-                        @Override
-                        public void onConfirm(Dialog dialog) {
-                            DBFactory.getInstance().getBookMarksManage().delete(bookMarksList.get(position));
-                            queryAllMarks();
-                        }
-
-                        @Override
-                        public void onCancel(Dialog dialog) {
-                        }
+            showDialog(true, "是否删除书签？", "删除", "取消", null,
+                    (baseDialog, v) -> {
+                        DBFactory.getInstance().getBookMarksManage().delete(bookMarksList.get(position));
+                        queryAllMarks();
+                        return false;
                     });
             return false;
         }

@@ -1,6 +1,5 @@
 package com.zyb.mreader.module.main;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +17,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,6 +25,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.barlibrary.ImmersionBar;
 import com.hjq.bar.OnTitleBarListener;
 import com.hjq.bar.TitleBar;
+import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
+import com.kongzue.dialog.util.BaseDialog;
 import com.zyb.base.base.activity.MVPActivity;
 import com.zyb.base.di.component.AppComponent;
 import com.zyb.base.event.BaseEvent;
@@ -37,7 +39,6 @@ import com.zyb.base.utils.QMUIViewHelper;
 import com.zyb.base.utils.constant.ApiConstants;
 import com.zyb.base.widget.WebActivity;
 import com.zyb.base.widget.decoration.GridItemSpaceDecoration;
-import com.zyb.base.widget.dialog.MessageDialog;
 import com.zyb.common.db.DBFactory;
 import com.zyb.common.db.bean.Book;
 import com.zyb.mreader.AboutActivity;
@@ -63,6 +64,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+
 /**
  *
  */
@@ -73,6 +75,8 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     DrawerLayout drawerLayout;
     @BindView(R.id.rv_books)
     RecyclerView rvBooks;
+    @BindView(R.id.layoutBooksEmpty)
+    LinearLayout layoutBooksEmpty;
 
     Vibrator vibrator;
 
@@ -146,6 +150,24 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     @Override
     public void onLeftClick(View v) {
         drawerLayout.openDrawer(Gravity.START);
+//        User p2 = new User();
+//        p2.setName("lucky");
+//        p2.setWechatId("12423");
+//        p2.save(new SaveListener<String>() {
+//            @Override
+//            public void done(String objectId, BmobException e) {
+//                if(e==null){
+//                    showMsg("添加数据成功，返回objectId为："+objectId);
+//                }else{
+//                    showMsg("创建数据失败：" + e.getMessage());
+//                }
+//            }
+//        });
+    }
+
+    @OnClick(R.id.tvAddBook)
+    public void onAddBookClick() {
+        toAddBook();
     }
 
     @Override
@@ -163,7 +185,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         this.books.clear();
         this.books.addAll(books);
         booksAdapter.notifyDataSetChanged();
-
+        layoutBooksEmpty.setVisibility(this.books.size() > 0 ? View.GONE : View.VISIBLE);
     }
 
     @OnClick({R.id.addBook, R.id.feedBack, R.id.about, R.id.share})
@@ -212,6 +234,23 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         startActivity(Intent.createChooser(intent, "分享至"));
     }
 
+    @Override
+    public void toLogin() {
+//        CustomDialog.
+//                show(MainActivity.this, R.layout.layout_main_drawer, new CustomDialog.OnBindView() {
+//            @Override
+//            public void onBind(final CustomDialog dialog, View v) {
+//                ImageView btnOk = v.findViewById(R.id.btn_ok);
+//
+//                btnOk.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        dialog.doDismiss();
+//                    }
+//                });
+//            }
+//        });
+    }
 
     @Override
     public void onBackPressed() {
@@ -247,7 +286,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     // 3D旋转动画0
     private Rotate3DAnimation threeDAnimation;
     // 是否打开书籍 其实是是否已离开当前界面，跳转到阅读界面
-    private boolean isOpenBook = false;
+    private boolean isBookOpened = false;
     private boolean isAnimating = false;
 
     private int bookPosition;
@@ -256,7 +295,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     protected void onRestart() {
         super.onRestart();
         // 当界面重新进入的时候进行合书的动画
-        if (isOpenBook) {
+        if (isBookOpened) {
             initPageColor();
             scaleAnimation.reverse();
             threeDAnimation.reverse();
@@ -315,20 +354,31 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        //合书时返回桌面 直接把动画取消（调用onAnimationEnd)
+        if(isBookOpened&&isAnimating){
+            if(scaleAnimation!=null) scaleAnimation.cancel();
+            if(threeDAnimation!=null) threeDAnimation.cancel();
+        }
+    }
+
+    @Override
     public void onAnimationStart(Animation animation) {
         isAnimating = true;
     }
 
     @Override
     public void onAnimationEnd(Animation animation) {
+        LogUtil.e("onAnimationEnd");
         isAnimating = false;
         if (scaleAnimation.hasEnded() && threeDAnimation.hasEnded()) {
             // 两个动画都结束的时候再处理后续操作
-            if (!isOpenBook) {
-                isOpenBook = true;
+            if (!isBookOpened) {
+                isBookOpened = true;
                 readBook();
             } else {
-                isOpenBook = false;
+                isBookOpened = false;
                 mPage.clearAnimation();
                 mContent.clearAnimation();
                 mPage.setVisibility(View.GONE);
@@ -412,8 +462,6 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     private static final int ANIM_SHOW_DURATION = 400;
     private static final int ANIM_HIDE_DURATION = 300;
 
-    private int oldPosition;
-    private int newPosition;
     OnTitleBarListener onTopActionBarListener = new OnTitleBarListener() {
         @Override
         public void onLeftClick(View v) {
@@ -447,20 +495,26 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         //当拖拽移动的时候回调的方法
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            //书籍分类
 //            View itemView = viewHolder.itemView;
 //            View targetView = target.itemView;
-//            boolean widthIn = (itemView.getX() + itemView.getWidth() / 2f) > targetView.getX() && (itemView.getX() + itemView.getWidth() / 2f) < (targetView.getX() + targetView.getWidth());
-//            boolean heightIn = (itemView.getY() + itemView.getHeight() / 2f) > targetView.getY() && (itemView.getY() + itemView.getHeight() / 2f) < (targetView.getY() + targetView.getHeight());
+//            boolean widthIn = (itemView.getX() + itemView.getWidth() / 2f) > (targetView.getX() + targetView.getWidth() * 0.25)
+//                    && (itemView.getX() + itemView.getWidth() / 2f) < (targetView.getX() + targetView.getWidth() * 0.75);
+//            boolean heightIn = (itemView.getY() + itemView.getHeight() / 2f) > (targetView.getY() + targetView.getHeight() * 0.25)
+//                    && (itemView.getY() + itemView.getHeight() / 2f) < (targetView.getY() + targetView.getHeight() * 0.75);
 //
 //            LogUtil.e("mItemHelper onMove()", "widthIn:" + widthIn + " heightIn:" + heightIn);
 //            if (widthIn && heightIn) { //判断两个拖拽的Item是否进入目标item（书籍归类）
-//                itemTouchOnMove(viewHolder, viewHolder.getAdapterPosition(), target.getAdapterPosition(), target);
+//                onItemMerge(viewHolder, target);
 //                return true;
 //            }
+
+
             //得到当拖拽的viewHolder的Position
             int fromPosition = viewHolder.getAdapterPosition();
             //拿到当前拖拽到的item的viewHolder
             int toPosition = target.getAdapterPosition();
+//            if (fromPosition != toPosition) {
             if (fromPosition < toPosition) {
                 for (int i = fromPosition; i < toPosition; i++) {
                     Collections.swap(books, i, i + 1);
@@ -471,12 +525,8 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                 }
             }
             booksAdapter.notifyItemMoved(fromPosition, toPosition);
+//            }
             return true;
-        }
-
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            LogUtil.e("mItemHelper", "拖拽完成 方向" + direction);
         }
 
         /**
@@ -491,7 +541,8 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                 if (layoutActionBottom.getVisibility() == View.VISIBLE)
                     QMUIViewHelper.slideOut(layoutActionBottom, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
                 if (vibrator != null) vibrator.vibrate(20);
-//                booksAdapter.setCanSelect(false);
+                viewHolder.itemView.findViewById(R.id.btnUnselected).setVisibility(View.GONE);
+                viewHolder.itemView.findViewById(R.id.btnSelected).setVisibility(View.GONE);
             }
             super.onSelectedChanged(viewHolder, actionState);
         }
@@ -499,8 +550,17 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         @Override
         public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
             Log.e("mItemHelper", "clearView()");
-            viewHolder.itemView.clearAnimation();
+
+
+            //这里再判断一下 防止和点击事件同时执行
+            if (isAnimating) {
+                viewHolder.itemView.clearAnimation();
+                return;
+            }
+
+            //排序
             mPresenter.sortBook(books.get(viewHolder.getLayoutPosition()), viewHolder.getLayoutPosition());
+            //选择当前项并进入编辑模式
             setBookSelected(viewHolder.getLayoutPosition(), true);
             enterEditMode();
             super.clearView(recyclerView, viewHolder);
@@ -512,6 +572,22 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
             Log.e("hsjkkk", "isLongPressDragEnabled()");
             return true;
         }
+
+        /**
+         * 返回true：拖拽会把其他项“挤”到后面
+         * 返回false：拖拽其他项不动
+         */
+        @Override
+        public boolean canDropOver(RecyclerView recyclerView, RecyclerView.ViewHolder current, RecyclerView.ViewHolder target) {
+            LogUtil.e("mItemHelper", "canDropOver:");
+            return true;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            LogUtil.e("mItemHelper", "拖拽完成 方向" + direction);
+        }
+
 
     });
 
@@ -533,30 +609,13 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         getStatusBarConfig().statusBarDarkFont(false).init();
     }
 
-    public void itemTouchOnMove(RecyclerView.ViewHolder oldViewHolder,
-                                int oldP, int newP, RecyclerView.ViewHolder targetViewHolder) {
-        //移动到新的item上方时，给它设置选中颜色
-        setChooseColor(newP);
+    public void onItemMerge(RecyclerView.ViewHolder oldViewHolder, RecyclerView.ViewHolder targetViewHolder) {
+        LogUtil.e("mItemHelper", "onItemMerge");
         //记录 position
-        oldPosition = oldP;
-        newPosition = newP;
-    }
-
-    /**
-     * newP是手指所在的item position
-     */
-    private void setChooseColor(int newP) {
-        int count = rvBooks.getChildCount();
-//        for (int i = 0; i < count; i++) {
-//            View itemView = rvBooks.getChildAt(i);
-//            int position = (int) itemView.getTag();
-//            if (newP == position) {
-//                itemView.setBackgroundColor(Color.parseColor("#55cccccc"));
-//            } else {
-//                itemView.setBackgroundColor(Color.parseColor("#00ffffff"));
-//            }
-//        }
-        rvBooks.getChildAt(newP).setBackgroundColor(Color.parseColor("#00ffffff"));
+        int oldPosition = oldViewHolder.getLayoutPosition();
+        int newPosition = targetViewHolder.getLayoutPosition();
+        //移动到新的item上方时，给它设置选中颜色
+        rvBooks.getChildAt(newPosition).setBackgroundColor(Color.parseColor("#444444"));
     }
 
     /**
@@ -601,18 +660,15 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
             return;
         }
         showDialog(true, "是否移除这些书本？", "取消", "移除",
-                new MessageDialog.OnListener() {
+                new OnDialogButtonClickListener() {
                     @Override
-                    public void onConfirm(Dialog dialog) {
-                    }
-
-                    @Override
-                    public void onCancel(Dialog dialog) {
+                    public boolean onClick(BaseDialog baseDialog, View v) {
                         mPresenter.removeBook(deleteBooks);
                         refreshBooks();
                         exitEditMode();
+                        return false;
                     }
-                });
+                },null);
     }
     //==============书架拖拽功能End================
 

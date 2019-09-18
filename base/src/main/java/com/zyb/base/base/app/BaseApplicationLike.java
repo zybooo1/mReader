@@ -8,9 +8,9 @@ import android.os.Build;
 import android.support.multidex.MultiDex;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.google.gson.Gson;
 import com.hjq.bar.TitleBar;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialog.util.DialogSettings;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshFooterCreator;
@@ -19,22 +19,18 @@ import com.scwang.smartrefresh.layout.api.RefreshFooter;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
-import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
-import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.tinker.TinkerManager;
 import com.tencent.tinker.entry.DefaultApplicationLike;
-import com.umeng.commonsdk.UMConfigure;
 import com.zyb.base.BuildConfig;
 import com.zyb.base.R;
-import com.zyb.base.base.bean.UserBean;
 import com.zyb.base.di.component.AppComponent;
 import com.zyb.base.di.component.DaggerAppComponent;
 import com.zyb.base.di.module.AppModule;
 import com.zyb.base.di.module.HttpModule;
 import com.zyb.base.di.module.ImageModule;
-import com.zyb.base.utils.LogUtil;
+import com.zyb.base.umeng.UmengClient;
 import com.zyb.base.utils.Utils;
 import com.zyb.base.utils.constant.Constants;
 
@@ -100,11 +96,35 @@ public class BaseApplicationLike extends DefaultApplicationLike {
 
         //init utils
         Utils.init(sInstance);
+//        Bmob.initialize(sInstance, Constants.BOMB_APP_KEY);
         /**
          * 注意：如果您已经在AndroidManifest.xml中配置过appkey和channel值，可以调用此版本初始化函数。
          */
-        UMConfigure.init(sInstance, UMConfigure.DEVICE_TYPE_PHONE,"");
+        UmengClient.init(sInstance);
 
+        initDialog();
+    }
+
+    private void initDialog() {
+        DialogSettings.isUseBlur = true;                   //是否开启模糊效果，默认关闭
+        DialogSettings.style = DialogSettings.STYLE.STYLE_IOS;          //全局主题风格，提供三种可选风格，STYLE_MATERIAL, STYLE_KONGZUE, STYLE_IOS
+        DialogSettings.theme = DialogSettings.THEME.DARK;          //全局对话框明暗风格，提供两种可选主题，LIGHT, DARK
+        DialogSettings.tipTheme = DialogSettings.THEME.DARK;       //全局提示框明暗风格，提供两种可选主题，LIGHT, DARK
+//        DialogSettings.titleTextInfo = (TextInfo);              //全局标题文字样式
+//        DialogSettings.contentTextInfo = (TextInfo);            //全局正文文字样式
+//        DialogSettings.buttonTextInfo = (TextInfo);             //全局默认按钮文字样式
+//        DialogSettings.buttonPositiveTextInfo = (TextInfo);     //全局焦点按钮文字样式（一般指确定按钮）
+//        DialogSettings.inputInfo = (InputInfo);                 //全局输入框文本样式
+//        DialogSettings.backgroundColor = (ColorInt);            //全局对话框背景颜色，值0时不生效
+//        DialogSettings.cancelable = (boolean);                  //全局对话框默认是否可以点击外围遮罩区域或返回键关闭，此开关不影响提示框（TipDialog）以及等待框（TipDialog）
+//        DialogSettings.cancelableTipDialog = (boolean);         //全局提示框及等待框（WaitDialog、TipDialog）默认是否可以关闭
+//        DialogSettings.DEBUGMODE = (boolean);                   //是否允许打印日志
+//        DialogSettings.blurAlpha = (int);                       //开启模糊后的透明度（0~255）
+//        DialogSettings.systemDialogStyle = (styleResId);        //自定义系统对话框style，注意设置此功能会导致原对话框风格和动画失效
+//        DialogSettings.dialogLifeCycleListener = (DialogLifeCycleListener);  //全局Dialog生命周期监听器
+//        DialogSettings.defaultCancelButtonText = (String);      //设置 BottomDialog 和 ShareDialog 默认“取消”按钮的文字
+//        DialogSettings.tipBackgroundResId = (drawableResId);    //设置 TipDialog 和 WaitDialog 的背景资源
+//        DialogSettings.tipTextInfo = (InputInfo);               //设置 TipDialog 和 WaitDialog 文字样式
     }
 
     private void initDagger() {

@@ -32,7 +32,9 @@ allprojects {
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/releases/' }
         maven { url "https://jitpack.io" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        //Bmob的maven仓库地址--必填
         mavenCentral()
+//        maven { url "https://raw.github.com/bmob/bmob-android-sdk/master" }
     }
 }
 

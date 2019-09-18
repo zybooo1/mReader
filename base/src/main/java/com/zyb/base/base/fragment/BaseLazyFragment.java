@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,7 @@ import java.util.Random;
 public abstract class BaseLazyFragment extends Fragment {
 
     // Activity对象
-    public FragmentActivity mActivity;
+    public AppCompatActivity mActivity;
     // 根布局
     private View mRootView;
     // 是否进行过懒加载
@@ -45,13 +46,13 @@ public abstract class BaseLazyFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.mActivity = (FragmentActivity) context;
+        this.mActivity = (AppCompatActivity) context;
     }
 
     /**
      * 获取Activity，防止出现 getActivity() 为空
      */
-    public FragmentActivity getFragmentActivity() {
+    public AppCompatActivity getFragmentActivity() {
         return mActivity;
     }
 

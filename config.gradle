@@ -87,8 +87,13 @@ ext {
             "mockito-core"              : "org.mockito:mockito-core:1.+",
             "timber"                    : "com.jakewharton.timber:timber:4.1.2",
             //umeng-analytics
-            "umeng-analytics"           : "com.umeng.umsdk:analytics:8.0.0",
+            "umeng-analytics"           : "com.umeng.umsdk:analytics:8.1.3",
             "umeng-common"              : "com.umeng.umsdk:common:2.0.0",
+            "umeng-utdid"               : "com.umeng.sdk:utdid:1.1.5.3",
+            "umeng-share-core"            : 'com.umeng.umsdk:share-core:6.9.6',
+            "umeng-share-wx"            : 'com.umeng.umsdk:share-wx:6.9.6',
+            "umeng-share-sina"            : 'com.umeng.umsdk:share-sina:6.9.6',
+            "umeng-share-qq"            : 'com.umeng.umsdk:share-qq:6.9.6',
             //canary
             "blockcanary-android"       : "com.github.markzhai:blockcanary-android:${dependVersion.blockcanary}",
             "blockcanary-no-op"         : "com.github.markzhai:blockcanary-no-op:${dependVersion.blockcanary}",
@@ -116,13 +121,15 @@ ext {
             "EventBus"                  : "org.greenrobot:eventbus:3.1.1",
             "circleimageview"           : "de.hdodenhof:circleimageview:2.2.0",
             "VectorCompatTextView"      : "com.github.woxingxiao:VectorCompatTextView:2.3",
-            "okdownload"                : "com.liulishuo.okdownload:okdownload:1.0.4-SNAPSHOT",
-            "okdownload_sqlite"         : "com.liulishuo.okdownload:sqlite:1.0.4-SNAPSHOT",
-            "okdownload_okhttp"         : "com.liulishuo.okdownload:okhttp:1.0.4-SNAPSHOT",
+            "okdownload"                : "com.liulishuo.okdownload:okdownload:1.0.6-SNAPSHOT",
+            "okdownload_sqlite"         : "com.liulishuo.okdownload:sqlite:1.0.6-SNAPSHOT",
+            "okdownload_okhttp"         : "com.liulishuo.okdownload:okhttp:1.0.6-SNAPSHOT",
             "PersistentCookieJar"       : "com.github.franmontiel:PersistentCookieJar:v1.0.1",
             "XBanner"                   : "com.github.xiaohaibin:XBanner:1.6.6",
             "countdownview"             : "com.github.iwgang:countdownview:2.1.6",
             "greendao"                  : "org.greenrobot:greendao:3.2.2",
+            "dialog_v3"                  : "com.kongzue.dialog_v3:dialog:3.1.1",
+            "bmob"                  : "cn.bmob.android:bmob-sdk:3.7.3-rc1",
             "pagerslidingtabstrip"      : "com.astuetz:pagerslidingtabstrip:1.0.1",
     ]
 }

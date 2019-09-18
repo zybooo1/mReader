@@ -46,6 +46,9 @@ public class MainPresenter extends AbstractPresenter<MainContract.View, AppDataM
                     case TO_SHARE:
                         mView.toShare();
                         break;
+                    case TO_LOGIN:
+                        mView.toLogin();
+                        break;
                 }
             }
             @Override

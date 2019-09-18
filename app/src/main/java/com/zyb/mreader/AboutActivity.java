@@ -4,19 +4,25 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.view.View;
+import android.widget.TextView;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zyb.base.base.activity.MyActivity;
 import com.zyb.base.router.RouterConstants;
 import com.zyb.base.router.RouterUtils;
+import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.widget.WebActivity;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
  * 关于界面
  */
 public class AboutActivity extends MyActivity {
+
+    @BindView(R.id.tvVersion)
+    TextView tvVersion;
 
     @Override
     protected int getLayoutId() {
@@ -36,6 +42,11 @@ public class AboutActivity extends MyActivity {
 
     @Override
     protected void initView() {
+        try {
+            tvVersion.setText(String.format("%s", CommonUtils.getVersionName(this)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

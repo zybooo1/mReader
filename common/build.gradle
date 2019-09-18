@@ -1,6 +1,5 @@
 apply from: "../base_module.gradle"
 apply from: "../base_compiler.gradle"
-
 /*GreenDao*/
 greendao {
     //数据库版本，数据库升级使用到 {@link OpenHelper#onUpgrade}

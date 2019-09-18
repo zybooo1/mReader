@@ -1,6 +1,5 @@
 package com.zyb.reader;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,6 +18,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -33,6 +34,8 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.barlibrary.ImmersionBar;
+import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
+import com.kongzue.dialog.util.BaseDialog;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -48,7 +51,6 @@ import com.zyb.base.utils.TimeUtil;
 import com.zyb.base.widget.ClearEditText;
 import com.zyb.base.widget.RoundButton;
 import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
-import com.zyb.base.widget.dialog.MessageDialog;
 import com.zyb.common.db.DBFactory;
 import com.zyb.common.db.bean.Book;
 import com.zyb.common.db.bean.BookMarks;
@@ -58,6 +60,7 @@ import com.zyb.reader.bean.SearchResultBean;
 import com.zyb.reader.dialog.SettingDialog;
 import com.zyb.reader.fragment.BookMarkFragment;
 import com.zyb.reader.fragment.CatalogFragment;
+import com.zyb.reader.util.BookUtil;
 import com.zyb.reader.util.BrightnessUtil;
 import com.zyb.reader.util.PageFactory;
 import com.zyb.reader.view.PageWidget;
@@ -122,7 +125,7 @@ public class ReadActivity extends MyActivity {
     private Boolean mDayOrNight;
     private boolean isSpeaking = false;
 
-    // 接收电池信息更新的广播
+    // 接收电池信息更新、时间更新的广播
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -187,6 +190,7 @@ public class ReadActivity extends MyActivity {
         searchAdapter.setOnItemClickListener(searchItemClicklistener);
         smartRefresh.setOnLoadMoreListener(loadMoreListener);
         etSearch.setOnKeyListener(onKeyListener);
+        etSearch.addTextChangedListener(searchTextWatcher);
 
         pageWidget.setPageMode(config.getPageMode());
         pageWidget.post(() -> {
@@ -526,11 +530,12 @@ public class ReadActivity extends MyActivity {
      */
     @BindView(R2.id.etSearch)
     ClearEditText etSearch;
+    @BindView(R2.id.tvSearchEmpty)
+    TextView tvSearchEmpty;
     @BindView(R2.id.smartRefresh)
     SmartRefreshLayout smartRefresh;
     @BindView(R2.id.rvSearch)
     RecyclerView rvSearch;
-    private int page = 0;
     private SearchAdapter searchAdapter;
     List<SearchResultBean> searchResultList = new ArrayList<>();
     BaseQuickAdapter.OnItemClickListener searchItemClicklistener = new BaseQuickAdapter.OnItemClickListener() {
@@ -541,10 +546,58 @@ public class ReadActivity extends MyActivity {
         }
     };
     OnLoadMoreListener loadMoreListener = refreshLayout -> {
+        search(true);
+    };
+    BookUtil.OnSearchResult onSearchResult = new BookUtil.OnSearchResult() {
+
+        @Override
+        public void onEmpty(boolean isLoadMore) {
+            if (isLoadMore) {
+                smartRefresh.finishLoadMore();
+                showMsg("没有更多了");
+            } else {
+                searchResultList.clear();
+                searchAdapter.notifyDataSetChanged();
+                tvSearchEmpty.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        public void onResult(List<SearchResultBean> beans, boolean isLoadMore) {
+            smartRefresh.finishLoadMore();
+            smartRefresh.setEnableLoadMore(beans.size() >= BookUtil.A_PAGE_NUM);
+
+            tvSearchEmpty.setVisibility(View.GONE);
+            if (!isLoadMore) searchResultList.clear();
+            searchResultList.addAll(beans);
+            searchAdapter.notifyDataSetChanged();
+
+        }
+
+        @Override
+        public void onError() {
+            tvSearchEmpty.setVisibility(View.VISIBLE);
+        }
+    };
+    TextWatcher searchTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            search(false);
+        }
     };
     private View.OnKeyListener onKeyListener = (v, keyCode, event) -> {
         if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
-            search();
+            search(false);
+            hideKeyboard();
         }
         return false;
     };
@@ -576,29 +629,22 @@ public class ReadActivity extends MyActivity {
         }
     }
 
-    public void loadComplete() {
-        smartRefresh.finishLoadMore();
-    }
 
-    public void onSearchLoaded(List<SearchResultBean> beans) {
-        if (page == 0) searchResultList.clear();
-        searchResultList.addAll(beans);
-        searchAdapter.notifyDataSetChanged();
-        page++;
-    }
-
-
-    private void search() {
-        page = 0;
+    private void search(boolean isLoadMore) {
         String text = etSearch.getText().toString();
-        if (text.trim().isEmpty()) return;
-        searchResultList.clear();
-        searchResultList.addAll(pageFactory.mBookUtil.searchContent(text));
-        searchAdapter.notifyDataSetChanged();
+        if (text.trim().isEmpty()) {
+            onSearchResult.onEmpty(false);
+            return;
+        }
+        pageFactory.mBookUtil.searchContent(text, isLoadMore, onSearchResult);
     }
 
     @OnClick(R2.id.btnCancelSearch)
     public void cancelSearch() {
+        searchResultList.clear();
+        searchAdapter.notifyDataSetChanged();
+        etSearch.setText("");
+        hideKeyboard();
         drawerLayout.closeDrawer(Gravity.END);
     }
 
@@ -621,6 +667,8 @@ public class ReadActivity extends MyActivity {
     };
 
     private void initSpeech() {
+        showDialogLoading();
+
         cbAutoTiming.setChecked(config.getIsAutoTiming());
         if (config.getIsAutoTiming() && config.getTimingTime() > 0) {
             sbTiming.setProgress(config.getTimingTime());
@@ -672,6 +720,7 @@ public class ReadActivity extends MyActivity {
                 drawerLayout.closeDrawer(Gravity.START);
                 break;
             case EventConstants.EVENT_SPEECH_STOP:
+                hideDialogLoading();
                 stopSpeech();
                 break;
             case EventConstants.EVENT_SPEECH_FINISH_PAGE:
@@ -694,6 +743,7 @@ public class ReadActivity extends MyActivity {
                 btnStopSpeech.setText("继续播放");
                 break;
             case EventConstants.EVENT_SPEECH_START:
+                hideDialogLoading();
                 isSpeechPause = false;
                 btnStopSpeech.setText("停止播放");
                 break;
@@ -881,16 +931,13 @@ public class ReadActivity extends MyActivity {
         }
         if (isSpeaking) {
             showDialog(true, "是否确认退出？", "继续看书", "退出",
-                    new MessageDialog.OnListener() {
+                    new OnDialogButtonClickListener() {
                         @Override
-                        public void onConfirm(Dialog dialog) {
-                        }
-
-                        @Override
-                        public void onCancel(Dialog dialog) {
+                        public boolean onClick(BaseDialog baseDialog, View v) {
                             ReadActivity.this.finish();
+                            return false;
                         }
-                    });
+                    }, null);
             return;
         }
         super.onBackPressed();

@@ -3,12 +3,12 @@ package com.zyb.reader.util;
 import android.text.TextUtils;
 
 import com.tencent.bugly.crashreport.CrashReport;
-import com.zyb.base.base.app.BaseApplication;
 import com.zyb.base.base.app.BaseApplicationLike;
 import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
 import com.zyb.base.utils.EventBusUtil;
 import com.zyb.base.utils.LogUtil;
+import com.zyb.base.utils.RxUtil;
 import com.zyb.common.db.DBFactory;
 import com.zyb.common.db.bean.Book;
 import com.zyb.common.db.bean.BookCatalogue;
@@ -25,6 +25,12 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 /**
  *
@@ -260,6 +266,7 @@ public class BookUtil {
         try {
             long size = 0;
 
+            //匹配的章节格式
             String mChapterPattern = "";
             for (int i = 0; i < myArray.size(); i++) {
                 char[] buf = block(i);
@@ -269,6 +276,7 @@ public class BookUtil {
 
                     boolean isMatches = false;
 
+                    //获取匹配的章节格式（若没有）
                     if (mChapterPattern.isEmpty()) {
                         for (String chapterPattern : CHAPTER_PATTERNS) {
                             if (str.matches(chapterPattern)) {
@@ -352,39 +360,91 @@ public class BookUtil {
     }
 
 
-    //内容搜索
-    public  List<SearchResultBean> searchContent(String key) {
-        List<SearchResultBean> searchResultBeanList = new ArrayList<>();
-        try {
-            long size = 0;
+    /**
+     * 搜索关键词功能
+     */
+    private Disposable disposable;
+    //一页的数量
+    public static final int A_PAGE_NUM = 50;
+    //记录读取缓存的下标
+    private int index = 0;
 
-            for (int i = 0; i < myArray.size(); i++) {
-                char[] buf = block(i);
-                String bufStr = new String(buf);
-                String[] paragraphs = bufStr.split("\r\n");
-                for (String str : paragraphs) {
+    public void searchContent(String key, boolean isLoadMore, OnSearchResult onSearchResult) {
+        if (disposable != null) disposable.dispose();
 
-                    if (str.contains(key)) {
-                        LogUtil.e("searchContent---", str);
-                        SearchResultBean searchResultBean = new SearchResultBean();
-                        searchResultBean.setBegin(size);
-                        searchResultBean.setText(str.replaceAll("\\s*", ""));
-                        searchResultBeanList.add(searchResultBean);
+        if (!isLoadMore) {
+            index = 0;
+        }
+        disposable = Observable.create(new ObservableOnSubscribe<List<SearchResultBean>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<SearchResultBean>> emitter) throws Exception {
+                List<SearchResultBean> searchResultBeanList = new ArrayList<>();
+                long size = 0;
+
+                for (int i = 0; i <index; i++) {
+                    size += myArray.get(i).getSize();
+                }
+
+                for (int i = index; i < myArray.size(); i++) {
+                    char[] buf = block(i);
+                    String bufStr = new String(buf);
+                    String[] paragraphs = bufStr.split("\r\n");
+
+                    //满一页就终止
+                    boolean canBreak = false;
+                    for (String str : paragraphs) {
+                        if (str.contains(key)) {
+                            LogUtil.e("searchContent---", str);
+                            SearchResultBean searchResultBean = new SearchResultBean();
+                            searchResultBean.setBegin(size);
+                            //这里replace并不会改变当前str，只是返回结果被replace了
+                            searchResultBean.setText(str.replaceAll("\\s*", ""));
+                            searchResultBeanList.add(searchResultBean);
+                            if (searchResultBeanList.size() >= A_PAGE_NUM) canBreak = true;
+                        }
+                        if (str.contains("\u3000\u3000")) {
+                            size += str.length() + 2;
+                        } else if (str.contains("\u3000")) {
+                            size += str.length() + 1;
+                        } else {
+                            size += str.length();
+                        }
                     }
-                    if (str.contains("\u3000\u3000")) {
-                        size += str.length() + 2;
-                    } else if (str.contains("\u3000")) {
-                        size += str.length() + 1;
-                    } else {
-                        size += str.length();
+
+                    if (canBreak) {
+                        //不是最后一组
+                        if (i != myArray.size() - 1) index = i+1;
+                        break;
                     }
                 }
+                emitter.onNext(searchResultBeanList);
+                emitter.onComplete();
             }
-        } catch (Exception e) {
-            CrashReport.postCatchedException(e);
-            e.printStackTrace();
-        }
-        return searchResultBeanList;
+        })
+                .compose(RxUtil.rxObservableSchedulerHelper())
+                .subscribe(new Consumer<List<SearchResultBean>>() {
+                    @Override
+                    public void accept(List<SearchResultBean> searchResultBeans) throws Exception {
+                        if (searchResultBeans.size() <= 0) {
+                            onSearchResult.onEmpty(isLoadMore);
+                            return;
+                        }
+                        onSearchResult.onResult(searchResultBeans, isLoadMore);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        onSearchResult.onError();
+                    }
+                });
+    }
+
+    public interface OnSearchResult {
+        void onEmpty(boolean isLoadMore);
+
+        void onResult(List<SearchResultBean> beans, boolean isLoadMore);
+
+        void onError();
     }
 
 }

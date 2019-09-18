@@ -1,6 +1,5 @@
 package com.zyb.base.base.activity;
 
-import android.content.pm.ActivityInfo;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -9,14 +8,15 @@ import android.widget.RelativeLayout;
 import com.hjq.bar.OnTitleBarListener;
 import com.hjq.bar.TitleBar;
 import com.hjq.toast.ToastUtils;
-import com.umeng.analytics.MobclickAgent;
+import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
+import com.kongzue.dialog.v3.MessageDialog;
+import com.kongzue.dialog.v3.TipDialog;
+import com.kongzue.dialog.v3.WaitDialog;
 import com.zyb.base.R;
-import com.zyb.base.base.BaseDialog;
 import com.zyb.base.mvp.AbstractPresenter;
 import com.zyb.base.mvp.BaseView;
+import com.zyb.base.umeng.UmengClient;
 import com.zyb.base.utils.LogUtil;
-import com.zyb.base.widget.dialog.MessageDialog;
-import com.zyb.base.widget.dialog.WaitDialog;
 
 import java.util.List;
 
@@ -40,18 +40,7 @@ public abstract class MyActivity extends UIActivity
             }
         }
         mButterKnife = ButterKnife.bind(this);
-        initOrientation();
         initPageStatusManager();
-    }
-
-    /**
-     * 初始化横竖屏方向，会和 LauncherTheme 主题样式有冲突，注意不要同时使用
-     */
-    protected void initOrientation() {
-        // 当前 Activity 不能是透明的并且没有指定屏幕方向，默认设置为竖屏
-        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
     }
 
     /**
@@ -115,13 +104,13 @@ public abstract class MyActivity extends UIActivity
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
+        UmengClient.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
+        UmengClient.onPause(this);
     }
 
     @Override
@@ -170,52 +159,46 @@ public abstract class MyActivity extends UIActivity
 
 
     /*----------Loading弹窗 Begin------------*/
-    BaseDialog loadingDialog;
-
     @Override
     public void showDialogLoading(String msg) {
-        if (loadingDialog == null) {
-            loadingDialog = new WaitDialog.Builder(this)
-                    .setMessage(msg)// 消息文本可以不用填写
-                    .create();
-        }
-        loadingDialog.show();
+        WaitDialog.showWait(this,msg);
     }
 
     @Override
     public void showDialogLoading() {
-        if (loadingDialog == null) {
-            loadingDialog = new WaitDialog.Builder(this)
-                    .setMessage(R.string.msg_loading)
-                    .create();
-        }
-        loadingDialog.show();
+        showDialogLoading( "");
     }
-
     @Override
     public void hideDialogLoading() {
-        if (loadingDialog != null) loadingDialog.dismiss();
+        WaitDialog.dismiss();
     }
     /*----------Loading弹窗 End------------*/
 
 
     /*----------提示弹窗 Begin------------*/
-    BaseDialog messageDialog;
+    MessageDialog messageDialog;
 
     @Override
     public void showDialog(boolean canCancel, String title, String confirmText,
-                           String cancelText, MessageDialog.OnListener listener) {
-        messageDialog = new MessageDialog.Builder(this)
-                .setMessage(title)
-                .setConfirm(confirmText)
-                .setCancel(cancelText) // 设置 null 表示不显示取消按钮
-                .setListener(listener)
+                           String cancelText, OnDialogButtonClickListener cancelListener,
+                           OnDialogButtonClickListener confirmListener) {
+
+        if(messageDialog==null){
+            messageDialog= MessageDialog.build(this);
+        }
+
+        messageDialog
+                .setCancelable(canCancel)
+                .setTitle(title)
+                .setMessage("")
+                .setCancelButton(cancelText,cancelListener)
+                .setOkButton(confirmText,confirmListener)
                 .show();
     }
 
     @Override
     public void hideDialog() {
-        if (messageDialog != null) messageDialog.dismiss();
+        if (messageDialog != null)messageDialog.doDismiss();
     }
     /*----------提示弹窗 End------------*/
 

@@ -23,16 +23,16 @@ public class Book implements Serializable {
     private String size = "";      //大小
     private String progress = "";      //进度
 
-    private String charset;
+    private String charset;      //字符编码
 
-    private int sort;
+    private int sort;      //排序
 
-    private long addTime;
-    private long lastReadTime;
-    private long begin;
+    private long addTime;      //添加时间
+    private long lastReadTime;      //最后一次阅读时间
+    private long begin;      //阅读进度
     //不写入数据库
     @Transient
-    private boolean isSelected;
+    private boolean isSelected;      //是否已选择（书架编辑模式）
 
     @Generated(hash = 728180004)
     public Book(String id, String title, String path, String size, String progress,

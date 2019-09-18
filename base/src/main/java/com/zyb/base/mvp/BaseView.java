@@ -1,7 +1,7 @@
 package com.zyb.base.mvp;
 
 
-import com.zyb.base.widget.dialog.MessageDialog;
+import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 
 import java.util.List;
 
@@ -50,7 +50,8 @@ public interface BaseView {
 
 
     void showDialog(boolean canCancel, String title, String confirmText,
-                    String cancelText, MessageDialog.OnListener listener);
+                    String cancelText,  OnDialogButtonClickListener cancelListener,
+                    OnDialogButtonClickListener confirmListener);
 
     void hideDialog();
 

@@ -5,10 +5,9 @@
     <color name="reader_list_item_divider">#515151</color>
     <color name="reader_read_round_btn">#C40FB8CE</color>
 
+    <color name="reader_reading_tip_text">#C94D4D4D</color>
 
-    <color name="reader_reading_tip_text">#DE636363</color>
-
-    <color name="reader_read_bg_default">#E0BF9C</color>
+    <color name="reader_read_bg_default">#DDBA8A</color>
     <color name="reader_read_bg_1">#CDEAB9</color>
     <color name="reader_read_bg_2">#373B3A</color>
     <color name="reader_read_bg_3">#F8EACE</color>

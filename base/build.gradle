@@ -44,13 +44,13 @@ dependencies {
     api rootProject.ext.dependencies["cardview-v7"]
     api rootProject.ext.dependencies["recyclerview-v7"]
     api rootProject.ext.dependencies["constraintlayout"]
-    api rootProject.ext.dependencies["statusbarutil"]
     api rootProject.ext.dependencies["immersionbar"]
     api rootProject.ext.dependencies["titlebar"]
     api rootProject.ext.dependencies["base-rcv-helper"]
     api rootProject.ext.dependencies["smartrefresh"]
     api rootProject.ext.dependencies["smartrefreshHeader"]
     api rootProject.ext.dependencies["VectorCompatTextView"]
+    api rootProject.ext.dependencies["dialog_v3"]
     //test
     testImplementation rootProject.ext.dependencies["junit"]
     //bugly
@@ -63,11 +63,9 @@ dependencies {
     api rootProject.ext.dependencies["toast-util"]
     api rootProject.ext.dependencies["greendao"]
     api rootProject.ext.dependencies["EventBus"]
-    api rootProject.ext.dependencies["pagerslidingtabstrip"]
     api rootProject.ext.dependencies["countdownview"]
-    api rootProject.ext.dependencies["umeng-analytics"]
-    api rootProject.ext.dependencies["umeng-common"]
-    //json
+//    api rootProject.ext.dependencies["bmob"]
+    // json
     api rootProject.ext.dependencies["gson"]
     //network
     api rootProject.ext.dependencies["retrofit"]

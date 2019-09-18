@@ -28,8 +28,11 @@ android {
         testInstrumentationRunner rootProject.ext.dependencies["androidJUnitRunner"]
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
+        //Kongzue Dialog
+        renderscriptTargetApi 17
+        renderscriptSupportModeEnabled true
 
-        //设置支持的SO库架构
+        // 设置支持的SO库架构
         ndk {
 //            abiFilters 'armeabi' , 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
             abiFilters 'armeabi-v7a'
@@ -46,27 +49,16 @@ android {
         productFlavors {
             kuan {}     // 酷安
             huawei {}   // 华为
-
             productFlavors.all { flavor ->
-                flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
             }
         }
+
     }
 
     // 签名配置
     signingConfigs {
-        release {
-            try {
-                storeFile file("D:/Android/signedKey/zyb.jks")
-                storePassword "123456"
-                keyAlias "zyb"
-                keyPassword "123456"
-            } catch (ex) {
-                throw new InvalidUserDataException(ex.toString())
-            }
-        }
-
-        debug {
+        defaultSign {
             try {
                 storeFile file("D:/Android/signedKey/zyb.jks")
                 storePassword "123456"
@@ -80,13 +72,13 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            signingConfig signingConfigs.release
+            minifyEnabled true
+            signingConfig signingConfigs.defaultSign
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.defaultSign
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -113,7 +105,8 @@ android {
         }
     }
 
-    //支持Java8
+    useLibrary 'org.apache.http.legacy'
+    // 支持Java8
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8

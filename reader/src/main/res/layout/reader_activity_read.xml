@@ -370,8 +370,8 @@
                 app:layout_constraintTop_toTopOf="@+id/cbAutoTiming">
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:tint="@color/gray5"
                     app:srcCompat="@drawable/reader_svg_clock" />
 
@@ -379,7 +379,7 @@
                     android:id="@+id/countDownView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     app:suffixTextColor="@color/gray5"
                     app:timeTextColor="@color/gray5"
                     app:timeTextSize="14sp" />
@@ -610,12 +610,12 @@
             <LinearLayout
                 android:id="@+id/ll1"
                 android:layout_width="0dp"
-                android:layout_marginRight="10dp"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/reader_search_edit_bg"
                 android:gravity="center"
-                android:paddingLeft="5dp"
                 android:orientation="horizontal"
+                android:paddingLeft="5dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/btnCancelSearch"
                 app:layout_constraintTop_toTopOf="parent">
@@ -651,8 +651,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:paddingLeft="10dp"
-                android:text="取消"
                 android:paddingRight="10dp"
+                android:text="取消"
                 app:btnCornerRadius="5dp"
                 app:btnSolidColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/ll1"
@@ -660,12 +660,20 @@
                 app:layout_constraintTop_toTopOf="@+id/ll1" />
         </android.support.constraint.ConstraintLayout>
 
+        <TextView
+            android:id="@+id/tvSearchEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="未查询到结果"
+            android:textColor="@color/gray5"
+            android:visibility="gone" />
+
         <com.scwang.smartrefresh.layout.SmartRefreshLayout
             android:id="@+id/smartRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:srlDragRate="0.3"
-            app:srlEnablePureScrollMode="true">
+            app:srlEnableRefresh="false">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rvSearch"
