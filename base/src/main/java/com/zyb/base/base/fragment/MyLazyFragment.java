@@ -163,6 +163,7 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
         messageDialog
                 .setCancelable(canCancel)
                 .setTitle(title)
+                .setMessage("")
                 .setCancelButton(cancelText, cancelListener)
                 .setOkButton(confirmText, confirmListener)
                 .show();

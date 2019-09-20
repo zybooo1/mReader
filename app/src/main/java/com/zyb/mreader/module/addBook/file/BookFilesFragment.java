@@ -19,6 +19,10 @@ import com.zyb.mreader.di.component.DaggerFragmentComponent;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.di.module.FragmentModule;
 import com.zyb.mreader.module.addBook.file.adapter.FilesAdapter;
+import com.zyb.mreader.utils.FileUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +31,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implements BookFilesContract.View {
+
+    private long currentFilterSize;
+    private boolean isFilterENfile;
+
     @BindView(R.id.rv_books)
     RecyclerView rvBooks;
     public List<BookFiles> bookList = new ArrayList<>();
@@ -80,7 +88,7 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
         if (mPresenter.isBookFilesCached()) {
             onBookFilesLoaded(mPresenter.getAllBookFiles());
         } else {
-            mPresenter.scanFiles();
+           loadDatas();
         }
     }
 
@@ -89,6 +97,11 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
 
     }
 
+    private void loadDatas(){
+        currentFilterSize =mPresenter.getFilterSize();
+        isFilterENfile =mPresenter.getIsFilterENfiles();
+        mPresenter.scanFiles(currentFilterSize,isFilterENfile);
+    }
     @Override
     protected void setupFragmentComponent(AppComponent appComponent) {
         DaggerFragmentComponent.builder()
@@ -108,6 +121,21 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
 
     @OnClick(R.id.btnRefresh)
     public void click(View v) {
-        mPresenter.scanFiles();
+        loadDatas();
+    }
+
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventReceived(BaseEvent<Object> event) {
+        if (event == null) return;
+        switch (event.getCode()) {
+            case EventConstants.RESEARCH_BOOK:
+                loadDatas();
+                break;
+        }
     }
 }

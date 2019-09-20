@@ -20,6 +20,10 @@ public class Constants {
 
     //SP名称
     public static final String SP_NAME = "sp_mreader";
+
+    public static final String IS_FILTER_EN_FILE = "is_filter_en_file";
+    public static final String FILTER_SIZE = "fileter_size";
+
     public static final int TEXT_SIZE_SP_DEFAULT = 20;
     public static final int READ_BG_DEFAULT = 0;
     public static final int READ_BG_1 = 1;

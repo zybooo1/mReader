@@ -49,9 +49,9 @@ public class BookFilesPresenter extends AbstractPresenter<BookFilesContract.View
     }
 
     @Override
-    public void scanFiles() {
+    public void scanFiles(long filterSize,boolean isFilterENfile) {
 
-        addSubscribe(FileUtils.scanTxtFile()
+        addSubscribe(FileUtils.scanTxtFile( filterSize, isFilterENfile)
                 .flatMap(new Function<List<File>, Publisher<List<BookFiles>>>() {
                     @Override
                     public Publisher<List<BookFiles>> apply(List<File> files) throws Exception {
@@ -112,5 +112,16 @@ public class BookFilesPresenter extends AbstractPresenter<BookFilesContract.View
     @Override
     public List<BookFiles> getAllBookFiles() {
         return mDataManager.getAllBookFiles();
+    }
+
+
+    @Override
+    public boolean getIsFilterENfiles() {
+        return mDataManager.getIsFilterENfiles();
+    }
+
+    @Override
+    public long getFilterSize() {
+        return mDataManager.getFilterSize();
     }
 }

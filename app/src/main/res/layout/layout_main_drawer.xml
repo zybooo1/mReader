@@ -62,7 +62,7 @@
             android:background="@drawable/touch_bg"
             android:drawablePadding="15dp"
             android:padding="15dp"
-            android:text="意见反馈"
+            android:text="我要吐槽"
             android:textColor="@color/gray70"
             android:textSize="15sp"
             app:drawableCompatColor="@color/gray70"

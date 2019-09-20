@@ -16,9 +16,13 @@ public interface BookFilesContract {
     interface Presenter extends BasePresenter<View> {
         void updateBookFiles(List<BookFiles> books);
         void addBook(Book book);
-        void scanFiles();
+        void scanFiles(long filterSize,boolean isFilterENfile);
         boolean isBookAdded(BookFiles book);
         boolean isBookFilesCached();
         List<BookFiles> getAllBookFiles();
+
+
+        boolean getIsFilterENfiles( );
+        long getFilterSize( );
     }
 }

@@ -26,8 +26,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -101,6 +103,8 @@ public class ReadActivity extends MyActivity {
     RoundButton viewProgressPercent;
     @BindView(R2.id.tv_pre)
     TextView tv_pre;
+    @BindView(R2.id.rgSpeaker)
+    RadioGroup rgSpeaker;
     @BindView(R2.id.sb_progress)
     SeekBar sb_progress;
     @BindView(R2.id.tv_next)
@@ -124,6 +128,23 @@ public class ReadActivity extends MyActivity {
     private SettingDialog mSettingDialog;
     private Boolean mDayOrNight;
     private boolean isSpeaking = false;
+    RadioGroup.OnCheckedChangeListener onSpeakerCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int id) {
+            OfflineResource.Speaker speaker =OfflineResource.Speaker.FEMALE;
+            if (id == R.id.speaker1) {
+                speaker =OfflineResource.Speaker.FEMALE;
+            } else if (id == R.id.speaker2) {
+                speaker =OfflineResource.Speaker.MALE;
+            } else if (id == R.id.speaker3) {
+                speaker =OfflineResource.Speaker.DUXY;
+            } else if (id == R.id.speaker4) {
+                speaker =OfflineResource.Speaker.DUYY;
+            }
+            if(speechService!=null)speechService.switchVoice(speaker);
+        }
+    };
+
 
     // 接收电池信息更新、时间更新的广播
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
@@ -191,6 +212,8 @@ public class ReadActivity extends MyActivity {
         smartRefresh.setOnLoadMoreListener(loadMoreListener);
         etSearch.setOnKeyListener(onKeyListener);
         etSearch.addTextChangedListener(searchTextWatcher);
+
+        rgSpeaker.setOnCheckedChangeListener(onSpeakerCheckedChangeListener);
 
         pageWidget.setPageMode(config.getPageMode());
         pageWidget.post(() -> {
@@ -760,14 +783,6 @@ public class ReadActivity extends MyActivity {
     public LinearLayout timerLayout;
     @BindView(R2.id.countDownView)
     public CountdownView countDownView;
-    @BindView(R2.id.speaker1)
-    TextView speakerFemale;
-    @BindView(R2.id.speaker2)
-    TextView speakerMale;
-    @BindView(R2.id.speaker3)
-    TextView speakerDuXY;
-    @BindView(R2.id.speaker4)
-    TextView speakerDuYY;
     @BindView(R2.id.sbSpeed)
     SeekBar sbSpeed;
     @BindView(R2.id.sbTiming)
@@ -824,45 +839,18 @@ public class ReadActivity extends MyActivity {
         }
     };
 
-    @OnClick(R2.id.speaker1)
-    public void speakerChange1() {
-        speechService.switchVoice(OfflineResource.Speaker.FEMALE);
-        changeSpeaker(OfflineResource.Speaker.FEMALE);
-    }
-
     private void changeSpeaker(OfflineResource.Speaker speaker) {
-        speakerFemale.setTextColor(ContextCompat.getColor(this, R.color.gray5));
-        speakerMale.setTextColor(ContextCompat.getColor(this, R.color.gray5));
-        speakerDuXY.setTextColor(ContextCompat.getColor(this, R.color.gray5));
-        speakerDuYY.setTextColor(ContextCompat.getColor(this, R.color.gray5));
         if (OfflineResource.Speaker.MALE.equals(speaker)) {
-            speakerMale.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            rgSpeaker.check(R.id.speaker2);
         } else if (OfflineResource.Speaker.FEMALE.equals(speaker)) {
-            speakerFemale.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            rgSpeaker.check(R.id.speaker1);
         } else if (OfflineResource.Speaker.DUXY.equals(speaker)) {
-            speakerDuXY.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            rgSpeaker.check(R.id.speaker3);
         } else if (OfflineResource.Speaker.DUYY.equals(speaker)) {
-            speakerDuYY.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            rgSpeaker.check(R.id.speaker4);
         }
     }
 
-    @OnClick(R2.id.speaker2)
-    public void speakerChange2() {
-        speechService.switchVoice(OfflineResource.Speaker.MALE);
-        changeSpeaker(OfflineResource.Speaker.MALE);
-    }
-
-    @OnClick(R2.id.speaker3)
-    public void speakerChange3() {
-        speechService.switchVoice(OfflineResource.Speaker.DUXY);
-        changeSpeaker(OfflineResource.Speaker.DUXY);
-    }
-
-    @OnClick(R2.id.speaker4)
-    public void speakerChange4() {
-        speechService.switchVoice(OfflineResource.Speaker.DUYY);
-        changeSpeaker(OfflineResource.Speaker.DUYY);
-    }
 
     @OnCheckedChanged(R2.id.cbAutoTiming)
     void onAutoTimingChecked(boolean checked) {

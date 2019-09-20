@@ -76,7 +76,7 @@
             android:padding="15dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <TextView
                 android:id="@+id/v1"
@@ -89,59 +89,63 @@
                 app:layout_constraintBottom_toTopOf="@+id/tv1"
                 app:layout_constraintLeft_toLeftOf="parent" />
 
-            <TextView
-                android:id="@+id/speaker1"
+            <RadioGroup
+                android:id="@+id/rgSpeaker"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="女声"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="@+id/v1"
                 app:layout_constraintLeft_toRightOf="@+id/v1"
-                app:layout_constraintRight_toLeftOf="@+id/speaker2"
-                app:layout_constraintTop_toTopOf="@+id/v1" />
-
-
-            <TextView
-                android:id="@+id/speaker2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="男声"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/v1"
-                app:layout_constraintLeft_toRightOf="@id/speaker1"
-                app:layout_constraintRight_toLeftOf="@+id/speaker3"
-                app:layout_constraintTop_toTopOf="@+id/v1" />
-
-
-            <TextView
-                android:id="@+id/speaker3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="度逍遥"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/v1"
-                app:layout_constraintLeft_toRightOf="@id/speaker2"
-                app:layout_constraintRight_toLeftOf="@+id/speaker4"
-                app:layout_constraintTop_toTopOf="@+id/v1" />
-
-            <TextView
-                android:id="@+id/speaker4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="度丫丫"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/v1"
-                app:layout_constraintLeft_toRightOf="@+id/speaker3"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/v1" />
+                app:layout_constraintTop_toTopOf="@+id/v1">
+
+                <RadioButton
+                    android:id="@+id/speaker1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="女声"
+                    android:textColor="@drawable/reader_selector_speaker_text_color"
+                    android:textSize="14sp" />
+
+
+                <RadioButton
+                    android:id="@+id/speaker2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="男声"
+                    android:textColor="@drawable/reader_selector_speaker_text_color"
+                    android:textSize="14sp" />
+
+
+                <RadioButton
+                    android:id="@+id/speaker3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="度逍遥"
+                    android:textColor="@drawable/reader_selector_speaker_text_color"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/speaker4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="度丫丫"
+                    android:textColor="@drawable/reader_selector_speaker_text_color"
+                    android:textSize="14sp" />
+            </RadioGroup>
+
 
             <TextView
                 android:id="@+id/tvSpeed"

@@ -56,6 +56,14 @@ public class BaseSharePreference {
     public int getInt(String key, int def) {
         return mPreferences.getInt(key, def);
     }
+    public void putLong(String key, long value) {
+        sharedWritable.putLong(key, value);
+        sharedWritable.apply();
+    }
+
+    public long getLong(String key, long def) {
+        return mPreferences.getLong(key, def);
+    }
 
     public void putBoolean(String key, boolean value) {
         sharedWritable.putBoolean(key, value);

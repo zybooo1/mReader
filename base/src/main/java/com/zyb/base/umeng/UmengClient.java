@@ -37,6 +37,9 @@ public final class UmengClient {
             PlatformConfig.setWeixin(String.valueOf(metaData.get("WX_APPID")), String.valueOf(metaData.get("WX_APPKEY")));
             PlatformConfig.setQQZone(String.valueOf(metaData.get("QQ_APPID")), String.valueOf(metaData.get("QQ_APPKEY")));
             PlatformConfig.setSinaWeibo(String.valueOf(metaData.get("SN_APPID")), String.valueOf(metaData.get("SN_APPKEY")),"http://sns.whalecloud.com");
+
+            // 选用AUTO页面采集模式
+            MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

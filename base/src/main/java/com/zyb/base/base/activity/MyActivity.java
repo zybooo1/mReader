@@ -104,13 +104,13 @@ public abstract class MyActivity extends UIActivity
     @Override
     protected void onResume() {
         super.onResume();
-        UmengClient.onResume(this);
+//        UmengClient.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        UmengClient.onPause(this);
+//        UmengClient.onPause(this);
     }
 
     @Override

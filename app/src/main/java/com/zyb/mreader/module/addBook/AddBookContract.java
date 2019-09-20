@@ -14,5 +14,10 @@ public interface AddBookContract {
     }
 
     interface Presenter extends BasePresenter<View> {
+
+        void setIsFilterENfiles(boolean isFilterENfiles);
+        void setFilterSize(long filterSize);
+        boolean getIsFilterENfiles( );
+        long getFilterSize( );
     }
 }

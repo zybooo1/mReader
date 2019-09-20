@@ -75,4 +75,24 @@ public class AppDataManager implements HttpHelper, PreferenceHelper, DbHelper, B
     public void sortBook(Book book, int newPosition) {
         mGreenDaoHelper.sortBook(book,newPosition);
     }
+
+    @Override
+    public void setIsFilterENfiles(boolean isFilterENfiles) {
+        mPreferenceHelper.setIsFilterENfiles(isFilterENfiles);
+    }
+
+    @Override
+    public void setFilterSize(long filterSize) {
+mPreferenceHelper.setFilterSize(filterSize);
+    }
+
+    @Override
+    public boolean getIsFilterENfiles() {
+        return mPreferenceHelper.getIsFilterENfiles();
+    }
+
+    @Override
+    public long getFilterSize() {
+        return mPreferenceHelper.getFilterSize();
+    }
 }
