@@ -1,5 +1,8 @@
 package com.zyb.reader;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothHeadset;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -26,7 +29,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -126,22 +128,22 @@ public class ReadActivity extends MyActivity {
     private Book book;
     private PageFactory pageFactory;
     private SettingDialog mSettingDialog;
-    private Boolean mDayOrNight;
+    private Boolean mIsNightMode;
     private boolean isSpeaking = false;
     RadioGroup.OnCheckedChangeListener onSpeakerCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(RadioGroup group, int id) {
-            OfflineResource.Speaker speaker =OfflineResource.Speaker.FEMALE;
+            OfflineResource.Speaker speaker = OfflineResource.Speaker.FEMALE;
             if (id == R.id.speaker1) {
-                speaker =OfflineResource.Speaker.FEMALE;
+                speaker = OfflineResource.Speaker.FEMALE;
             } else if (id == R.id.speaker2) {
-                speaker =OfflineResource.Speaker.MALE;
+                speaker = OfflineResource.Speaker.MALE;
             } else if (id == R.id.speaker3) {
-                speaker =OfflineResource.Speaker.DUXY;
+                speaker = OfflineResource.Speaker.DUXY;
             } else if (id == R.id.speaker4) {
-                speaker =OfflineResource.Speaker.DUYY;
+                speaker = OfflineResource.Speaker.DUYY;
             }
-            if(speechService!=null)speechService.switchVoice(speaker);
+            if (speechService != null) speechService.switchVoice(speaker);
         }
     };
 
@@ -150,13 +152,26 @@ public class ReadActivity extends MyActivity {
     private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
+            if (intent.getAction() == null) return;
+            if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
                 LogUtil.e(TAG, Intent.ACTION_BATTERY_CHANGED);
-                int level = intent.getIntExtra("level", 0);
+                int level = intent.getIntExtra("level", 50);
                 pageFactory.updateBattery(level);
-            } else if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
+            } else if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
                 LogUtil.e(TAG, Intent.ACTION_TIME_TICK);
                 pageFactory.updateTime();
+            } else if (intent.getAction().equals(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)) {
+                BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+                //正在朗读读且断开蓝牙耳机 则暂停朗读
+                if (isSpeaking && BluetoothProfile.STATE_DISCONNECTED == adapter.getProfileConnectionState(BluetoothProfile.HEADSET)) {
+                    if (speechService != null) speechService.pause();
+                }
+            } else if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
+                int i = intent.getIntExtra("state", 0);
+                //正在朗读读且拔出耳机 则暂停朗读
+                if (isSpeaking && intent.getIntExtra("state", 0) == 0) {
+                    if (speechService != null) speechService.pause();
+                }
             }
         }
     };
@@ -182,6 +197,8 @@ public class ReadActivity extends MyActivity {
         IntentFilter mfilter = new IntentFilter();
         mfilter.addAction(Intent.ACTION_BATTERY_CHANGED);
         mfilter.addAction(Intent.ACTION_TIME_TICK);
+        mfilter.addAction(Intent.ACTION_HEADSET_PLUG);
+        mfilter.addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED);
         registerReceiver(myReceiver, mfilter);
 
         mSettingDialog = new SettingDialog(this);
@@ -215,7 +232,6 @@ public class ReadActivity extends MyActivity {
 
         rgSpeaker.setOnCheckedChangeListener(onSpeakerCheckedChangeListener);
 
-        pageWidget.setPageMode(config.getPageMode());
         pageWidget.post(() -> {
             pageFactory.setPageWidget(pageWidget);
 
@@ -235,7 +251,9 @@ public class ReadActivity extends MyActivity {
                 CrashReport.postCatchedException(e);
                 showError("打开电子书失败");
             }
-            mDayOrNight = config.getDayOrNight();
+
+            pageWidget.setPageMode(config.getPageMode());
+            mIsNightMode = config.getDayOrNight();
             toggleDayOrNight();
         });
 
@@ -295,6 +313,9 @@ public class ReadActivity extends MyActivity {
             @Override
             public void changeBookBg(int type) {
                 pageFactory.changeBookBg(type);
+                //选择任一背景就是打开了日间模式
+                mIsNightMode = false;
+                toggleDayOrNight();
             }
 
             @Override
@@ -354,20 +375,6 @@ public class ReadActivity extends MyActivity {
 
     }
 
-//    private Handler mHandler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            switch (msg.what) {
-//                case MESSAGE_CHANGEPROGRESS:
-//                    float progress = (float) msg.obj;
-//                    setSeekBarProgress(progress);
-//                    break;
-//            }
-//        }
-//    };
-
-
     @OnClick(R2.id.btnAddBookMark)
     public void clickAddBookMark() {
         if (pageFactory.getCurrentPage() != null) {
@@ -411,17 +418,17 @@ public class ReadActivity extends MyActivity {
      * 切换日夜间模式
      */
     public void changeDayOrNight() {
-        mDayOrNight = !mDayOrNight;
+        mIsNightMode = !mIsNightMode;
         toggleDayOrNight();
-        config.setDayOrNight(mDayOrNight);
-        pageFactory.setDayOrNight(mDayOrNight);
+        config.setDayOrNight(mIsNightMode);
+        pageFactory.setDayOrNight(mIsNightMode);
     }
 
     /**
      * 切换日夜间模式按钮UI
      */
     public void toggleDayOrNight() {
-        if (mDayOrNight) {
+        if (mIsNightMode) {
             tv_dayornight.setText(getResources().getString(R.string.reader_read_setting_day));
             Drawable drawable = ContextCompat.getDrawable(this, R.drawable.reader_svg_brightness_up);
             tv_dayornight.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
@@ -713,6 +720,14 @@ public class ReadActivity extends MyActivity {
     }
 
     /**
+     * 暂停朗读
+     */
+    private void pauseSpeech() {
+        isSpeechPause = true;
+        btnStopSpeech.setText("继续播放");
+    }
+
+    /**
      * 停止朗读
      */
     private void stopSpeech() {
@@ -762,8 +777,7 @@ public class ReadActivity extends MyActivity {
                 }
                 break;
             case EventConstants.EVENT_SPEECH_PAUSE:
-                isSpeechPause = true;
-                btnStopSpeech.setText("继续播放");
+                pauseSpeech();
                 break;
             case EventConstants.EVENT_SPEECH_START:
                 hideDialogLoading();

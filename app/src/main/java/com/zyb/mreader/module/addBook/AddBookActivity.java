@@ -76,8 +76,6 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
         public void onPageScrollStateChanged(int state) {
         }
     };
-    private BookFilesFragment bookFilesFragment;
-    private BookPathFragment bookPathFragment;
 
     @Override
     protected int getLayoutId() {

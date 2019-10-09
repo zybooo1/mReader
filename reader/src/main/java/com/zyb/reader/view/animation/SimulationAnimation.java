@@ -304,7 +304,7 @@ public class SimulationAnimation extends AnimationProvider {
         int green = (color & 0x00ff00) >> 8;
         int blue = (color & 0x0000ff);
         //转换成含有透明度的颜色
-        int tempColor = Color.argb(200, red, green, blue);
+        int tempColor = Color.argb(225, red, green, blue);
 
 
         float dis = (float) Math.hypot(mCornerX - mBezierControl1.x,

@@ -73,7 +73,7 @@ public class Config {
     }
 
     public void setPageMode(int pageMode) {
-        sp.edit().putInt(PAGE_MODE_KEY, pageMode).commit();
+        sp.edit().putInt(PAGE_MODE_KEY, pageMode).apply();
     }
 
     public int getBookBgType() {
@@ -81,7 +81,7 @@ public class Config {
     }
 
     public void setBookBg(int type) {
-        sp.edit().putInt(BOOK_BG_KEY, type).commit();
+        sp.edit().putInt(BOOK_BG_KEY, type).apply();
     }
 
     public Typeface getTypeface() {
@@ -109,7 +109,7 @@ public class Config {
 
     public void setTypeface(String typefacePath) {
         typeface = getTypeface(typefacePath);
-        sp.edit().putString(FONT_TYPE_KEY, typefacePath).commit();
+        sp.edit().putString(FONT_TYPE_KEY, typefacePath).apply();
     }
 
     public float getFontSize() {
@@ -121,7 +121,7 @@ public class Config {
 
     public void setFontSize(float fontSize) {
         mFontSize = fontSize;
-        sp.edit().putFloat(FONT_SIZE_KEY, fontSize).commit();
+        sp.edit().putFloat(FONT_SIZE_KEY, fontSize).apply();
     }
 
     /**
@@ -132,7 +132,7 @@ public class Config {
     }
 
     public void setDayOrNight(boolean isNight) {
-        sp.edit().putBoolean(NIGHT_KEY, isNight).commit();
+        sp.edit().putBoolean(NIGHT_KEY, isNight).apply();
     }
 
     public Boolean isSystemLight() {
@@ -140,7 +140,7 @@ public class Config {
     }
 
     public void setSystemLight(Boolean isSystemLight) {
-        sp.edit().putBoolean(SYSTEM_LIGHT_KEY, isSystemLight).commit();
+        sp.edit().putBoolean(SYSTEM_LIGHT_KEY, isSystemLight).apply();
     }
 
     public float getLight() {
@@ -155,7 +155,7 @@ public class Config {
      */
     public void setLight(float light) {
         this.light = light;
-        sp.edit().putFloat(LIGHT_KEY, light).commit();
+        sp.edit().putFloat(LIGHT_KEY, light).apply();
     }
 
     //=======================朗读配置记录 Begin=================================
@@ -167,7 +167,7 @@ public class Config {
     }
 
     public void setSpeakSpeed(int speed) {
-        sp.edit().putInt(SPEAK_SPEED_KEY, speed).commit();
+        sp.edit().putInt(SPEAK_SPEED_KEY, speed).apply();
     }
 
     /**
@@ -187,7 +187,7 @@ public class Config {
     }
 
     public void setSpeaker(String offlineSpeaker) {
-        sp.edit().putString(SPEAKER_KEY, offlineSpeaker).commit();
+        sp.edit().putString(SPEAKER_KEY, offlineSpeaker).apply();
     }
 
     /**
@@ -198,7 +198,7 @@ public class Config {
     }
 
     public void setTimingTime(int time) {
-        sp.edit().putInt(TIMING_TIME_KEY, time).commit();
+        sp.edit().putInt(TIMING_TIME_KEY, time).apply();
     }
 
     /**
@@ -209,7 +209,7 @@ public class Config {
     }
 
     public void setIsAutoTiming(boolean isAutoTiming) {
-        sp.edit().putBoolean(IS_AUTO_TIMING_KEY, isAutoTiming).commit();
+        sp.edit().putBoolean(IS_AUTO_TIMING_KEY, isAutoTiming).apply();
     }
     //=======================朗读配置记录 End=================================
 

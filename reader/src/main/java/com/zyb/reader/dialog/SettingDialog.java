@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -81,7 +82,6 @@ public class SettingDialog extends Dialog {
 
     public SettingDialog(Context context, int themeResId) {
         super(context, themeResId);
-
     }
 
     @Override
@@ -143,26 +143,26 @@ public class SettingDialog extends Dialog {
 
     //选择背景
     private void selectBg(int type) {
-        iv_bg_default.setBorderWidth(CommonUtils.dp2px(0));
-        iv_bg1.setBorderWidth(CommonUtils.dp2px(0));
-        iv_bg2.setBorderWidth(CommonUtils.dp2px(0));
-        iv_bg3.setBorderWidth(CommonUtils.dp2px(0));
-        iv_bg4.setBorderWidth(CommonUtils.dp2px(0));
+        iv_bg_default.setBorderColor(ContextCompat.getColor(getContext(),R.color.white20));
+        iv_bg1.setBorderColor(ContextCompat.getColor(getContext(),R.color.white20));
+        iv_bg2.setBorderColor(ContextCompat.getColor(getContext(),R.color.white20));
+        iv_bg3.setBorderColor(ContextCompat.getColor(getContext(),R.color.white20));
+        iv_bg4.setBorderColor(ContextCompat.getColor(getContext(),R.color.white20));
         switch (type) {
             case Config.BOOK_BG_DEFAULT:
-                iv_bg_default.setBorderWidth(CommonUtils.dp2px(2));
+                iv_bg_default.setBorderColor(ContextCompat.getColor(getContext(),R.color.colorPrimary));
                 break;
             case Config.BOOK_BG_1:
-                iv_bg1.setBorderWidth(CommonUtils.dp2px(2));
+                iv_bg1.setBorderColor(ContextCompat.getColor(getContext(),R.color.colorPrimary));
                 break;
             case Config.BOOK_BG_2:
-                iv_bg2.setBorderWidth(CommonUtils.dp2px(2));
+                iv_bg2.setBorderColor(ContextCompat.getColor(getContext(),R.color.colorPrimary));
                 break;
             case Config.BOOK_BG_3:
-                iv_bg3.setBorderWidth(CommonUtils.dp2px(2));
+                iv_bg3.setBorderColor(ContextCompat.getColor(getContext(),R.color.colorPrimary));
                 break;
             case Config.BOOK_BG_4:
-                iv_bg4.setBorderWidth(CommonUtils.dp2px(2));
+                iv_bg4.setBorderColor(ContextCompat.getColor(getContext(),R.color.colorPrimary));
                 break;
         }
     }

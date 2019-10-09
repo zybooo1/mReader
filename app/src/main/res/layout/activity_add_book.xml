@@ -8,7 +8,7 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:background="@color/white">
 
         <com.hjq.bar.TitleBar
             android:id="@+id/titleBar"
@@ -16,6 +16,7 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:rightTitle="设置"
+            app:lineVisible="false"
             app:title="添加书籍" />
 
         <android.support.design.widget.TabLayout

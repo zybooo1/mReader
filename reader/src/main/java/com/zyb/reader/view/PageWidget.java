@@ -106,8 +106,6 @@ public class PageWidget extends View {
             case Config.PAGE_MODE_NONE:
                 mAnimationProvider = new NoneAnimation(mCurPageBitmap, mNextPageBitmap, mScreenWidth, mScreenHeight);
                 break;
-            default:
-                mAnimationProvider = new SimulationAnimation(mCurPageBitmap, mNextPageBitmap, mScreenWidth, mScreenHeight);
         }
     }
 

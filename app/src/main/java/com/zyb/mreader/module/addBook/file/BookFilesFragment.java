@@ -125,6 +125,12 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
     }
 
     @Override
+    protected void onPageRetry(View v) {
+        super.onPageRetry(v);
+        loadDatas();
+    }
+
+    @Override
     protected boolean isRegisterEventBus() {
         return true;
     }

@@ -31,6 +31,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  *
@@ -177,7 +178,7 @@ public class PageFactory {
         mWidth = CommonUtils.getScreenWidth();
         mHeight = CommonUtils.getOriginScreenHight();
 
-        sdf = new SimpleDateFormat("HH:mm");//HH:mm为24小时制,hh:mm为12小时制
+        sdf = new SimpleDateFormat("HH:mm", Locale.CHINA);//HH:mm为24小时制,hh:mm为12小时制
         date = sdf.format(new java.util.Date());
         df = new DecimalFormat("#0.0");
 
@@ -241,10 +242,10 @@ public class PageFactory {
 //                    mContext.getResources(), R.drawable.main_bg, mWidth, mHeight));
             Bitmap bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.RGB_565);
             Canvas canvas = new Canvas(bitmap);
-            canvas.drawColor(Color.BLACK);
+            canvas.drawColor(Color.rgb(13, 13, 11));
             setBgBitmap(bitmap);
             //设置字体颜色
-            setmTextColor(Color.rgb(128, 128, 128));
+            setmTextColor(Color.rgb(91, 89, 82));
             setBookPageBg(Color.BLACK);
         } else {
             //设置背景
@@ -793,9 +794,7 @@ public class PageFactory {
             case Config.BOOK_BG_3:
                 canvas.drawColor(mContext.getResources().getColor(R.color.reader_read_bg_3));
                 color = mContext.getResources().getColor(R.color.reader_read_font_3);
-                if (mBookPageWidget != null) {
-                    mBookPageWidget.setBgColor(mContext.getResources().getColor(R.color.reader_read_bg_3));
-                }
+                setBookPageBg(mContext.getResources().getColor(R.color.reader_read_bg_3));
                 break;
             case Config.BOOK_BG_4:
                 canvas.drawColor(mContext.getResources().getColor(R.color.reader_read_bg_4));

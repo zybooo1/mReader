@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_constraintTop_toTopOf="parent"
-            app:leftIcon="@drawable/svg_logo"
+            app:leftIcon="@mipmap/ic_main_bar_left"
             app:title="@string/mreader_app_name" />
 
         <com.hjq.bar.TitleBar
@@ -24,8 +24,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:visibility="gone"
+            android:background="@color/colorPrimary"
             app:backButton="false"
-            app:barStyle="light"
+            app:barStyle="night"
             app:layout_constraintTop_toTopOf="parent"
             app:leftTitle="完成"
             app:lineVisible="true"

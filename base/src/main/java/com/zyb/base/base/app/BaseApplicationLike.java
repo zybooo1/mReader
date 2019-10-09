@@ -91,7 +91,7 @@ public class BaseApplicationLike extends DefaultApplicationLike {
 
         // 初始化吐司工具类
         ToastUtils.init(sInstance);
-        TitleBar.initStyle(new MyTitleBarStyle(getInstance()));
+//        TitleBar.initStyle(new MyTitleBarStyle(getInstance()));
 
 
         //init utils

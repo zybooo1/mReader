@@ -57,6 +57,11 @@ public class LauncherActivity extends MyActivity
     }
 
     @Override
+    public boolean statusBarDarkFont() {
+        return false;
+    }
+
+    @Override
     protected void initData() {
     }
 
@@ -65,6 +70,7 @@ public class LauncherActivity extends MyActivity
                 .permission(Permission.Group.STORAGE)
                 .request(this);
     }
+
 
     /**
      * {@link OnPermission}

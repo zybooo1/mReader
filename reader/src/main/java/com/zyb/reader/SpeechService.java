@@ -17,6 +17,7 @@ import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
 import com.zyb.base.utils.EventBusUtil;
 import com.zyb.base.utils.LogUtil;
+import com.zyb.base.utils.RxUtil;
 import com.zyb.base.utils.constant.ApiConstants;
 import com.zyb.reader.util.AudioFocusManager;
 
@@ -26,6 +27,11 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.disposables.Disposable;
 
 /**
  * 朗读服务
@@ -104,8 +110,18 @@ public class SpeechService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        initialTts(); // 初始化TTS引擎
-        EventBusUtil.register(this);
+
+        Disposable disposable = Observable.create(new ObservableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
+                initialTts(); // 初始化TTS引擎
+                emitter.onNext(true);
+            }
+        })
+                .compose(RxUtil.rxObservableSchedulerHelper())
+                .subscribe(aBoolean -> EventBusUtil.register(SpeechService.this), throwable -> {
+                });
+
         audioManager = new AudioFocusManager(this, audioFocusChangeListener);
         audioManager.requestAudioFocus();
     }
@@ -132,6 +148,7 @@ public class SpeechService extends Service {
      * FileSaveListener 在UiMessageListener的基础上，使用 onSynthesizeDataArrived回调，获取音频流
      */
     protected void initialTts() {
+
         LoggerProxy.printable(BuildConfig.DEBUG); // 日志打印在logcat中
         // 设置初始化参数
         mSpeechSynthesizer = SpeechSynthesizer.getInstance();
@@ -247,7 +264,7 @@ public class SpeechService extends Service {
     /**
      * 暂停播放。仅调用speak后生效
      */
-    private void pause() {
+    public void pause() {
         EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_SPEECH_PAUSE));
         int result = mSpeechSynthesizer.pause();
         checkResult(result, "pause");

@@ -228,6 +228,7 @@
             style="@style/reader_setting_dialog_iv"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
+            app:border_width="2dp"
             android:src="@color/reader_read_bg_default" />
 
         <com.zyb.reader.view.CircleImageView
@@ -235,6 +236,7 @@
             android:id="@+id/iv_bg_1"
             style="@style/reader_setting_dialog_iv"
             android:layout_weight="1"
+            app:border_width="2dp"
             android:src="@color/reader_read_bg_1" />
 
         <com.zyb.reader.view.CircleImageView
@@ -242,6 +244,7 @@
             android:id="@+id/iv_bg_2"
             style="@style/reader_setting_dialog_iv"
             android:layout_weight="1"
+            app:border_width="2dp"
             android:src="@color/reader_read_bg_2" />
 
         <com.zyb.reader.view.CircleImageView
@@ -249,6 +252,7 @@
             android:id="@+id/iv_bg_3"
             style="@style/reader_setting_dialog_iv"
             android:layout_weight="1"
+            app:border_width="2dp"
             android:src="@color/reader_read_bg_3" />
 
         <com.zyb.reader.view.CircleImageView
@@ -256,6 +260,7 @@
             android:id="@+id/iv_bg_4"
             style="@style/reader_setting_dialog_iv"
             android:layout_weight="1"
+            app:border_width="2dp"
             android:src="@color/reader_read_bg_4" />
     </LinearLayout>
 </LinearLayout>

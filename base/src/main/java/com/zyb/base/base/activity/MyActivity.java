@@ -76,11 +76,6 @@ public abstract class MyActivity extends UIActivity
         return null;
     }
 
-    @Override
-    public boolean statusBarDarkFont() {
-        //返回true表示黑色字体
-        return false;
-    }
 
     /**
      * {@link OnTitleBarListener}

@@ -23,7 +23,7 @@ public class MyTitleBarStyle extends BaseTitleBarStyle {
 
     @Override
     public Drawable getBackIcon() {
-        return getDrawable(com.hjq.bar.R.mipmap.bar_icon_back_white);
+        return getDrawable(com.hjq.bar.R.mipmap.bar_icon_back_black);
     }
 
     @Override
