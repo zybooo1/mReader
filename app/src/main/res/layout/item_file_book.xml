@@ -30,11 +30,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="30dp"
-            android:layout_weight="2"
             android:ellipsize="end"
             android:maxLines="1"
             android:paddingBottom="5dp"
-            android:text="麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者"
+            tools:text="麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 
@@ -43,11 +42,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="30dp"
-            android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="1"
             android:paddingBottom="5dp"
-            android:text="2226516513516525612321133216521323213222265165135165256123211332165213232132"
+            tools:text="2226516513516525612321133216521323213222265165135165256123211332165213232132"
             android:textSize="13sp" />
     </LinearLayout>
 
@@ -61,12 +59,16 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/ivAdd"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:padding="10dp"
-        android:layout_marginEnd="5dp"
-        android:tint="@color/colorPrimary"
-        app:srcCompat="@drawable/svg_add" />
+    <TextView
+        android:id="@+id/tvAdd"
+        android:background="@drawable/bg_add_book_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textColor="@color/colorPrimary"
+        android:text="添加"/>
 </LinearLayout>

@@ -597,7 +597,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     private void enterEditMode() {
         booksAdapter.setCanSelect(true);
         toggleActionBar(true);
-        getStatusBarConfig().statusBarDarkFont(true).init();
+        getStatusBarConfig().statusBarDarkFont(false).init();
     }
 
     /**
@@ -606,7 +606,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     private void exitEditMode() {
         booksAdapter.setCanSelect(false);
         toggleActionBar(false);
-        getStatusBarConfig().statusBarDarkFont(false).init();
+        getStatusBarConfig().statusBarDarkFont(true).init();
     }
 
     public void onItemMerge(RecyclerView.ViewHolder oldViewHolder, RecyclerView.ViewHolder targetViewHolder) {

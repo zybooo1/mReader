@@ -42,7 +42,7 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
     private BaseQuickAdapter.OnItemChildClickListener onItemChildClickListener = new BaseQuickAdapter.OnItemChildClickListener() {
         @Override
         public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-            if (view.getId() == R.id.ivAdd) {
+            if (view.getId() == R.id.tvAdd) {
                 BookFiles book = bookList.get(position);
                 if (!mPresenter.isBookAdded(book)) {
                     mPresenter.addBook(book.toBook());

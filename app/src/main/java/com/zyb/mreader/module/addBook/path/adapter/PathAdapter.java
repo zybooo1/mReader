@@ -33,9 +33,9 @@ public class PathAdapter extends BaseMultiItemQuickAdapter<BookFiles, BaseViewHo
             case ITEM_BOOK:
                 helper.setText(R.id.tv_title, bean.getTitle())
                         .setText(R.id.tv_size, bean.getSize())
-                        .setGone(R.id.ivAdd, !mPresenter.isBookAdded(bean))
+                        .setGone(R.id.tvAdd, !mPresenter.isBookAdded(bean))
                         .setGone(R.id.tv_exist_already, mPresenter.isBookAdded(bean))
-                .addOnClickListener(R.id.ivAdd);
+                .addOnClickListener(R.id.tvAdd);
                 break;
             case ITEM_PATH:
                 helper.setText(R.id.tv_title, bean.getTitle())

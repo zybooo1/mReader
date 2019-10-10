@@ -26,9 +26,9 @@ public class FilesAdapter extends BaseQuickAdapter<BookFiles, BaseViewHolder> {
     protected void convert(BaseViewHolder helper, BookFiles bookFiles) {
         helper.setText(R.id.tv_title, bookFiles.getTitle())
                 .setText(R.id.tv_size, bookFiles.getSize())
-                .setGone(R.id.ivAdd, !mPresenter.isBookAdded(bookFiles))
+                .setGone(R.id.tvAdd, !mPresenter.isBookAdded(bookFiles))
                 .setGone(R.id.tv_exist_already, mPresenter.isBookAdded(bookFiles))
-                .addOnClickListener(R.id.ivAdd);
+                .addOnClickListener(R.id.tvAdd);
     }
 
 }

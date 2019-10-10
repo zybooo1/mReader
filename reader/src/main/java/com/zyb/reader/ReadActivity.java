@@ -182,6 +182,11 @@ public class ReadActivity extends MyActivity {
     }
 
     @Override
+    public boolean statusBarDarkFont() {
+        return false;
+    }
+
+    @Override
     protected void initView() {
         ImmersionBar.setTitleBarMarginTop(this, rlTopBar);
         //禁止手势滑动
