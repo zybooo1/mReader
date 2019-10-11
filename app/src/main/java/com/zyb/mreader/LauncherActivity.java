@@ -97,7 +97,7 @@ public class LauncherActivity extends MyActivity
                 public void run() {
                     requestPermission();
                 }
-            }, 2000);
+            }, 1000);
         }
     }
 

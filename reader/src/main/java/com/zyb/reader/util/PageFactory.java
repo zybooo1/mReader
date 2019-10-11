@@ -82,8 +82,6 @@ public class PageFactory {
     private Paint mTipPaint;
     //时间、标题等字体大小
     private float mTipTextSize;
-    //时间、标题等颜色
-    private int mTipColor;
     //文字颜色
     private int mTextColor = Color.rgb(50, 65, 78);
     // 绘制内容的宽
@@ -201,22 +199,18 @@ public class PageFactory {
 
         calculateLineCount();
 
-        mTipColor = ContextCompat.getColor(context, R.color.reader_reading_tip_text);
         mBatterryBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mBatterryBorderPaint.setColor(mTipColor);
         mBatterryBorderPaint.setStyle(Paint.Style.STROKE);
         mBatterryBorderPaint.setStrokeWidth(2f);
         mBatterryBorderPaint.setStrokeJoin(Paint.Join.ROUND);
 
         mTipPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTipTextSize = CommonUtils.sp2px(12);
-        mTipPaint.setColor(mTipColor);
         mTipPaint.setTextSize(mTipTextSize);
         mTipPaint.setTypeface(typeface);
         mTipPaint.setTextAlign(Paint.Align.LEFT);
 
         mBatterryPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mBatterryPaint.setColor(mTipColor);
         mBatterryPaint.setStyle(Paint.Style.FILL);
 
 
@@ -310,6 +304,10 @@ public class PageFactory {
             canvas.drawText(strLine, measureMarginWidth, y, mPaint);
 //                word.append(strLine);
         }
+
+        mBatterryBorderPaint.setColor(getTipTextColor());
+        mTipPaint.setColor(getTipTextColor());
+        mBatterryPaint.setColor(getTipTextColor());
 
         // 画电池
         level = batteryInfoIntent.getIntExtra("level", 50);
@@ -881,6 +879,12 @@ public class PageFactory {
     //获取文字颜色
     public int getTextColor() {
         return this.mTextColor;
+    }
+
+    //获取 //时间、标题等颜色
+    public int getTipTextColor() {
+        return Color.argb(Color.alpha(this.mTextColor)-51,Color.red(mTextColor),
+                Color.green(mTextColor),Color.blue(mTextColor));
     }
 
     //获取文字大小
