@@ -97,18 +97,6 @@ public abstract class MyActivity extends UIActivity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-//        UmengClient.onResume(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        UmengClient.onPause(this);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mButterKnife != null) mButterKnife.unbind();

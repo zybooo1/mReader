@@ -27,10 +27,12 @@ public interface MainContract {
         void drawerAction(DRAWER_ACTION action);
 
         void getBooks();
+        void removeBooks(List<Book> book);
 
-        void removeBook(List<Book> book);
-
+        void removeBook(Book book);
         void sortBook(Book book, int newPosition);
+
+        void preloadBooks();
     }
 
     enum DRAWER_ACTION {

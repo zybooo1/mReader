@@ -4,29 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_books"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <include layout="@layout/layout_page_status" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_books"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
+        android:layout_height="wrap_content" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btnRefresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="20dp"
         android:tint="@color/white"
         app:backgroundTint="@color/colorPrimary"
-        app:srcCompat="@drawable/svg_refresh" />
+        app:srcCompat="@drawable/svg_refresh"/>
+
+    <include layout="@layout/layout_page_status" />
 </RelativeLayout>

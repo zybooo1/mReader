@@ -1,9 +1,11 @@
 package com.zyb.mreader.module.addBook.file;
 
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.zyb.base.base.fragment.MVPFragment;
@@ -11,7 +13,7 @@ import com.zyb.base.di.component.AppComponent;
 import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
 import com.zyb.base.utils.EventBusUtil;
-import com.zyb.base.utils.LogUtil;
+import com.zyb.base.utils.QMUIViewHelper;
 import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
 import com.zyb.common.db.bean.BookFiles;
 import com.zyb.mreader.R;
@@ -19,7 +21,6 @@ import com.zyb.mreader.di.component.DaggerFragmentComponent;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.di.module.FragmentModule;
 import com.zyb.mreader.module.addBook.file.adapter.FilesAdapter;
-import com.zyb.mreader.utils.FileUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -56,7 +57,7 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            LogUtil.e("onScrolled dy:" + dy);
+//            LogUtil.e("onScrolled dy:" + dy);
             if (dy <= 0) {
                 EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_SHOW_STATUS_BAR));
             } else {
@@ -88,7 +89,7 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
         if (mPresenter.isBookFilesCached()) {
             onBookFilesLoaded(mPresenter.getAllBookFiles());
         } else {
-           loadDatas();
+            loadDatas();
         }
     }
 
@@ -97,11 +98,12 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
 
     }
 
-    private void loadDatas(){
-        currentFilterSize =mPresenter.getFilterSize();
-        isFilterENfile =mPresenter.getIsFilterENfiles();
-        mPresenter.scanFiles(currentFilterSize,isFilterENfile);
+    private void loadDatas() {
+        currentFilterSize = mPresenter.getFilterSize();
+        isFilterENfile = mPresenter.getIsFilterENfiles();
+        mPresenter.scanFiles(currentFilterSize, isFilterENfile);
     }
+
     @Override
     protected void setupFragmentComponent(AppComponent appComponent) {
         DaggerFragmentComponent.builder()

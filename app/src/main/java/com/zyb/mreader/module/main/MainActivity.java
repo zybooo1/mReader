@@ -81,7 +81,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     Vibrator vibrator;
 
     private BooksAdapter booksAdapter;
-    List<com.zyb.common.db.bean.Book> books = new ArrayList<>();
+    List<Book> books = new ArrayList<>();
 
     private BaseQuickAdapter.OnItemClickListener onItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
@@ -92,9 +92,29 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                 return;
             }
             bookPosition = position;
+
+            String filePath = books.get(bookPosition).getPath();
+            File file = new File(filePath);
+            if(!file.exists()){
+                onFileNotExist();
+                return;
+            }
+
             onBookItemClick(view);
         }
     };
+
+    private void onFileNotExist() {
+        showDialog(true, "本地文件已被删除，是否从书架移除它？", "取消", "移除",
+                new OnDialogButtonClickListener() {
+                    @Override
+                    public boolean onClick(BaseDialog baseDialog, View v) {
+                        mPresenter.removeBook(books.get(bookPosition));
+                        refreshBooks();
+                        return false;
+                    }
+                },null);
+    }
 
     @Override
     protected int getLayoutId() {
@@ -141,6 +161,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     @Override
     protected void initData() {
         refreshBooks();
+        mPresenter.preloadBooks();
     }
 
     private void refreshBooks() {
@@ -150,19 +171,6 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     @Override
     public void onLeftClick(View v) {
         drawerLayout.openDrawer(Gravity.START);
-//        User p2 = new User();
-//        p2.setName("lucky");
-//        p2.setWechatId("12423");
-//        p2.save(new SaveListener<String>() {
-//            @Override
-//            public void done(String objectId, BmobException e) {
-//                if(e==null){
-//                    showMsg("添加数据成功，返回objectId为："+objectId);
-//                }else{
-//                    showMsg("创建数据失败：" + e.getMessage());
-//                }
-//            }
-//        });
     }
 
     @OnClick(R.id.tvAddBook)
@@ -663,7 +671,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                 new OnDialogButtonClickListener() {
                     @Override
                     public boolean onClick(BaseDialog baseDialog, View v) {
-                        mPresenter.removeBook(deleteBooks);
+                        mPresenter.removeBooks(deleteBooks);
                         refreshBooks();
                         exitEditMode();
                         return false;

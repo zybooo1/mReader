@@ -26,12 +26,13 @@
             android:layout_height="wrap_content"
             app:tabMode="fixed"
             app:tabSelectedTextColor="@color/colorAccent"
-            app:tabTextColor="@color/white" />
+            app:tabTextColor="@color/gray50" />
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+         />
 </android.support.design.widget.CoordinatorLayout>

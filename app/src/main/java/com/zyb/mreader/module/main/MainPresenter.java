@@ -4,12 +4,23 @@ package com.zyb.mreader.module.main;
 import com.zyb.base.http.CommonSubscriber;
 import com.zyb.base.mvp.AbstractPresenter;
 import com.zyb.base.utils.RxUtil;
+import com.zyb.base.utils.constant.Constants;
 import com.zyb.common.db.bean.Book;
+import com.zyb.common.db.bean.BookFiles;
 import com.zyb.mreader.core.AppDataManager;
+import com.zyb.mreader.utils.FileSizeComparator;
+import com.zyb.mreader.utils.FileUtils;
 
+import org.reactivestreams.Publisher;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.reactivex.functions.Function;
 
 /**
  *
@@ -63,12 +74,69 @@ public class MainPresenter extends AbstractPresenter<MainContract.View, AppDataM
     }
 
     @Override
-    public void removeBook(List<Book> book) {
+    public void removeBooks(List<Book> book) {
         mDataManager.removeBook(book);
+    }
+
+    @Override
+    public void removeBook(Book book) {
+        List<Book> bookList =new ArrayList<>();
+        bookList.add(book);
+        mDataManager.removeBook(bookList);
     }
 
     @Override
     public void sortBook(Book book, int newPosition) {
         mDataManager.sortBook(book,newPosition);
+    }
+
+    @Override
+    public void preloadBooks() {
+        if (mDataManager.getAllBooks().size()>0) {
+            return;
+        }
+        addSubscribe(FileUtils.scanTxtFile( FileUtils.MIN_TXT_FILE_SIZE, FileUtils.IS_FILTER_EN_FILES)
+                .flatMap(new Function<List<File>, Publisher<List<BookFiles>>>() {
+                    @Override
+                    public Publisher<List<BookFiles>> apply(List<File> files) throws Exception {
+                        Collections.sort(files, new FileSizeComparator());
+                        List<BookFiles> books = new ArrayList<>();
+                        for (File file : files) {
+                            BookFiles book = new BookFiles();
+                            book.setId(file.getAbsolutePath());
+                            book.setPath(file.getAbsolutePath());
+                            book.setSize(FileUtils.getFileSize(file.length()));
+                            book.setTitle(FileUtils.getSimpleName(file));
+                            books.add(book);
+                        }
+                        return RxUtil.createFlowableData(books);
+                    }
+                })
+                .compose(RxUtil.rxSchedulerHelper())
+                .subscribeWith(new CommonSubscriber<List<BookFiles>>(mView) {
+                    @Override
+                    protected void onStartWithViewAlive() {
+                    }
+
+                    @Override
+                    protected void onCompleteWithViewAlive() {
+
+                    }
+
+                    @Override
+                    protected void onNextWithViewAlive(List<BookFiles> bookFiles) {
+                        if (bookFiles.size() <= 0) {
+                            return;
+                        }
+                        updateBookFiles(bookFiles);
+                    }
+
+                    @Override
+                    protected void onErrorWithViewAlive(Throwable e) {
+                    }
+                }));
+    }
+    private void updateBookFiles(List<BookFiles> books) {
+        mDataManager.updateBookFiles(books);
     }
 }

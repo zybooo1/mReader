@@ -51,14 +51,15 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
 
     @Override
     public void onResume() {
-        super.onResume();
         UmengClient.onResume(this);
+        super.onResume();
     }
 
     @Override
     public void onPause() {
-        super.onPause();
+        //在super方法前调用
         UmengClient.onPause(this);
+        super.onPause();
     }
 
     @Override

@@ -31,6 +31,7 @@ public final class UmengClient {
 
         try {
             Bundle metaData = application.getPackageManager().getApplicationInfo(application.getPackageName(), PackageManager.GET_META_DATA).metaData;
+            //注意：如果您已经在AndroidManifest.xml中配置过appkey和channel值，可以调用此版本初始化函数。
             // 友盟统计(appkey & channel 已在manifest配置，这里不必再传）
             UMConfigure.init(application,UMConfigure.DEVICE_TYPE_PHONE,"");
             // 初始化各个平台的 Key
@@ -38,7 +39,7 @@ public final class UmengClient {
             PlatformConfig.setQQZone(String.valueOf(metaData.get("QQ_APPID")), String.valueOf(metaData.get("QQ_APPKEY")));
             PlatformConfig.setSinaWeibo(String.valueOf(metaData.get("SN_APPID")), String.valueOf(metaData.get("SN_APPKEY")),"http://sns.whalecloud.com");
 
-            // 选用AUTO页面采集模式
+            // 选用AUTO页面采集模式，Activity不用手动采集，非Activity需要手动采集
             MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -49,8 +50,6 @@ public final class UmengClient {
      * Activity 统计
      */
     public static void onResume(Activity activity) {
-        // 手动统计页面
-        // MobclickAgent.onPageStart(activity.getClass().getSimpleName());
         // 友盟统计
         MobclickAgent.onResume(activity);
     }
@@ -59,8 +58,6 @@ public final class UmengClient {
      * Activity 统计
      */
     public static void onPause(Activity activity) {
-        // 手动统计页面，必须保证 onPageEnd 在 onPause 之前调用，因为SDK会在 onPause 中保存onPageEnd统计到的页面数据
-        // MobclickAgent.onPageEnd(activity.getClass().getSimpleName());
         // 友盟统计
         MobclickAgent.onPause(activity);
     }
@@ -70,7 +67,7 @@ public final class UmengClient {
      */
     public static void onResume(Fragment fragment) {
         // 友盟统计
-        MobclickAgent.onResume(fragment.getContext());
+        MobclickAgent.onPageStart(fragment.getClass().getSimpleName());
     }
 
     /**
@@ -78,7 +75,7 @@ public final class UmengClient {
      */
     public static void onPause(Fragment fragment) {
         // 友盟统计
-        MobclickAgent.onPause(fragment.getContext());
+        MobclickAgent.onPageEnd(fragment.getClass().getSimpleName());
     }
 
     /**

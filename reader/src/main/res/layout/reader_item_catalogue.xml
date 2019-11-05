@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/reader_MenucolorReadMenu"
     android:layout_height="50dp">
 
     <TextView
         android:id="@+id/catalogue_tv"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        tools:text="555465465465463416546541654654564654654654654654651456"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:textColor="@color/gray5" />
+    <TextView
+        android:id="@+id/tv_percent"
+        tools:text="90%"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:layout_marginStart="10dp"
         android:gravity="center_vertical"
         android:singleLine="true"

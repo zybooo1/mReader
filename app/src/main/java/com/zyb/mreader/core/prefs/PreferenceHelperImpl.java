@@ -31,7 +31,7 @@ public class PreferenceHelperImpl extends BaseSharePreference implements Prefere
 
     @Override
     public boolean getIsFilterENfiles() {
-        return getBoolean(Constants.IS_FILTER_EN_FILE,false);
+        return getBoolean(Constants.IS_FILTER_EN_FILE,FileUtils.IS_FILTER_EN_FILES);
     }
 
     @Override

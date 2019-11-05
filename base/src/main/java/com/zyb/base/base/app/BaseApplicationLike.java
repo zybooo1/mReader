@@ -97,9 +97,7 @@ public class BaseApplicationLike extends DefaultApplicationLike {
         //init utils
         Utils.init(sInstance);
 //        Bmob.initialize(sInstance, Constants.BOMB_APP_KEY);
-        /**
-         * 注意：如果您已经在AndroidManifest.xml中配置过appkey和channel值，可以调用此版本初始化函数。
-         */
+
         UmengClient.init(sInstance);
 
         initDialog();
