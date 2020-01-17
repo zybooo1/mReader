@@ -95,4 +95,14 @@ mPreferenceHelper.setFilterSize(filterSize);
     public long getFilterSize() {
         return mPreferenceHelper.getFilterSize();
     }
+
+    @Override
+    public boolean isShowedContract() {
+        return mPreferenceHelper.isShowedContract();
+    }
+
+    @Override
+    public void setIsShowedContract(boolean isShowedContract) {
+        mPreferenceHelper.setIsShowedContract(isShowedContract);
+    }
 }

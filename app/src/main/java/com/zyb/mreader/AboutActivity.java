@@ -11,6 +11,7 @@ import com.zyb.base.base.activity.MyActivity;
 import com.zyb.base.router.RouterConstants;
 import com.zyb.base.router.RouterUtils;
 import com.zyb.base.utils.CommonUtils;
+import com.zyb.base.utils.constant.Constants;
 import com.zyb.base.widget.WebActivity;
 
 import butterknife.BindView;
@@ -55,23 +56,38 @@ public class AboutActivity extends MyActivity {
 
     }
 
-    @OnClick({R.id.githubUrl})
-    public void clickGitHub(View view) {
+//    @OnClick({R.id.githubUrl})
+//    public void clickGitHub(View view) {
+//        RouterUtils.getInstance().build(RouterConstants.PATH_BASE_ATY_WEB_VIEW)
+//                .withString(WebActivity.URL_FLAG, getString(R.string.github_url))
+//                .navigation();
+//    }
+//
+//    @OnClick({R.id.tvQQ})
+//    public void clickQQ(View view) {
+//        copy(getString(R.string.my_qq));
+//    }
+//
+//    private void copy(String string) {
+//        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+//        ClipData mClipData = ClipData.newPlainText("内容", string);
+//        assert cm != null;
+//        cm.setPrimaryClip(mClipData);
+//        showSuccess("已复制");
+//    }
+
+    @OnClick({R.id.tvPrivacy})
+    public void clickPrivacy(View view) {
         RouterUtils.getInstance().build(RouterConstants.PATH_BASE_ATY_WEB_VIEW)
-                .withString(WebActivity.URL_FLAG, getString(R.string.github_url))
+                .withString(WebActivity.URL_FLAG, Constants.PRIVACY_HTML)
                 .navigation();
     }
 
-    @OnClick({R.id.tvQQ})
-    public void clickQQ(View view) {
-        copy(getString(R.string.my_qq));
-    }
-
-    private void copy(String string) {
-        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData mClipData = ClipData.newPlainText("内容", string);
-        cm.setPrimaryClip(mClipData);
-        showSuccess("已复制");
+    @OnClick({R.id.tvProtocol})
+    public void clickProtocol(View view) {
+        RouterUtils.getInstance().build(RouterConstants.PATH_BASE_ATY_WEB_VIEW)
+                .withString(WebActivity.URL_FLAG, Constants.PROTOCOL_HTML)
+                .navigation();
     }
 
     //============= Bouns ================
@@ -85,7 +101,7 @@ public class AboutActivity extends MyActivity {
 
     @OnClick(R.id.ivLogo)
     void clickLogo() {
-        if(isCount)count++;
+        if (isCount) count++;
         if (count > 23) {
             showMsg("恭喜你找到了彩蛋！");
             CrashReport.postCatchedException(new Throwable("竟然有人找到了彩蛋！"));

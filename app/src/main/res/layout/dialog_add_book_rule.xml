@@ -14,7 +14,7 @@
         android:text="确定"
         android:textColor="@color/colorPrimary"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/v1"
+        app:layout_constraintBottom_toTopOf="@+id/progressLeft"
         app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
@@ -25,11 +25,11 @@
         android:text="取消"
         android:textColor="@color/gray50"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/v1"
+        app:layout_constraintBottom_toTopOf="@+id/progressLeft"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
-        android:id="@+id/v1"
+        android:id="@+id/progressLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="15dp"
@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/v2">
+        app:layout_constraintBottom_toTopOf="@+id/progressRight">
 
         <RadioButton
             android:id="@+id/size0"
@@ -108,7 +108,7 @@
     </RadioGroup>
 
     <TextView
-        android:id="@+id/v2"
+        android:id="@+id/progressRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -124,7 +124,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="15dp"
-        app:layout_constraintBottom_toBottomOf="@+id/v2"
+        app:layout_constraintBottom_toBottomOf="@+id/progressRight"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/v2" />
+        app:layout_constraintTop_toTopOf="@+id/progressRight" />
 </android.support.constraint.ConstraintLayout>

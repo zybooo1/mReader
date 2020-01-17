@@ -8,7 +8,7 @@
     <color name="windowBackground">#F4F4F4</color>
     <!-- 分割线的颜色 -->
     <color name="colorLine">#ECECEC</color>
-    <color name="touch_bg">#20000000</color>
+    <color name="touch_bg">#12000000</color>
 
     <color name="book_loading_background">#00ffffff</color>
     <color name="book_loading_book">#cdcdcd</color>

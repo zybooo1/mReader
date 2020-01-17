@@ -79,7 +79,7 @@
             tools:visibility="visible">
 
             <TextView
-                android:id="@+id/v1"
+                android:id="@+id/progressLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -94,10 +94,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@+id/v1"
-                app:layout_constraintLeft_toRightOf="@+id/v1"
+                app:layout_constraintBottom_toBottomOf="@+id/progressLeft"
+                app:layout_constraintLeft_toRightOf="@+id/progressLeft"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/v1">
+                app:layout_constraintTop_toTopOf="@+id/progressLeft">
 
                 <RadioButton
                     android:id="@+id/speaker1"

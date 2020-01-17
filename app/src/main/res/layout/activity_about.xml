@@ -60,68 +60,112 @@
         app:layout_constraintTop_toBottomOf="@+id/tv2"
         tools:text="v1.0.1" />
 
+    <!--    <TextView-->
+    <!--        android:id="@+id/tv1"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginBottom="5dp"-->
+    <!--        android:text="关于作者"-->
+    <!--        android:textColor="@color/gray50"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/layoutQQ"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintRight_toRightOf="parent" />-->
+
+
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/layoutQQ"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:gravity="center"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/layoutGitHub"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintRight_toRightOf="parent">-->
+
+    <!--        <TextView-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:paddingTop="5dp"-->
+    <!--            android:text="QQ：" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/tvQQ"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:paddingTop="10dp"-->
+    <!--            android:paddingBottom="5dp"-->
+    <!--            android:text="@string/my_qq"-->
+    <!--            android:textColor="@color/colorPrimary" />-->
+    <!--    </LinearLayout>-->
+
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/layoutGitHub"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginBottom="20dp"-->
+    <!--        android:gravity="center"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/tvProtocol"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintRight_toRightOf="parent">-->
+
+    <!--        <TextView-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:paddingBottom="5dp"-->
+    <!--            android:text="GitHub：" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/githubUrl"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:paddingTop="5dp"-->
+    <!--            android:paddingBottom="10dp"-->
+    <!--            android:text="@string/github_url"-->
+    <!--            android:textColor="@color/colorPrimary" />-->
+    <!--    </LinearLayout>-->
+
     <TextView
-        android:id="@+id/tv1"
+        android:id="@+id/tvProtocol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:text="关于作者"
-        android:textColor="@color/gray50"
-        app:layout_constraintBottom_toTopOf="@+id/layoutQQ"
+        android:padding="10dp"
+        android:text="用户协议"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/vLine"
+        app:layout_constraintRight_toLeftOf="@id/vLine"
+        app:layout_constraintTop_toTopOf="@+id/vLine" />
+
+    <View
+        android:id="@+id/vLine"
+        android:layout_width="2dp"
+        android:layout_height="14dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/gray10"
+        app:layout_constraintBottom_toTopOf="@+id/tvAuthor"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-
-    <LinearLayout
-        android:id="@+id/layoutQQ"
+    <TextView
+        android:id="@+id/tvPrivacy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/layoutGitHub"
+        android:padding="10dp"
+        android:text="隐私政策"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/vLine"
+        app:layout_constraintLeft_toRightOf="@+id/vLine"
+        app:layout_constraintTop_toTopOf="@+id/vLine" />
+
+    <TextView
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:text="QQ：" />
-
-        <TextView
-            android:id="@+id/tvQQ"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="5dp"
-            android:text="@string/my_qq"
-            android:textColor="@color/colorPrimary" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutGitHub"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:gravity="center"
-        android:orientation="horizontal"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:text="GitHub：" />
-
-        <TextView
-            android:id="@+id/githubUrl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="10dp"
-            android:text="@string/github_url"
-            android:textColor="@color/colorPrimary" />
-    </LinearLayout>
+        android:id="@+id/tvAuthor"
+        android:textSize="12sp"
+        android:textColor="@color/gray30"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:text="Created by zybooo1" />
 </android.support.constraint.ConstraintLayout>

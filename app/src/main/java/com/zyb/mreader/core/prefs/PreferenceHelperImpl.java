@@ -1,7 +1,6 @@
 package com.zyb.mreader.core.prefs;
 
 
-
 import com.zyb.base.base.sp.BaseSharePreference;
 import com.zyb.base.utils.constant.Constants;
 import com.zyb.mreader.utils.FileUtils;
@@ -14,29 +13,39 @@ import javax.inject.Inject;
 
 public class PreferenceHelperImpl extends BaseSharePreference implements PreferenceHelper {
     @Inject
-    PreferenceHelperImpl() {
+    public PreferenceHelperImpl() {
         super();
     }
 
     @Override
     public void setIsFilterENfiles(boolean isFilterENfiles) {
-        putBoolean(Constants.IS_FILTER_EN_FILE,isFilterENfiles);
+        putBoolean(Constants.IS_FILTER_EN_FILE, isFilterENfiles);
     }
 
     @Override
     public void setFilterSize(long filterSize) {
-        putLong(Constants.FILTER_SIZE,filterSize);
+        putLong(Constants.FILTER_SIZE, filterSize);
 
     }
 
     @Override
     public boolean getIsFilterENfiles() {
-        return getBoolean(Constants.IS_FILTER_EN_FILE,FileUtils.IS_FILTER_EN_FILES);
+        return getBoolean(Constants.IS_FILTER_EN_FILE, FileUtils.IS_FILTER_EN_FILES);
     }
 
     @Override
     public long getFilterSize() {
         return getLong(Constants.FILTER_SIZE, FileUtils.MIN_TXT_FILE_SIZE);
 
+    }
+
+    @Override
+    public boolean isShowedContract() {
+        return getBoolean(Constants.IS_SHOWED_CONTRACT, false);
+    }
+
+    @Override
+    public void setIsShowedContract(boolean isShowedContract) {
+        putBoolean(Constants.IS_SHOWED_CONTRACT, isShowedContract);
     }
 }

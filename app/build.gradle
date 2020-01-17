@@ -5,6 +5,35 @@ apply from: "../base_compiler.gradle"
 //todo 暂时注释这行使tinker不再每次构建生成bakApk
 //apply from: 'tinker-support.gradle'
 
+//解决arouter使用乐固加固后报错
+apply plugin: 'auto-register'
+autoregister {
+    registerInfo = [
+            [
+                    'scanInterface'           : 'com.alibaba.android.arouter.facade.template.IRouteRoot'
+                    , 'codeInsertToClassName' : 'com.alibaba.android.arouter.core.LogisticsCenter'
+                    , 'codeInsertToMethodName': 'loadRouterMap'//static方法
+                    , 'registerMethodName'    : 'registerRouteRoot' //static方法
+                    , 'include'               : ['com/alibaba/android/arouter/routes/.*']
+            ],
+            [
+                    'scanInterface'           : 'com.alibaba.android.arouter.facade.template.IInterceptorGroup'
+                    , 'codeInsertToClassName' : 'com.alibaba.android.arouter.core.LogisticsCenter'
+                    , 'codeInsertToMethodName': 'loadRouterMap'//static方法
+                    , 'registerMethodName'    : 'registerInterceptor' //static方法
+                    , 'include'               : ['com/alibaba/android/arouter/routes/.*']
+            ],
+            [
+                    'scanInterface'           : 'com.alibaba.android.arouter.facade.template.IProviderGroup'
+                    , 'codeInsertToClassName' : 'com.alibaba.android.arouter.core.LogisticsCenter'
+                    , 'codeInsertToMethodName': 'loadRouterMap'//static方法
+                    , 'registerMethodName'    : 'registerProvider' //static方法
+                    , 'include'               : ['com/alibaba/android/arouter/routes/.*']
+            ]
+    ]
+}
+
+
 //获取编译时间
 static def releaseTime() {
     return new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
@@ -44,6 +73,14 @@ android {
         productFlavors {
             kuan {}     // 酷安
             huawei {}   // 华为
+            xiaomi {}   // 小米
+            tencent {}   // 腾讯
+            qh360 {}   // 奇虎360
+            baidu {}   // 百度
+            oppo {}   // oppo
+            vivo {}   // vivo
+            ali {}   // 阿里
+            meizu {}   // 魅族
             productFlavors.all { flavor ->
                 manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
             }
@@ -120,29 +157,30 @@ dependencies {
     implementation project(':common')
 }
 
-build {
-    doLast() {
-        println "任务1编译打包完成后需要复制apk的数量:" + fileArray.size()
-        forEachFile(fileArray)
-    }
-}
-
-def forEachFile(fileArray) {
-    fileArray.forEach { file ->
-        //遍历进行文件操作
-        println "任务3遍历apk文件"
-        rename_and_moveout_apk(file)
-    }
-}
-
-def rename_and_moveout_apk(orignalFile) {
-    def intoFile = rootDir + File.separator + "apk"
-    copy {
-        from orignalFile
-        into intoFile
-        println "任务4复制apk到指定位置:" + intoFile
-        rename("${android.defaultConfig.versionName}_${android.defaultConfig.versionCode}_", "")
-        println "任务5修改apk的命名"
-    }
-}
+//build {
+//    //复制apk到指定目录
+//    doLast() {
+//        println "需要复制apk的数量:" + fileArray.size()
+//        forEachFile(fileArray)
+//    }
+//}
+//
+//def forEachFile(fileArray) {
+//    fileArray.forEach { file ->
+//        //遍历进行文件操作
+//        println "任务3遍历apk文件"
+//        rename_and_moveout_apk(file)
+//    }
+//}
+//
+//def rename_and_moveout_apk(orignalFile) {
+//    def intoFile = rootDir + File.separator + "apk"
+//    copy {
+//        from orignalFile
+//        into intoFile
+//        println "任务4复制apk到指定位置:" + intoFile
+//        rename("${android.defaultConfig.versionName}_${android.defaultConfig.versionCode}_", "")
+//        println "任务5修改apk的命名"
+//    }
+//}
 

@@ -1,12 +1,14 @@
 package com.zyb.mreader.module.main;
 
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.zyb.common.db.bean.Book;
 import com.zyb.mreader.R;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -46,7 +48,7 @@ public class BooksAdapter extends BaseQuickAdapter<Book, BaseViewHolder> {
         }
         for (Book mDatum : mData) {
             //未全选就全选
-            mDatum.setSelected(unselectedCount!=0);
+            mDatum.setSelected(unselectedCount != 0);
         }
         notifyDataSetChanged();
     }
@@ -56,10 +58,12 @@ public class BooksAdapter extends BaseQuickAdapter<Book, BaseViewHolder> {
     protected void convert(BaseViewHolder helper, Book book) {
         helper.setText(R.id.item_title, book.getTitle())
                 .setText(R.id.tvReadProgress, book.getProgress())
+                .setBackgroundColor(R.id.vBg, new File(book.getPath()).exists() ?
+                        ContextCompat.getColor(mContext, R.color.book_item_fill) : ContextCompat.getColor(mContext, R.color.gray10))
                 .setGone(R.id.btnSelected, book.isSelected() && canSelect)
                 .setGone(R.id.btnUnselected, canSelect)
                 .setGone(R.id.tvReadProgress, !book.getProgress().isEmpty() && !canSelect)
-                .setGone(R.id.v1, !book.getProgress().isEmpty() && !canSelect)
-                .setGone(R.id.v2, !book.getProgress().isEmpty() && !canSelect);
+                .setGone(R.id.progressLeft, !book.getProgress().isEmpty() && !canSelect)
+                .setGone(R.id.progressRight, !book.getProgress().isEmpty() && !canSelect);
     }
 }

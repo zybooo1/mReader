@@ -12,6 +12,7 @@ public class Constants {
 
     public static String DB_NAME = "base_db";
 
+
     //图片（压缩）缓存目录
     public static String IMG_CACHE_PATH = Environment.getExternalStorageDirectory() + "imageCache/";
     //文件缓存目录
@@ -20,9 +21,16 @@ public class Constants {
 
     //SP名称
     public static final String SP_NAME = "sp_mreader";
-
+    //搜索书籍是否自动过滤纯英文文件
     public static final String IS_FILTER_EN_FILE = "is_filter_en_file";
+    //搜索书籍过滤最小文件的大小
     public static final String FILTER_SIZE = "fileter_size";
+    //是否已显示用户协议
+    public static final String IS_SHOWED_CONTRACT = "showed_contract";
+
+    //用户隐私html资源
+    public static final String PRIVACY_HTML = "file:///android_asset/mreader_privacy.html";;
+    public static final String PROTOCOL_HTML = "file:///android_asset/mreader_protocol.html";
 
     public static final int TEXT_SIZE_SP_DEFAULT = 20;
     public static final int READ_BG_DEFAULT = 0;
