@@ -1,8 +1,6 @@
 package com.zyb.mreader;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,8 +9,14 @@ import com.zyb.base.base.activity.MyActivity;
 import com.zyb.base.router.RouterConstants;
 import com.zyb.base.router.RouterUtils;
 import com.zyb.base.utils.CommonUtils;
+import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.constant.Constants;
 import com.zyb.base.widget.WebActivity;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -108,4 +112,6 @@ public class AboutActivity extends MyActivity {
             count = 0;
         }
     }
+
+
 }

@@ -28,9 +28,9 @@ public class Constants {
     //是否已显示用户协议
     public static final String IS_SHOWED_CONTRACT = "showed_contract";
 
-    //用户隐私html资源
-    public static final String PRIVACY_HTML = "file:///android_asset/mreader_privacy.html";;
-    public static final String PROTOCOL_HTML = "file:///android_asset/mreader_protocol.html";
+    //用户隐私html资源  如果是本地资源file:///android_asset/xxx.html
+    public static final String PRIVACY_HTML = "https://zybooo1.github.io/zybooo1/mReader/mreader_privacy.html";
+    public static final String PROTOCOL_HTML = "https://zybooo1.github.io/zybooo1/mReader/mreader_protocol.html";
 
     public static final int TEXT_SIZE_SP_DEFAULT = 20;
     public static final int READ_BG_DEFAULT = 0;

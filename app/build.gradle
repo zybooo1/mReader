@@ -77,8 +77,8 @@ android {
             tencent {}   // 腾讯
             qh360 {}   // 奇虎360
             baidu {}   // 百度
-            oppo {}   // oppo
-            vivo {}   // vivo
+//            oppo {}   // oppo
+//            vivo {}   // vivo
             ali {}   // 阿里
             meizu {}   // 魅族
             productFlavors.all { flavor ->

@@ -1,9 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/reader_MenucolorReadMenu"
     android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
+        tools:itemCount="20"
+        tools:listitem="@layout/reader_item_bookmark"
         android:id="@+id/rvBookmark"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

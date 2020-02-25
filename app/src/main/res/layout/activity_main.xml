@@ -23,8 +23,8 @@
             android:id="@+id/layoutActionTop"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:visibility="gone"
             android:background="@color/colorPrimary"
+            android:visibility="gone"
             app:backButton="false"
             app:barStyle="night"
             app:layout_constraintTop_toTopOf="parent"
@@ -38,7 +38,11 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleBar" />
+            app:layout_constraintTop_toBottomOf="@+id/titleBar"
+            tools:itemCount="20"
+            tools:layoutManager="GridLayoutManager"
+            tools:listitem="@layout/item_book"
+            tools:spanCount="3" />
 
         <ImageView
             android:id="@+id/img_content"
@@ -105,11 +109,11 @@
 
         <LinearLayout
             android:id="@+id/layoutBooksEmpty"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

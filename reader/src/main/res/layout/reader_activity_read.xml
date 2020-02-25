@@ -681,6 +681,8 @@
             app:srlEnableRefresh="false">
 
             <android.support.v7.widget.RecyclerView
+                tools:itemCount="20"
+                tools:listitem="@layout/reader_item_search_result"
                 android:id="@+id/rvSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
