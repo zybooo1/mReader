@@ -105,4 +105,14 @@ mPreferenceHelper.setFilterSize(filterSize);
     public void setIsShowedContract(boolean isShowedContract) {
         mPreferenceHelper.setIsShowedContract(isShowedContract);
     }
+
+    @Override
+    public boolean isFirst() {
+        return mPreferenceHelper.isFirst();
+    }
+
+    @Override
+    public void setIsFirst(boolean isFirst) {
+mPreferenceHelper.setIsFirst(isFirst);
+    }
 }

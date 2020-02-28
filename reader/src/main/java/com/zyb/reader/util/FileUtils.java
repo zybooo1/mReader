@@ -111,6 +111,15 @@ public class FileUtils {
         return filename;
     }
 
+    /**
+     * 把assets文件复制出来
+     *
+     * @param assets 资源
+     * @param source assets文件的名字
+     * @param dest 目标路径
+     * @param isCover 是否覆盖
+     * @throws IOException
+     */
     public static void copyFromAssets(AssetManager assets, String source, String dest, boolean isCover)
             throws IOException {
         File file = new File(dest);

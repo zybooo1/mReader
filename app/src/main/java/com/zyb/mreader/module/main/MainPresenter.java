@@ -1,8 +1,11 @@
 package com.zyb.mreader.module.main;
 
 
+import com.zyb.base.event.BaseEvent;
+import com.zyb.base.event.EventConstants;
 import com.zyb.base.http.CommonSubscriber;
 import com.zyb.base.mvp.AbstractPresenter;
+import com.zyb.base.utils.EventBusUtil;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.base.utils.constant.Constants;
 import com.zyb.common.db.bean.Book;
@@ -139,4 +142,6 @@ public class MainPresenter extends AbstractPresenter<MainContract.View, AppDataM
     private void updateBookFiles(List<BookFiles> books) {
         mDataManager.updateBookFiles(books);
     }
+
+
 }

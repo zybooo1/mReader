@@ -1,8 +1,5 @@
 package com.zyb.mreader;
 
-import android.app.ActivityManager;
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -21,9 +18,13 @@ import com.zyb.base.router.RouterUtils;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.base.utils.constant.Constants;
 import com.zyb.base.widget.WebActivity;
+import com.zyb.common.db.DBFactory;
+import com.zyb.common.db.bean.Book;
 import com.zyb.mreader.core.prefs.PreferenceHelperImpl;
 import com.zyb.mreader.module.main.MainActivity;
+import com.zyb.reader.util.FileUtils;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -60,6 +61,12 @@ public class LauncherActivity extends MyActivity
     @Override
     protected void initView() {
         preferenceHelper = new PreferenceHelperImpl();
+
+        //第一次进入 添加介绍txt
+        if (preferenceHelper.isFirst()) {
+            addInductionTxt();
+            preferenceHelper.setIsFirst(false);
+        }
 
         disposable = Observable.just(true)
                 .delay(DELAY_TIME, TimeUnit.MILLISECONDS)
@@ -170,7 +177,7 @@ public class LauncherActivity extends MyActivity
     @Override
     protected void onRestart() {
         super.onRestart();
-            checkIsShowDialog();
+        checkIsShowDialog();
     }
 
     @Override
@@ -178,4 +185,35 @@ public class LauncherActivity extends MyActivity
         disposable.dispose();
         super.onDestroy();
     }
+
+
+    //==============添加默认APP介绍TXT文件功能Start================
+    public void addInductionTxt() {
+        try {
+            String txtName = "introduction.txt";
+
+            File tmpDir = getFilesDir();
+            if (tmpDir == null || !tmpDir.exists()) tmpDir = getExternalFilesDir("tmpTxt");
+
+            assert tmpDir != null;
+            FileUtils.copyFromAssets(getAssets(), txtName, tmpDir.getAbsolutePath()+File.separator + txtName, true);
+
+            File resultFile = new File(tmpDir.getAbsolutePath() + File.separator + txtName);
+
+            Book book = new Book();
+            book.setId(resultFile.getAbsolutePath());
+            book.setTitle("欢迎使用");
+            book.setPath(resultFile.getAbsolutePath());
+            book.setSize(resultFile.length() + "");
+            long time = System.currentTimeMillis();
+            book.setAddTime(time);
+            book.setLastReadTime(time);
+            book.setSort((int) DBFactory.getInstance().getBooksManage().count());
+
+            DBFactory.getInstance().getBooksManage().insertOrUpdate(book);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //==============添加默认APP介绍TXT文件功能End================
 }

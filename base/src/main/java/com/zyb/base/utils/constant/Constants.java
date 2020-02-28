@@ -27,6 +27,8 @@ public class Constants {
     public static final String FILTER_SIZE = "fileter_size";
     //是否已显示用户协议
     public static final String IS_SHOWED_CONTRACT = "showed_contract";
+    //是否第一次进入APP
+    public static final String IS_FIRST_IN_APP = "is_first_in";
 
     //用户隐私html资源  如果是本地资源file:///android_asset/xxx.html
     public static final String PRIVACY_HTML = "https://zybooo1.github.io/zybooo1/mReader/mreader_privacy.html";

@@ -18,4 +18,7 @@ public interface PreferenceHelper extends BasePreferenceHelper {
     boolean isShowedContract();
 
     void setIsShowedContract(boolean isShowedContract);
+    boolean isFirst();
+
+    void setIsFirst(boolean isFirst);
 }

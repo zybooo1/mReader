@@ -48,4 +48,14 @@ public class PreferenceHelperImpl extends BaseSharePreference implements Prefere
     public void setIsShowedContract(boolean isShowedContract) {
         putBoolean(Constants.IS_SHOWED_CONTRACT, isShowedContract);
     }
+
+    @Override
+    public boolean isFirst() {
+        return getBoolean(Constants.IS_FIRST_IN_APP, true);
+    }
+
+    @Override
+    public void setIsFirst(boolean isFirst) {
+        putBoolean(Constants.IS_FIRST_IN_APP, isFirst);
+    }
 }

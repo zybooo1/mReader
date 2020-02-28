@@ -57,6 +57,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -95,7 +98,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
 
             String filePath = books.get(bookPosition).getPath();
             File file = new File(filePath);
-            if(!file.exists()){
+            if (!file.exists()) {
                 onFileNotExist();
                 return;
             }
@@ -113,7 +116,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                         refreshBooks();
                         return false;
                     }
-                },null);
+                }, null);
     }
 
     @Override
@@ -365,9 +368,9 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     protected void onPause() {
         super.onPause();
         //合书时返回桌面 直接把动画取消（调用onAnimationEnd)
-        if(isBookOpened&&isAnimating){
-            if(scaleAnimation!=null) scaleAnimation.cancel();
-            if(threeDAnimation!=null) threeDAnimation.cancel();
+        if (isBookOpened && isAnimating) {
+            if (scaleAnimation != null) scaleAnimation.cancel();
+            if (threeDAnimation != null) threeDAnimation.cancel();
         }
     }
 
@@ -676,8 +679,9 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                         exitEditMode();
                         return false;
                     }
-                },null);
+                }, null);
     }
     //==============书架拖拽功能End================
+
 
 }
