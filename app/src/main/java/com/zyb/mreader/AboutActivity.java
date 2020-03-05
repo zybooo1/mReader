@@ -1,6 +1,5 @@
 package com.zyb.mreader;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -9,14 +8,8 @@ import com.zyb.base.base.activity.MyActivity;
 import com.zyb.base.router.RouterConstants;
 import com.zyb.base.router.RouterUtils;
 import com.zyb.base.utils.CommonUtils;
-import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.constant.Constants;
 import com.zyb.base.widget.WebActivity;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -26,6 +19,8 @@ import butterknife.OnClick;
  */
 public class AboutActivity extends MyActivity {
 
+    @BindView(R2.id.ivDebug)
+    View ivDebug;
     @BindView(R.id.tvVersion)
     TextView tvVersion;
 
@@ -47,12 +42,8 @@ public class AboutActivity extends MyActivity {
 
     @Override
     protected void initView() {
-        try {
-            tvVersion.setText(String.format("%s", CommonUtils.getVersionName(this)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        if (BuildConfig.DEBUG) ivDebug.setVisibility(View.VISIBLE);
+        tvVersion.setText(CommonUtils.getVersionName(this));
     }
 
     @Override
@@ -60,18 +51,6 @@ public class AboutActivity extends MyActivity {
 
     }
 
-//    @OnClick({R.id.githubUrl})
-//    public void clickGitHub(View view) {
-//        RouterUtils.getInstance().build(RouterConstants.PATH_BASE_ATY_WEB_VIEW)
-//                .withString(WebActivity.URL_FLAG, getString(R.string.github_url))
-//                .navigation();
-//    }
-//
-//    @OnClick({R.id.tvQQ})
-//    public void clickQQ(View view) {
-//        copy(getString(R.string.my_qq));
-//    }
-//
 //    private void copy(String string) {
 //        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 //        ClipData mClipData = ClipData.newPlainText("内容", string);

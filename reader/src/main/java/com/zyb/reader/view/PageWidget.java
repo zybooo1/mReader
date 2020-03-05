@@ -76,13 +76,6 @@ public class PageWidget extends View {
     }
 
     private void initPage() {
-//        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-//        DisplayMetrics metric = new DisplayMetrics();
-//        wm.getDefaultDisplay().getMetrics(metric);
-//        mScreenWidth = metric.widthPixels;
-//        mScreenHeight = metric.heightPixels;
-//        mScreenWidth= CommonUtils.getScreenWidth();
-//        mScreenHeight= CommonUtils.getScreenHeight();
         LogUtil.e("initPage:mScreenWidth=" + mScreenWidth + "mScreenHeight=" + mScreenHeight);
         mCurPageBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);      //android:LargeHeap=true  use in  manifest application
         mNextPageBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);
@@ -123,7 +116,6 @@ public class PageWidget extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-//        canvas.drawColor(0xFFAAAAAA);
         canvas.drawColor(mBgColor);
         Log.e("onDraw", "isNext:" + isNext + "          isRuning:" + isRuning);
         if (isRuning) {

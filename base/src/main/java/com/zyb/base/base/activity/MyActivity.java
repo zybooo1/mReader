@@ -44,6 +44,13 @@ public abstract class MyActivity extends UIActivity
     }
 
     /**
+     *默认什么都不做
+     */
+    @Override
+    protected void initData() {
+    }
+
+    /**
      * 设置标题栏的标题
      */
     @Override

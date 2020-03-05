@@ -102,7 +102,7 @@ public class BookUtil {
 
     public int next(boolean back) {
         position += 1;
-        if (position > bookLen) {
+        if (position >= bookLen) {
             position = bookLen;
             return -1;
         }

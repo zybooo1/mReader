@@ -237,6 +237,7 @@ public class ReadActivity extends MyActivity {
 
         rgSpeaker.setOnCheckedChangeListener(onSpeakerCheckedChangeListener);
 
+        //View绘制完毕后初始化
         pageWidget.post(() -> {
             pageFactory.setPageWidget(pageWidget);
 
@@ -372,12 +373,6 @@ public class ReadActivity extends MyActivity {
 
     private void showSystemUI() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //显示状态栏
-
-    }
-
-    @Override
-    protected void initData() {
-
     }
 
     @OnClick(R2.id.btnAddBookMark)
