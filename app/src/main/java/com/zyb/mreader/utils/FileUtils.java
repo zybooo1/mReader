@@ -51,6 +51,14 @@ public class FileUtils {
         return new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
+    public static String getFilePrefix(File file) {
+        if (file==null||file.getName().isEmpty()) return "";
+        String fileName=file.getName();
+        String[] token = fileName.split(".");
+        if(token.length<=1) return "";
+        return token[1];
+    }
+
     /**
      * 获取txt文件
      *

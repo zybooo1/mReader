@@ -1,8 +1,16 @@
 package com.zyb.mreader;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.Permission;
@@ -17,6 +25,7 @@ import com.zyb.base.router.RouterConstants;
 import com.zyb.base.router.RouterUtils;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.base.utils.constant.Constants;
+import com.zyb.base.widget.MyClickSpan;
 import com.zyb.base.widget.WebActivity;
 import com.zyb.common.db.DBFactory;
 import com.zyb.common.db.bean.Book;
@@ -41,11 +50,8 @@ public class LauncherActivity extends MyActivity
         implements OnPermission, ViewTreeObserver.OnGlobalLayoutListener {
     private static final int DELAY_TIME = 200;
 
-    @Inject
     PreferenceHelperImpl preferenceHelper;
 
-    @BindView(R.id.iv_launcher_bg)
-    View mImageView;
     private Disposable disposable;
 
     @Override
@@ -81,6 +87,11 @@ public class LauncherActivity extends MyActivity
     }
 
     @Override
+    public int navigationBarColor() {
+        return R.color.colorPrimary;
+    }
+
+    @Override
     protected void initData() {
     }
 
@@ -89,7 +100,6 @@ public class LauncherActivity extends MyActivity
                 .permission(Permission.Group.STORAGE)
                 .request(this);
     }
-
 
     /**
      * {@link OnPermission}
@@ -112,22 +122,29 @@ public class LauncherActivity extends MyActivity
         View view = getLayoutInflater().inflate(R.layout.dialog_permission, null);
         view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        view.findViewById(R.id.tvProtocol).setOnClickListener(new View.OnClickListener() {
+        TextView content =view.findViewById(R.id.tv4);
+        content.setMovementMethod(LinkMovementMethod.getInstance());
+        SpannableString spannableString = new SpannableString("同时，猫豆阅读采用严格的数据安全措施保护你的个人信息安全。你选择" +
+                "「同意」即表示充分阅读、理解并接受《猫豆阅读用户协议》、《猫豆阅读隐私政策》的全部内容。你也可以选择「不同意」，猫豆阅读将无法为你提供产品和服务。");
+        spannableString.setSpan(new MyClickSpan() {
             @Override
-            public void onClick(View v) {
+            public void onClick(@NonNull View widget) {
                 RouterUtils.getInstance().build(RouterConstants.PATH_BASE_ATY_WEB_VIEW)
                         .withString(WebActivity.URL_FLAG, Constants.PROTOCOL_HTML)
                         .navigation();
             }
-        });
-        view.findViewById(R.id.tvPrivacy).setOnClickListener(new View.OnClickListener() {
+        }, 49, 59, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new MyClickSpan() {
             @Override
-            public void onClick(View v) {
+            public void onClick(@NonNull View widget) {
                 RouterUtils.getInstance().build(RouterConstants.PATH_BASE_ATY_WEB_VIEW)
                         .withString(WebActivity.URL_FLAG, Constants.PRIVACY_HTML)
                         .navigation();
             }
-        });
+        }, 60, 70, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        content.setHighlightColor(Color.TRANSPARENT);
+        content.setText(spannableString);
+
 
         MessageDialog.build(this)
                 .setCustomView(view)

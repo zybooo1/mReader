@@ -29,10 +29,23 @@ public class Constants {
     public static final String IS_SHOWED_CONTRACT = "showed_contract";
     //是否第一次进入APP
     public static final String IS_FIRST_IN_APP = "is_first_in";
+    //WebDev SP名称
+    public static final String WEBDEV_USER_NAME = "webdev_user_name";
+    public static final String WEBDEV_PASSWORD = "webdev_psw";
+    public static final String WEBDEV_HOST = "webdev_host";
+    public static final String WEBDEV_BACKUP_PATH = "猫豆阅读";
 
     //用户隐私html资源  如果是本地资源file:///android_asset/xxx.html
     public static final String PRIVACY_HTML = "https://zybooo1.github.io/zybooo1/mReader/mreader_privacy.html";
     public static final String PROTOCOL_HTML = "https://zybooo1.github.io/zybooo1/mReader/mreader_protocol.html";
+
+    //WebDev应用授权密码
+    public static final String WEB = "arku25izyvfuqvxm";
+    //坚果云
+    public static final String JIANGUOYUN_HELP_URL = "http://help.jianguoyun.com/?p=2064";
+    public static final String JIANGUOYUN_USERNAME = "739758058@qq.com";
+    public static final String JIANGUOYUN_PASSWORD = "arku25izyvfuqvxm";
+    public static final String JIANGUOYUN_HOST = "https://dav.jianguoyun.com/dav/";
 
     public static final int TEXT_SIZE_SP_DEFAULT = 20;
     public static final int READ_BG_DEFAULT = 0;

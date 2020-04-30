@@ -103,6 +103,7 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
         tvPath.setText(getString(R.string.file_path, file.getPath()));
         //获取数据
         File[] files = file.listFiles(new SimpleTxtFileFilter());
+        if(files==null) files =new File[]{};
         //转换成List
         List<File> rootFiles = Arrays.asList(files);
         //排序

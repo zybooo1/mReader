@@ -21,6 +21,8 @@ public interface MainContract {
         void toShare();
 
         void toLogin();
+
+        void toBackup();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -41,5 +43,6 @@ public interface MainContract {
         TO_ABOUT,
         TO_SHARE,
         TO_LOGIN,
+        TO_BACKUP,
     }
 }

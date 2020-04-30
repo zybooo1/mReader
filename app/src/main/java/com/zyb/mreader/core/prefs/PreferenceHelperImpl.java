@@ -58,4 +58,36 @@ public class PreferenceHelperImpl extends BaseSharePreference implements Prefere
     public void setIsFirst(boolean isFirst) {
         putBoolean(Constants.IS_FIRST_IN_APP, isFirst);
     }
+
+    @Override
+    public String getWebDevUserName() {
+        return getString(Constants.WEBDEV_USER_NAME, "");
+    }
+
+    @Override
+    public void setWebDevUserName(String s) {
+        putString(Constants.WEBDEV_USER_NAME, s);
+    }
+
+    @Override
+    public String getWebDevPassword() {
+        return getString(Constants.WEBDEV_PASSWORD, "");
+
+    }
+
+    @Override
+    public void setWebDevPassword(String s) {
+        putString(Constants.WEBDEV_PASSWORD, s);
+    }
+
+    @Override
+    public String getWebDevHost() {
+        return getString(Constants.WEBDEV_HOST, "");
+
+    }
+
+    @Override
+    public void setWebDevHost(String s) {
+        putString(Constants.WEBDEV_HOST, s);
+    }
 }

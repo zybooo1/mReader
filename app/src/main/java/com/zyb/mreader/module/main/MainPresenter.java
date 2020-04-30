@@ -63,6 +63,9 @@ public class MainPresenter extends AbstractPresenter<MainContract.View, AppDataM
                     case TO_LOGIN:
                         mView.toLogin();
                         break;
+                    case TO_BACKUP:
+                        mView.toBackup();
+                        break;
                 }
             }
             @Override

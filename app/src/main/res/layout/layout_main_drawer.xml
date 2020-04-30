@@ -55,6 +55,21 @@
         <View style="@style/HorizontalSpaceStyle" />
 
         <com.xw.repo.VectorCompatTextView
+            android:id="@+id/backup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/touch_bg"
+            android:drawablePadding="15dp"
+            android:padding="15dp"
+            android:text="WebDev云备份"
+            android:textColor="@color/gray70"
+            android:textSize="15sp"
+            app:drawableCompatColor="@color/gray70"
+            app:drawableHeight="20dp"
+            app:drawableLeftCompat="@drawable/svg_cloud"
+            app:drawableWidth="20dp" />
+
+        <com.xw.repo.VectorCompatTextView
             android:id="@+id/feedBack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

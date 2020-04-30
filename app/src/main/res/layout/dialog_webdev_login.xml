@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.zyb.base.widget.ClearEditText
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:id="@+id/etWebDevHost"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/ios_edit_box_bkg"
+        android:gravity="center"
+        android:hint="WebDev地址"/>
+    <com.zyb.base.widget.ClearEditText
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:id="@+id/etUserName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/ios_edit_box_bkg"
+        android:gravity="center"
+        android:hint="账号"/>
+    <com.zyb.base.widget.ClearEditText
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/ios_edit_box_bkg"
+        android:gravity="center"
+        android:hint="应用密码"/>
+
+</LinearLayout>

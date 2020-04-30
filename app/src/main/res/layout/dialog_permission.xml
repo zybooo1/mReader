@@ -53,43 +53,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="同时，猫豆阅读采用严格的数据安全措施保护你的个人信息安全。你选择「同意」即表示充分阅读、理解并接受"
+        android:text=""
         android:textColor="@color/gray70"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@+id/tv3" />
-
-
-    <TextView
-        android:id="@+id/tvProtocol"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
-        android:text="《猫豆阅读用户协议》"
-        android:textColor="@color/colorAccent"
-        android:textSize="16sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv4" />
-
-    <TextView
-        android:id="@+id/tvPrivacy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
-        android:text="《猫豆阅读隐私政策》"
-        android:textColor="@color/colorAccent"
-        android:textSize="16sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvProtocol" />
-
-
-    <TextView
-        android:id="@+id/tv5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="的全部内容。你也可以选择「不同意」，猫豆阅读将无法为你提供产品和服务。"
-        android:textColor="@color/gray70"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/tvPrivacy" />
 </android.support.constraint.ConstraintLayout>

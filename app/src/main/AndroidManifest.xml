@@ -20,10 +20,20 @@
         android:name="com.zyb.mreader.base.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/mreader_app_name"
+        android:label="${APP_NAME}"
+        tools:replace="android:label"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <!--ImmersionBar适配华为（huawei）刘海屏-->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" />
+        <!--ImmersionBar适配小米（xiaomi）刘海屏-->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" />
+
         <!--友盟统计配置Appkey与Channel-->
         <!--value的值填写你在友盟后台申请的应用Appkey-->
         <meta-data android:value="5d560bcc3fc1953d3700021d" android:name="UMENG_APPKEY"/>
@@ -63,6 +73,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".AboutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".module.backup.BackupActivity"
             android:screenOrientation="portrait" />
     </application>
 

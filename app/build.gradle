@@ -69,20 +69,46 @@ android {
         }
 
         flavorDimensions "default" // 这个名字貌似随便取，也可以有多个，总之一定要有
+        def defAppName = "猫豆阅读"
         // 友盟多渠道打包
         productFlavors {
-            kuan {}     // 酷安
-            huawei {}   // 华为
-            xiaomi {}   // 小米
-            tencent {}   // 腾讯
-            qh360 {}   // 奇虎360
-            baidu {}   // 百度
+            kuan {
+                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
+                                        APP_NAME           : defAppName]
+            }     // 酷安
+            huawei {
+                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
+                                        APP_NAME           : defAppName]
+            }   // 华为
+            xiaomi {
+                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
+                                        APP_NAME           : "猫豆本地TXT"]
+            }   // 小米
+            tencent {
+                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
+                                        APP_NAME           : defAppName]
+            }   // 腾讯
+            qh360 {
+                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
+                                        APP_NAME           : defAppName]
+            }   // 奇虎360
+            baidu {
+                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
+                                        APP_NAME           : defAppName]
+            }   // 百度
+            ali {
+                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
+                                        APP_NAME           : defAppName]
+            }   // 阿里
+            meizu {
+                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
+                                        APP_NAME           : defAppName]
+            }   // 魅族
 //            oppo {}   // oppo
 //            vivo {}   // vivo
-            ali {}   // 阿里
-            meizu {}   // 魅族
+//
             productFlavors.all { flavor ->
-                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+
             }
         }
 

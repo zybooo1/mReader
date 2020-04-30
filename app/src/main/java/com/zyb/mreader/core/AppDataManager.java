@@ -73,7 +73,7 @@ public class AppDataManager implements HttpHelper, PreferenceHelper, DbHelper, B
 
     @Override
     public void sortBook(Book book, int newPosition) {
-        mGreenDaoHelper.sortBook(book,newPosition);
+        mGreenDaoHelper.sortBook(book, newPosition);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class AppDataManager implements HttpHelper, PreferenceHelper, DbHelper, B
 
     @Override
     public void setFilterSize(long filterSize) {
-mPreferenceHelper.setFilterSize(filterSize);
+        mPreferenceHelper.setFilterSize(filterSize);
     }
 
     @Override
@@ -113,6 +113,36 @@ mPreferenceHelper.setFilterSize(filterSize);
 
     @Override
     public void setIsFirst(boolean isFirst) {
-mPreferenceHelper.setIsFirst(isFirst);
+        mPreferenceHelper.setIsFirst(isFirst);
+    }
+
+    @Override
+    public String getWebDevUserName() {
+        return mPreferenceHelper.getWebDevUserName();
+    }
+
+    @Override
+    public void setWebDevUserName(String s) {
+        mPreferenceHelper.setWebDevUserName(s);
+    }
+
+    @Override
+    public String getWebDevPassword() {
+        return mPreferenceHelper.getWebDevPassword();
+    }
+
+    @Override
+    public void setWebDevPassword(String s) {
+        mPreferenceHelper.setWebDevPassword(s);
+    }
+
+    @Override
+    public String getWebDevHost() {
+        return mPreferenceHelper.getWebDevHost();
+    }
+
+    @Override
+    public void setWebDevHost(String s) {
+        mPreferenceHelper.setWebDevHost(s);
     }
 }

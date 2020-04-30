@@ -47,6 +47,7 @@ import com.zyb.mreader.di.component.DaggerActivityComponent;
 import com.zyb.mreader.di.module.ActivityModule;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.module.addBook.AddBookActivity;
+import com.zyb.mreader.module.backup.BackupActivity;
 import com.zyb.mreader.widget.ContentScaleAnimation;
 import com.zyb.mreader.widget.Rotate3DAnimation;
 import com.zyb.reader.Config;
@@ -199,7 +200,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         layoutBooksEmpty.setVisibility(this.books.size() > 0 ? View.GONE : View.VISIBLE);
     }
 
-    @OnClick({R.id.addBook, R.id.feedBack, R.id.about, R.id.share})
+    @OnClick({R.id.addBook, R.id.feedBack, R.id.about, R.id.share, R.id.backup})
     public void addBookClick(View view) {
         drawerLayout.closeDrawers();
         switch (view.getId()) {
@@ -214,6 +215,9 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                 break;
             case R.id.share:
                 mPresenter.drawerAction(MainContract.DRAWER_ACTION.TO_SHARE);
+                break;
+            case R.id.backup:
+                mPresenter.drawerAction(MainContract.DRAWER_ACTION.TO_BACKUP);
                 break;
         }
     }
@@ -247,20 +251,11 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
 
     @Override
     public void toLogin() {
-//        CustomDialog.
-//                show(MainActivity.this, R.layout.layout_main_drawer, new CustomDialog.OnBindView() {
-//            @Override
-//            public void onBind(final CustomDialog dialog, View v) {
-//                ImageView btnOk = v.findViewById(R.id.btn_ok);
-//
-//                btnOk.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        dialog.doDismiss();
-//                    }
-//                });
-//            }
-//        });
+    }
+
+    @Override
+    public void toBackup() {
+       startActivity(BackupActivity.class);
     }
 
     @Override

@@ -77,6 +77,7 @@ dependencies {
     api rootProject.ext.dependencies["okdownload"]
     api rootProject.ext.dependencies["okdownload_sqlite"]
     api rootProject.ext.dependencies["okdownload_okhttp"]
+    api rootProject.ext.dependencies["sardine_webdev"]
     //image
     api rootProject.ext.dependencies["circleimageview"]
     api rootProject.ext.dependencies["BigImageViewPager"]
