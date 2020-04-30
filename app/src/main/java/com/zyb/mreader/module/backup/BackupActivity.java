@@ -27,7 +27,6 @@ import butterknife.OnClick;
 public class BackupActivity extends MVPActivity<BackupPresenter> implements
         BackupContract.View {
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.activity_backup;
@@ -51,7 +50,6 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
                 .build()
                 .inject(this);
     }
-
 
     //----------------- Login Start -------------------------
     @Override
@@ -87,7 +85,6 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
         }
     };
 
-
     private void showLoginDialog() {
         FullScreenDialog
                 .show(this, R.layout.dialog_webdev_login, new FullScreenDialog.OnBindView() {
@@ -111,7 +108,6 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
 
     @Override
     public void loginSuccess() {
-
     }
     //----------------- Login End -------------------------
 

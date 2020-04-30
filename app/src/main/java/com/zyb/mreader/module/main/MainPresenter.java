@@ -98,7 +98,7 @@ public class MainPresenter extends AbstractPresenter<MainContract.View, AppDataM
 
     @Override
     public void preloadBooks() {
-        if (mDataManager.getAllBooks().size()>0) {
+        if (mDataManager.getAllBookFiles().size()>0) {
             return;
         }
         addSubscribe(FileUtils.scanTxtFile( FileUtils.MIN_TXT_FILE_SIZE, FileUtils.IS_FILTER_EN_FILES)

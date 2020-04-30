@@ -108,7 +108,6 @@ public abstract class MyActivity extends UIActivity
         super.onDestroy();
         if (mButterKnife != null) mButterKnife.unbind();
         hideDialogLoading();
-        hideDialog();
     }
 
     @Override
@@ -166,18 +165,12 @@ public abstract class MyActivity extends UIActivity
 
 
     /*----------提示弹窗 Begin------------*/
-    MessageDialog messageDialog;
 
     @Override
     public void showDialog(boolean canCancel, String title, String confirmText,
                            String cancelText, OnDialogButtonClickListener cancelListener,
                            OnDialogButtonClickListener confirmListener) {
-
-        if(messageDialog==null){
-            messageDialog= MessageDialog.build(this);
-        }
-
-        messageDialog
+        MessageDialog.build(this)
                 .setCancelable(canCancel)
                 .setTitle(title)
                 .setMessage("")
@@ -186,10 +179,6 @@ public abstract class MyActivity extends UIActivity
                 .show();
     }
 
-    @Override
-    public void hideDialog() {
-        if (messageDialog != null)messageDialog.doDismiss();
-    }
     /*----------提示弹窗 End------------*/
 
 

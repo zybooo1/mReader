@@ -66,7 +66,6 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
     public void onDestroy() {
         super.onDestroy();
         if (isUnbindButterKnife()) mButterKnife.unbind();
-        hideDialog();
         hideDialogLoading();
     }
 
@@ -150,28 +149,17 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
 
 
     /*----------提示弹窗 Begin------------*/
-    com.kongzue.dialog.v3.MessageDialog messageDialog;
-
     @Override
     public void showDialog(boolean canCancel, String title, String confirmText,
                            String cancelText, @Nullable OnDialogButtonClickListener cancelListener,
                            @Nullable OnDialogButtonClickListener confirmListener) {
-
-        if (messageDialog == null) {
-            messageDialog = MessageDialog.build(getFragmentActivity());
-        }
-
-        messageDialog
+        MessageDialog.build(getFragmentActivity())
                 .setCancelable(canCancel)
                 .setTitle(title)
                 .setMessage("")
                 .setCancelButton(cancelText, cancelListener)
                 .setOkButton(confirmText, confirmListener)
                 .show();
-    }
-    @Override
-    public void hideDialog() {
-        if (messageDialog != null)messageDialog.doDismiss();
     }
     /*----------提示弹窗 End------------*/
 

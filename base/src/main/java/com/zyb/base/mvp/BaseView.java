@@ -53,7 +53,6 @@ public interface BaseView {
                     String cancelText,  OnDialogButtonClickListener cancelListener,
                     OnDialogButtonClickListener confirmListener);
 
-    void hideDialog();
 
     void showDialogLoading(String msg);
 

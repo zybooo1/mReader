@@ -12,12 +12,10 @@ public class Constants {
 
     public static String DB_NAME = "base_db";
 
-
     //图片（压缩）缓存目录
     public static String IMG_CACHE_PATH = Environment.getExternalStorageDirectory() + "imageCache/";
     //文件缓存目录
     public static String FILE_CACHE_PATH = Environment.getExternalStorageDirectory() + "fileCache/";
-
 
     //SP名称
     public static final String SP_NAME = "sp_mreader";
@@ -39,12 +37,10 @@ public class Constants {
     public static final String PRIVACY_HTML = "https://zybooo1.github.io/zybooo1/mReader/mreader_privacy.html";
     public static final String PROTOCOL_HTML = "https://zybooo1.github.io/zybooo1/mReader/mreader_protocol.html";
 
-    //WebDev应用授权密码
-    public static final String WEB = "arku25izyvfuqvxm";
     //坚果云
     public static final String JIANGUOYUN_HELP_URL = "http://help.jianguoyun.com/?p=2064";
     public static final String JIANGUOYUN_USERNAME = "739758058@qq.com";
-    public static final String JIANGUOYUN_PASSWORD = "arku25izyvfuqvxm";
+    public static final String JIANGUOYUN_PASSWORD = "arku25izyvfuqvxm";   //WebDev应用授权密码
     public static final String JIANGUOYUN_HOST = "https://dav.jianguoyun.com/dav/";
 
     public static final int TEXT_SIZE_SP_DEFAULT = 20;
