@@ -127,7 +127,8 @@ public class Config {
      * 语速
      */
     public int getSpeakSpeed() {
-        return sp.getInt(SPEAK_SPEED_KEY, SpeechService.DEFAULT_SPEED);
+//        return sp.getInt(SPEAK_SPEED_KEY, SpeechService.DEFAULT_SPEED);
+        return 1;
     }
 
     public void setSpeakSpeed(int speed) {
@@ -137,18 +138,18 @@ public class Config {
     /**
      * 发音人
      */
-    public OfflineResource.Speaker getSpeaker() {
-        String speaker = sp.getString(SPEAKER_KEY, OfflineResource.Speaker.FEMALE.getOffline());
-        if (OfflineResource.Speaker.MALE.getOffline().equals(speaker)) {
-            return OfflineResource.Speaker.MALE;
-        } else if (OfflineResource.Speaker.DUXY.getOffline().equals(speaker)) {
-            return OfflineResource.Speaker.DUXY;
-        } else if (OfflineResource.Speaker.DUYY.getOffline().equals(speaker)) {
-            return OfflineResource.Speaker.DUYY;
-        } else {
-            return OfflineResource.Speaker.FEMALE;
-        }
-    }
+//    public OfflineResource.Speaker getSpeaker() {
+//        String speaker = sp.getString(SPEAKER_KEY, OfflineResource.Speaker.FEMALE.getOffline());
+//        if (OfflineResource.Speaker.MALE.getOffline().equals(speaker)) {
+//            return OfflineResource.Speaker.MALE;
+//        } else if (OfflineResource.Speaker.DUXY.getOffline().equals(speaker)) {
+//            return OfflineResource.Speaker.DUXY;
+//        } else if (OfflineResource.Speaker.DUYY.getOffline().equals(speaker)) {
+//            return OfflineResource.Speaker.DUYY;
+//        } else {
+//            return OfflineResource.Speaker.FEMALE;
+//        }
+//    }
 
     public void setSpeaker(String offlineSpeaker) {
         sp.edit().putString(SPEAKER_KEY, offlineSpeaker).apply();

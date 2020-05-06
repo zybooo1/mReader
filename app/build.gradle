@@ -86,12 +86,12 @@ android {
         release {
             minifyEnabled true
             signingConfig signingConfigs.defaultSign
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
             signingConfig signingConfigs.defaultSign
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     /*GreenDao*/
@@ -103,7 +103,7 @@ android {
     //自定义apk文件名
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-                outputFileName = "猫豆阅读${variant.versionName}_${releaseTime()}.apk"
+            outputFileName = "猫豆阅读${variant.versionName}_${releaseTime()}.apk"
         }
     }
 
@@ -116,7 +116,7 @@ android {
         checkReleaseBuilds false
         // Or, if you prefer, you can continue to check for errors in release builds,
         // but continue the build even when errors are found:
-//        abortOnError false
+        abortOnError false
     }
 }
 
