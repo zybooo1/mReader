@@ -7,5 +7,8 @@
     <color name="book_item_fill">#46FF8126</color>
 
     <color name="book_selected_red">#E8554D</color>
+    <color name="gradient_green_top">#4AB14C</color>
+    <color name="gradient_green_bottom">#71BE6C</color>
+    <color name="gradient_primary_bottom">#FC9B54</color>
 
 </resources>

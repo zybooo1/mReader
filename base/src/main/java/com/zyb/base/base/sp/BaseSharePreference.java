@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.zyb.base.base.app.BaseApplication;
-import com.zyb.base.base.app.BaseApplicationLike;
 
 import javax.inject.Inject;
 
@@ -21,7 +20,7 @@ public class BaseSharePreference {
 
     @Inject
     public BaseSharePreference() {
-        mPreferences = BaseApplicationLike.getInstance().getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        mPreferences = BaseApplication.getInstance().getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
         sharedWritable=mPreferences.edit();
     }
 

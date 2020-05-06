@@ -34,10 +34,6 @@ public class SettingDialog extends Dialog {
     TextView tv_xitong;
     @BindView(R2.id.tv_size)
     TextView tv_size;
-    @BindView(R2.id.tv_qihei)
-    TextView tv_qihei;
-    @BindView(R2.id.tv_default)
-    TextView tv_default;
     @BindView(R2.id.iv_bg_default)
     CircleImageView iv_bg_default;
     @BindView(R2.id.iv_bg_1)
@@ -50,10 +46,6 @@ public class SettingDialog extends Dialog {
     CircleImageView iv_bg4;
     @BindView(R2.id.tv_size_default)
     TextView tv_size_default;
-    @BindView(R2.id.tv_fzkatong)
-    TextView tv_fzkatong;
-    @BindView(R2.id.tv_bysong)
-    TextView tv_bysong;
 
     @BindView(R2.id.tv_simulation)
     TextView tv_simulation;
@@ -115,10 +107,6 @@ public class SettingDialog extends Dialog {
         currentFontSize = (int) config.getFontSize();
         tv_size.setText(currentFontSize + "");
 
-        //初始化字体
-//        tv_default.setTypeface(config.getTypeface(Config.FONTTYPE_DEFAULT));
-        selectTypeface(config.getTypefacePath());
-
         selectBg(config.getBookBgType());
 
         sb_brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -176,32 +164,6 @@ public class SettingDialog extends Dialog {
         }
     }
 
-    //选择字体
-    private void selectTypeface(String typeface) {
-        setTextViewSelect(tv_default, false);
-        setTextViewSelect(tv_qihei, false);
-        setTextViewSelect(tv_fzkatong, false);
-        setTextViewSelect(tv_bysong, false);
-        if (typeface.equals(Config.FONTTYPE_DEFAULT)) {
-            setTextViewSelect(tv_default, true);
-        } else if (typeface.equals(Config.FONTTYPE_QIHEI)) {
-            setTextViewSelect(tv_qihei, true);
-        } else if (typeface.equals(Config.FONTTYPE_FZKATONG)) {
-            setTextViewSelect(tv_fzkatong, true);
-        } else if (typeface.equals(Config.FONTTYPE_BYSONG)) {
-            setTextViewSelect(tv_bysong, true);
-        }
-    }
-
-    //设置字体
-    public void setTypeface(String typeface) {
-        config.setTypeface(typeface);
-        Typeface tface = config.getTypeface(typeface);
-        if (mSettingListener != null) {
-            mSettingListener.changeTypeFace(tface);
-        }
-    }
-
     //设置亮度
     public void setBrightness(float brightness) {
         sb_brightness.setProgress((int) (brightness * 100));
@@ -231,8 +193,8 @@ public class SettingDialog extends Dialog {
     }
 
 
-    @OnClick({R2.id.tv_dark, R2.id.tv_bright, R2.id.tv_xitong, R2.id.tv_subtract, R2.id.tv_add, R2.id.tv_size_default, R2.id.tv_qihei, R2.id.tv_fzkatong, R2.id.tv_bysong,
-            R2.id.tv_default, R2.id.iv_bg_default, R2.id.iv_bg_1, R2.id.iv_bg_2, R2.id.iv_bg_3, R2.id.iv_bg_4})
+    @OnClick({R2.id.tv_dark, R2.id.tv_bright, R2.id.tv_xitong, R2.id.tv_subtract, R2.id.tv_add, R2.id.tv_size_default,
+             R2.id.iv_bg_default, R2.id.iv_bg_1, R2.id.iv_bg_2, R2.id.iv_bg_3, R2.id.iv_bg_4})
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.tv_dark) {
@@ -246,19 +208,7 @@ public class SettingDialog extends Dialog {
             addFontSize();
         } else if (i == R.id.tv_size_default) {
             defaultFontSize();
-        } else if (i == R.id.tv_qihei) {
-            selectTypeface(Config.FONTTYPE_QIHEI);
-            setTypeface(Config.FONTTYPE_QIHEI);
-        } else if (i == R.id.tv_fzkatong) {
-            selectTypeface(Config.FONTTYPE_FZKATONG);
-            setTypeface(Config.FONTTYPE_FZKATONG);
-        } else if (i == R.id.tv_bysong) {
-            selectTypeface(Config.FONTTYPE_BYSONG);
-            setTypeface(Config.FONTTYPE_BYSONG);
-        } else if (i == R.id.tv_default) {
-            selectTypeface(Config.FONTTYPE_DEFAULT);
-            setTypeface(Config.FONTTYPE_DEFAULT);
-        } else if (i == R.id.iv_bg_default) {
+        }  else if (i == R.id.iv_bg_default) {
             setBookBg(Config.BOOK_BG_DEFAULT);
             selectBg(Config.BOOK_BG_DEFAULT);
         } else if (i == R.id.iv_bg_1) {
@@ -364,8 +314,6 @@ public class SettingDialog extends Dialog {
         void changeSystemBright(Boolean isSystem, float brightness);
 
         void changeFontSize(int fontSize);
-
-        void changeTypeFace(Typeface typeface);
 
         void changeBookBg(int type);
 

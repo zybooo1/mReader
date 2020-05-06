@@ -18,12 +18,10 @@ import java.util.List;
  * 目录
  */
 public class CatalogueAdapter extends BaseQuickAdapter<BookCatalogue, BaseViewHolder> {
-    private Typeface typeface;
     private int currentPosition;
 
     public CatalogueAdapter(@Nullable List<BookCatalogue> data) {
         super(R.layout.reader_item_catalogue, data);
-        typeface = Config.getInstance().getTypeface();
     }
 
     @Override
@@ -34,8 +32,7 @@ public class CatalogueAdapter extends BaseQuickAdapter<BookCatalogue, BaseViewHo
         String strPercent = df.format(fPercent * 100) + "%";
 
         helper.setText(R.id.catalogue_tv, bean.getBookCatalogue())
-                .setText(R.id.tv_percent, strPercent)
-                .setTypeface(R.id.catalogue_tv, typeface);
+                .setText(R.id.tv_percent, strPercent);
     }
 
     public void setCurrentPosition(int currentPosition) {

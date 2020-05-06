@@ -42,6 +42,7 @@ public class Constants {
     public static final String JIANGUOYUN_USERNAME = "739758058@qq.com";
     public static final String JIANGUOYUN_PASSWORD = "arku25izyvfuqvxm";   //WebDev应用授权密码
     public static final String JIANGUOYUN_HOST = "https://dav.jianguoyun.com/dav/";
+    public static final String BOX_HOST = "https://dav.box.com/dav/";
 
     public static final int TEXT_SIZE_SP_DEFAULT = 20;
     public static final int READ_BG_DEFAULT = 0;

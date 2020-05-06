@@ -120,6 +120,7 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <Switch
+        android:checked="true"
         android:id="@+id/fileFilterSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

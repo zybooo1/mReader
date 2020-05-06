@@ -11,7 +11,10 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.IBinder;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
@@ -76,6 +79,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
@@ -312,11 +316,6 @@ public class ReadActivity extends MyActivity {
             }
 
             @Override
-            public void changeTypeFace(Typeface typeface) {
-                pageFactory.changeTypeface(typeface);
-            }
-
-            @Override
             public void changeBookBg(int type) {
                 pageFactory.changeBookBg(type);
                 //选择任一背景就是打开了日间模式
@@ -365,6 +364,7 @@ public class ReadActivity extends MyActivity {
             }
         });
 
+        initTTS();
     }
 
     private void hideSystemUI() {
@@ -712,9 +712,10 @@ public class ReadActivity extends MyActivity {
 
         //开始朗读
         String content = pageFactory.getCurrentPage().getLineToString() + pageFactory.getNextPageFirstSentence();
-        BaseEvent<String> event = new BaseEvent<>(EventConstants.EVENT_SPEECH_STRING_DATA,
-                content);
-        EventBusUtil.sendStickyEvent(event);
+//        BaseEvent<String> event = new BaseEvent<>(EventConstants.EVENT_SPEECH_STRING_DATA,
+//                content);
+//        EventBusUtil.sendStickyEvent(event);
+        playText(content);
         LogUtil.e(content);
 
     }
@@ -765,14 +766,15 @@ public class ReadActivity extends MyActivity {
                 pageFactory.nextPage();
                 if (pageFactory.islastPage()) {
                     stopSpeech();
-                    showMsg("小说已经读完了");
+                    showMsg("已经读完啦~");
                 } else {
                     isSpeaking = true;
                     //继续朗读
                     String content = pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence();
-                    BaseEvent<String> e = new BaseEvent<>(EventConstants.EVENT_SPEECH_STRING_DATA,
-                            content);
-                    EventBusUtil.sendStickyEvent(e);
+//                    BaseEvent<String> e = new BaseEvent<>(EventConstants.EVENT_SPEECH_STRING_DATA,
+//                            content);
+//                    EventBusUtil.sendStickyEvent(e);
+                    playText(content);
                     LogUtil.e(content);
                 }
                 break;
@@ -950,4 +952,71 @@ public class ReadActivity extends MyActivity {
         super.finish();
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
+
+    //------------------ System TTS Start -------------------
+    private TextToSpeech textToSpeech;
+    private boolean isSuccess;
+
+    private void initTTS() {
+        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                LogUtil.e("intTTS:" + textToSpeech.getDefaultEngine());
+                for (TextToSpeech.EngineInfo engine : textToSpeech.getEngines()) {
+                    LogUtil.e("EngineInfo:" + engine.name);
+                }
+                //系统语音初始化成功
+                if (i == TextToSpeech.SUCCESS) {
+                    isSuccess =true;
+                    int result = textToSpeech.setLanguage(Locale.CHINA);
+                    textToSpeech.setPitch(1.0f);// 设置音调，值越大声音越尖（女生），值越小则变成男声,1.0是常规
+                    textToSpeech.setSpeechRate(1.0f);
+                    textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                        @Override
+                        public void onStart(String utteranceId) {
+
+                        }
+
+                        @Override
+                        public void onDone(String utteranceId) {
+
+                        }
+
+                        @Override
+                        public void onError(String utteranceId) {
+
+                        }
+                    });
+                    textToSpeech.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
+                        @Override
+                        public void onUtteranceCompleted(String utteranceId) {
+
+                        }
+                    });
+                    if (result == TextToSpeech.LANG_MISSING_DATA
+                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        //系统不支持中文播报
+                        isSuccess = false;
+                    }
+                }else {
+                    isSuccess =false;
+                }
+
+            }
+        });
+    }
+
+    public void playText(String playText) {
+        if (!isSuccess || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            showError("暂不支持语音播放");
+            return;
+        }
+
+        if (textToSpeech != null) {
+            textToSpeech.speak(playText,
+                    TextToSpeech.QUEUE_ADD, null, null);
+        }
+    }
+
+    //------------------ System TTS End -------------------
 }

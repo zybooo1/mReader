@@ -125,53 +125,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="字体"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tv_default"
-            style="@style/reader_setting_dialog_button"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="1"
-            android:text="@string/reader_font_default"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tv_qihei"
-            style="@style/reader_setting_dialog_button"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="1"
-            android:text="@string/reader_font_qihei"
-            android:textSize="14sp" />
-
-
-        <TextView
-            android:id="@+id/tv_fzkatong"
-            style="@style/reader_setting_dialog_button"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="1"
-            android:text="@string/reader_font_fzkatong"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tv_bysong"
-            style="@style/reader_setting_dialog_button"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="1"
-            android:text="@string/reader_font_bysong"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/reader_setting_height"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:text="翻页"
             android:textColor="@color/white"
             android:textSize="14sp" />

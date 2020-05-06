@@ -2,7 +2,6 @@ package com.zyb.common.db;
 
 
 import com.zyb.base.base.app.BaseApplication;
-import com.zyb.base.base.app.BaseApplicationLike;
 import com.zyb.common.db.bean.DaoSession;
 import com.zyb.common.db.manage.BookCatalogueManage;
 import com.zyb.common.db.manage.BookFilesManage;
@@ -76,6 +75,6 @@ public class DBFactory {
      * Mange
      */
     public DaoSession getDaoSession() {
-        return DBManage.getInstance(BaseApplicationLike.getInstance()).getDaoSession();
+        return DBManage.getInstance(BaseApplication.getInstance()).getDaoSession();
     }
 }

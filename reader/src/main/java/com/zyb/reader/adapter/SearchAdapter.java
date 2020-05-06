@@ -18,11 +18,9 @@ import java.util.List;
  * 搜索结果
  */
 public class SearchAdapter extends BaseQuickAdapter<SearchResultBean, BaseViewHolder> {
-    private Typeface typeface;
 
     public SearchAdapter(@Nullable List<SearchResultBean> data) {
         super(R.layout.reader_item_search_result, data);
-        typeface = Config.getInstance().getTypeface();
     }
 
     @Override
@@ -33,7 +31,6 @@ public class SearchAdapter extends BaseQuickAdapter<SearchResultBean, BaseViewHo
         String strPercent = df.format(fPercent * 100) + "%";
 
         helper.setText(R.id.text_mark, bean.getText())
-                .setText(R.id.progress1, strPercent)
-                .setTypeface(typeface, R.id.text_mark, R.id.progress1);
+                .setText(R.id.progress1, strPercent);
     }
 }

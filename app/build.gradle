@@ -2,8 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.butterknife'
 apply from: "../base_compiler.gradle"
 // 依赖插件脚本
-//todo 暂时注释这行使tinker不再每次构建生成bakApk
-//apply from: 'tinker-support.gradle'
 
 //解决arouter使用乐固加固后报错
 apply plugin: 'auto-register'
@@ -68,50 +66,6 @@ android {
             }
         }
 
-        flavorDimensions "default" // 这个名字貌似随便取，也可以有多个，总之一定要有
-        def defAppName = "猫豆阅读"
-        // 友盟多渠道打包
-        productFlavors {
-            kuan {
-                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
-                                        APP_NAME           : defAppName]
-            }     // 酷安
-            huawei {
-                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
-                                        APP_NAME           : defAppName]
-            }   // 华为
-            xiaomi {
-                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
-                                        APP_NAME           : "猫豆本地TXT"]
-            }   // 小米
-            tencent {
-                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
-                                        APP_NAME           : defAppName]
-            }   // 腾讯
-            qh360 {
-                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
-                                        APP_NAME           : defAppName]
-            }   // 奇虎360
-            baidu {
-                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
-                                        APP_NAME           : defAppName]
-            }   // 百度
-            ali {
-                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
-                                        APP_NAME           : defAppName]
-            }   // 阿里
-            meizu {
-                manifestPlaceholders = [UMENG_CHANNEL_VALUE: name,
-                                        APP_NAME           : defAppName]
-            }   // 魅族
-//            oppo {}   // oppo
-//            vivo {}   // vivo
-//
-            productFlavors.all { flavor ->
-
-            }
-        }
-
     }
 
     // 签名配置
@@ -146,30 +100,24 @@ android {
         schemaVersion rootProject.ext.databaseVersion
     }
 
-    //定义一个装apk文件路径的数组
-    def fileArray = []
     //自定义apk文件名
     android.applicationVariants.all { variant ->
-        variant.outputs.all { output ->
-            def outputFile = output.outputFile
-            if (outputFile != null && outputFile.name.contains('release')) {
-                //获取每个打包产物
-                def fileName = "猫豆阅读_${variant.productFlavors[0].name}_${variant.versionName}_${releaseTime()}.apk"
-                println "自定义输出apk的名字:" + fileName;
-                outputFileName = fileName;
-                println "输出apk地址:" + outputFile.parentFile.absolutePath + java.io.File.separator + fileName
-                fileArray.add(outputFile.parentFile.absolutePath + java.io.File.separator + fileName);
-            }
+        variant.outputs.all {
+                outputFileName = "猫豆阅读${variant.versionName}_${releaseTime()}.apk"
         }
     }
 
-    useLibrary 'org.apache.http.legacy'
     // 支持Java8
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
     }
-
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+//        abortOnError false
+    }
 }
 
 dependencies {
@@ -182,31 +130,4 @@ dependencies {
     //业务通用模块
     implementation project(':common')
 }
-
-//build {
-//    //复制apk到指定目录
-//    doLast() {
-//        println "需要复制apk的数量:" + fileArray.size()
-//        forEachFile(fileArray)
-//    }
-//}
-//
-//def forEachFile(fileArray) {
-//    fileArray.forEach { file ->
-//        //遍历进行文件操作
-//        println "任务3遍历apk文件"
-//        rename_and_moveout_apk(file)
-//    }
-//}
-//
-//def rename_and_moveout_apk(orignalFile) {
-//    def intoFile = rootDir + File.separator + "apk"
-//    copy {
-//        from orignalFile
-//        into intoFile
-//        println "任务4复制apk到指定位置:" + intoFile
-//        rename("${android.defaultConfig.versionName}_${android.defaultConfig.versionCode}_", "")
-//        println "任务5修改apk的命名"
-//    }
-//}
 

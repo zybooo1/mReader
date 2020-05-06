@@ -20,7 +20,7 @@
         android:name="com.zyb.mreader.base.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="${APP_NAME}"
+        android:label="@string/mreader_app_name"
         tools:replace="android:label"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
@@ -38,7 +38,7 @@
         <!--value的值填写你在友盟后台申请的应用Appkey-->
         <meta-data android:value="5d560bcc3fc1953d3700021d" android:name="UMENG_APPKEY"/>
         <!--value的值填写渠道名称，例如yingyongbao。这里设置动态渠道变量-->
-        <meta-data android:value="${UMENG_CHANNEL_VALUE}" android:name="UMENG_CHANNEL"/>
+        <meta-data android:value="default" android:name="UMENG_CHANNEL"/>
 
         <!--bugly tinker-->
         <activity

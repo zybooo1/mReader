@@ -74,8 +74,6 @@ public class PageFactory {
     private float paragraphSpace;
     //字高度
     private float fontHeight;
-    //字体
-    private Typeface typeface;
     //文字画笔
     private Paint mPaint;
     //标题、时间等的画笔
@@ -188,13 +186,11 @@ public class PageFactory {
         mVisibleWidth = mWidth - marginWidth * 2;
         mVisibleHeight = mHeight - marginHeight * 2 - statusMarginBottom * 2;
 
-        typeface = config.getTypeface();
         m_fontSize = config.getFontSize();
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);// 画笔
         mPaint.setTextAlign(Paint.Align.LEFT);// 左对齐
         mPaint.setTextSize(m_fontSize);// 字体大小
         mPaint.setColor(mTextColor);// 字体颜色
-        mPaint.setTypeface(typeface);
         mPaint.setSubpixelText(true);// 设置该项为true，将有助于文本在LCD屏幕上的显示效果
 
         calculateLineCount();
@@ -207,7 +203,6 @@ public class PageFactory {
         mTipPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTipTextSize = CommonUtils.sp2px(12);
         mTipPaint.setTextSize(mTipTextSize);
-        mTipPaint.setTypeface(typeface);
         mTipPaint.setTextAlign(Paint.Align.LEFT);
 
         mBatterryPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -739,17 +734,6 @@ public class PageFactory {
     public void changeFontSize(int fontSize) {
         this.m_fontSize = fontSize;
         mPaint.setTextSize(m_fontSize);
-        calculateLineCount();
-        measureMarginWidth();
-        currentPage = getPageForBegin(currentPage.getBegin());
-        currentPage(true);
-    }
-
-    //改变字体
-    public void changeTypeface(Typeface typeface) {
-        this.typeface = typeface;
-        mPaint.setTypeface(typeface);
-        mBatterryBorderPaint.setTypeface(typeface);
         calculateLineCount();
         measureMarginWidth();
         currentPage = getPageForBegin(currentPage.getBegin());

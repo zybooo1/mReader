@@ -2,38 +2,119 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <com.zyb.base.widget.ClearEditText
-        android:layout_marginTop="40dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
         android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginRight="25dp">
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/spnHosts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:entries="@array/webdev_hosts"
+            android:spinnerMode="dropdown" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:text="WebDev服务器地址" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:padding="7dp"
+            android:rotation="270"
+            android:tint="@color/gray40"
+            app:srcCompat="@drawable/svg_arrow_left" />
+    </RelativeLayout>
+
+    <com.zyb.base.widget.ClearEditText
         android:id="@+id/etWebDevHost"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/ios_edit_box_bkg"
-        android:gravity="center"
-        android:hint="WebDev地址"/>
-    <com.zyb.base.widget.ClearEditText
-        android:layout_marginTop="15dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
+        android:background="@drawable/ios_edit_box_bkg"
+        android:gravity="center"
+        android:hint="WebDev地址"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="25dp"
+        android:gravity="center_vertical"
+        android:text="账号" />
+
+    <com.zyb.base.widget.ClearEditText
         android:id="@+id/etUserName"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/ios_edit_box_bkg"
-        android:gravity="center"
-        android:hint="账号"/>
-    <com.zyb.base.widget.ClearEditText
-        android:layout_marginTop="15dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
+        android:background="@drawable/ios_edit_box_bkg"
+        android:gravity="center"
+        android:hint="账号"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="25dp"
+        android:gravity="center_vertical"
+        android:text="应用密码" />
+
+    <com.zyb.base.widget.PasswordEditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:background="@drawable/ios_edit_box_bkg"
         android:gravity="center"
-        android:hint="应用密码"/>
+        android:hint="应用密码"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="25dp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="还没有WebDev账号？了解" />
+
+        <TextView
+            android:id="@+id/webDevHelp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="坚果云参考文档"
+            android:textColor="@color/colorAccent" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -27,7 +27,7 @@ public class FileUtils {
     public static final String SUFFIX_PDF = ".pdf";
 
     public static final long MIN_TXT_FILE_SIZE = 10 * 1024;
-    public static final boolean IS_FILTER_EN_FILES = false;
+    public static final boolean IS_FILTER_EN_FILES = true;
 
 
     //文件名

@@ -57,7 +57,6 @@ dependencies {
     //bugly
     api rootProject.ext.dependencies["bugly-crashreport"]
     api rootProject.ext.dependencies["bugly-nativecrashreport"]
-    api rootProject.ext.dependencies["bugly-tinker"]
     //other
     api rootProject.ext.dependencies["multidex"]
     api rootProject.ext.dependencies["xxpermissions"]

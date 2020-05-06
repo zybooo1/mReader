@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.google.gson.Gson;
 import com.zyb.base.base.app.BaseApplication;
-import com.zyb.base.base.app.BaseApplicationLike;
 import com.zyb.base.di.module.AppModule;
 import com.zyb.base.di.module.HttpModule;
 import com.zyb.base.di.module.ImageModule;
@@ -35,5 +34,5 @@ public interface AppComponent {
     //gson
     Gson gson();
 
-    void inject(BaseApplicationLike application);
+    void inject(BaseApplication application);
 }

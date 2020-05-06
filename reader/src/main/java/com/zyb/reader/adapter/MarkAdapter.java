@@ -18,11 +18,9 @@ import java.util.List;
  * 书签
  */
 public class MarkAdapter extends BaseQuickAdapter<BookMarks, BaseViewHolder> {
-    private Typeface typeface;
 
     public MarkAdapter(@Nullable List<BookMarks> data) {
         super(R.layout.reader_item_bookmark, data);
-        typeface = Config.getInstance().getTypeface();
     }
 
     @Override
@@ -34,7 +32,6 @@ public class MarkAdapter extends BaseQuickAdapter<BookMarks, BaseViewHolder> {
 
         helper.setText(R.id.text_mark, bean.getText())
                 .setText(R.id.progress1, strPercent)
-                .setText(R.id.mark_time, bean.getTime())
-                .setTypeface(typeface, R.id.text_mark,R.id.progress1,R.id.mark_time);
+                .setText(R.id.mark_time, bean.getTime());
     }
 }

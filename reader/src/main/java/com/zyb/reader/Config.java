@@ -10,20 +10,12 @@ import android.graphics.Typeface;
 public class Config {
     private final static String SP_NAME = "config";
     private final static String BOOK_BG_KEY = "bookbg";
-    private final static String FONT_TYPE_KEY = "fonttype";
     private final static String FONT_SIZE_KEY = "fontsize";
     private final static String NIGHT_KEY = "night";
     private final static String LIGHT_KEY = "light";
     private final static String SYSTEM_LIGHT_KEY = "systemlight";
     private final static String PAGE_MODE_KEY = "pagemode";
 
-    public final static String FONTTYPE_DEFAULT = "";
-    public final static String FONTTYPE_QIHEI = "font/qihei.ttf";
-    public final static String FONTTYPE_WAWA = "font/font1.ttf";
-
-    public final static String FONTTYPE_FZXINGHEI = "font/fzxinghei.ttf";
-    public final static String FONTTYPE_FZKATONG = "font/fzkatong.ttf";
-    public final static String FONTTYPE_BYSONG = "font/bysong.ttf";
 
     public final static int BOOK_BG_DEFAULT = 0;
     public final static int BOOK_BG_1 = 1;
@@ -82,34 +74,6 @@ public class Config {
 
     public void setBookBg(int type) {
         sp.edit().putInt(BOOK_BG_KEY, type).apply();
-    }
-
-    public Typeface getTypeface() {
-        if (typeface == null) {
-            String typePath = sp.getString(FONT_TYPE_KEY, FONTTYPE_QIHEI);
-            typeface = getTypeface(typePath);
-        }
-        return typeface;
-    }
-
-    public String getTypefacePath() {
-        String path = sp.getString(FONT_TYPE_KEY, FONTTYPE_QIHEI);
-        return path;
-    }
-
-    public Typeface getTypeface(String typeFacePath) {
-        Typeface mTypeface;
-        if (typeFacePath.equals(FONTTYPE_DEFAULT)) {
-            mTypeface = Typeface.DEFAULT;
-        } else {
-            mTypeface = Typeface.createFromAsset(mContext.getAssets(), typeFacePath);
-        }
-        return mTypeface;
-    }
-
-    public void setTypeface(String typefacePath) {
-        typeface = getTypeface(typefacePath);
-        sp.edit().putString(FONT_TYPE_KEY, typefacePath).apply();
     }
 
     public float getFontSize() {

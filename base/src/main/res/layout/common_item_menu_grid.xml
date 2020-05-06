@@ -20,7 +20,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_centerInParent="true"
-                android:src="@mipmap/image_load_err" />
+                android:src="@mipmap/ic_dialog_close" />
 
             <TextView
                 android:id="@+id/tvTip"

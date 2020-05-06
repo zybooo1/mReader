@@ -1,7 +1,10 @@
 package com.zyb.mreader.module.backup;
 
 
+import android.graphics.Color;
+import android.support.v7.widget.AppCompatSpinner;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
@@ -19,6 +22,7 @@ import com.zyb.mreader.di.component.DaggerActivityComponent;
 import com.zyb.mreader.di.module.ActivityModule;
 import com.zyb.mreader.di.module.ApiModule;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -26,6 +30,9 @@ import butterknife.OnClick;
  */
 public class BackupActivity extends MVPActivity<BackupPresenter> implements
         BackupContract.View {
+
+    @BindView(R.id.layoutLogin)
+    View layoutLogin;
 
     @Override
     protected int getLayoutId() {
@@ -39,6 +46,15 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
 
     @Override
     protected void initView() {
+        refreshView();
+    }
+
+    private void refreshView() {
+        if(mPresenter.getWebDevUserName().isEmpty()){
+            layoutLogin.setVisibility(View.VISIBLE);
+        }else {
+            layoutLogin.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -58,21 +74,41 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
         showLoginDialog();
     }
 
+    @OnClick(R.id.tvLogin)
+    void tvLogin() {
+        showLoginDialog();
+    }
+
     @OnClick(R.id.backup)
-    void backup(){
+    void backup() {
         mPresenter.backup();
     }
 
     @OnClick(R.id.recover)
-    void recover(){
+    void recover() {
         mPresenter.recover();
     }
 
     private EditText etUserName, etPassword, etWebDevHost;
+    private AdapterView.OnItemSelectedListener onHostsItemSelect = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (position == 0) {
+                etWebDevHost.setText(Constants.JIANGUOYUN_HOST);
+            } else {
+                etWebDevHost.setText(Constants.BOX_HOST);
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
     private OnDialogButtonClickListener onOkButtonClickListener = new OnDialogButtonClickListener() {
         @Override
         public boolean onClick(BaseDialog baseDialog, View v) {
-            mPresenter.login(etUserName.getText().toString(),etPassword.getText().toString(),etWebDevHost.getText().toString());
+            mPresenter.login(etUserName.getText().toString(), etPassword.getText().toString(), etWebDevHost.getText().toString());
             return false;
         }
     };
@@ -93,14 +129,28 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
                         etUserName = rootView.findViewById(R.id.etUserName);
                         etPassword = rootView.findViewById(R.id.etPassword);
                         etWebDevHost = rootView.findViewById(R.id.etWebDevHost);
-//                        rootView.findViewById(R.id.tvProtocol).setOnClickListener(helpTvClick);
-                        if(BuildConfig.DEBUG){
-                            etUserName.setText(Constants.JIANGUOYUN_USERNAME);
-                            etPassword.setText(Constants.JIANGUOYUN_PASSWORD);
-                            etWebDevHost.setText(Constants.JIANGUOYUN_HOST);
+                        rootView.findViewById(R.id.webDevHelp).setOnClickListener(helpTvClick);
+                        ((AppCompatSpinner) rootView.findViewById(R.id.spnHosts)).setSelection(0,true);
+                        ((AppCompatSpinner) rootView.findViewById(R.id.spnHosts))
+                                .setOnItemSelectedListener(onHostsItemSelect);
+                        etUserName.setText(mPresenter.getWebDevUserName());
+                        etPassword.setText(mPresenter.getWebDevPassword());
+                        etWebDevHost.setText(mPresenter.getWebDevHost());
+
+                        if (BuildConfig.DEBUG) {
+                            rootView.findViewById(R.id.webDevHelp).setOnLongClickListener(new View.OnLongClickListener() {
+                                @Override
+                                public boolean onLongClick(View v) {
+                                    etUserName.setText(Constants.JIANGUOYUN_USERNAME);
+                                    etPassword.setText(Constants.JIANGUOYUN_PASSWORD);
+                                    etWebDevHost.setText(Constants.JIANGUOYUN_HOST);
+                                    return false;
+                                }
+                            });
                         }
                     }
                 })
+                .setBackgroundColor(Color.WHITE)
                 .setOkButton("完成", onOkButtonClickListener)
                 .setCancelButton("取消")
                 .setTitle("登录WebDev");
@@ -108,6 +158,7 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
 
     @Override
     public void loginSuccess() {
+        refreshView();
     }
     //----------------- Login End -------------------------
 
