@@ -105,13 +105,4 @@
         android:paddingBottom="5dp"
         android:text="Created by zybooo1" />
 
-    <ImageView
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:id="@+id/ivDebug"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@mipmap/ic_debug"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 </android.support.constraint.ConstraintLayout>

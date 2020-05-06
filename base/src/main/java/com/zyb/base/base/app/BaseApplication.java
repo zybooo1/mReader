@@ -1,12 +1,8 @@
 package com.zyb.base.base.app;
 
 
-import android.annotation.TargetApi;
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -20,16 +16,13 @@ import com.scwang.smartrefresh.layout.api.RefreshFooter;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
-import com.tencent.bugly.Bugly;
-import com.tencent.bugly.beta.Beta;
-import com.tencent.bugly.beta.tinker.TinkerManager;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.zyb.base.BuildConfig;
 import com.zyb.base.R;
 import com.zyb.base.di.component.AppComponent;
 import com.zyb.base.di.component.DaggerAppComponent;
 import com.zyb.base.di.module.AppModule;
 import com.zyb.base.di.module.HttpModule;
-import com.zyb.base.di.module.ImageModule;
 import com.zyb.base.umeng.UmengClient;
 import com.zyb.base.utils.Utils;
 import com.zyb.base.utils.constant.Constants;
@@ -88,7 +81,6 @@ public class BaseApplication extends MultiDexApplication {
 
         //init utils
         Utils.init(sInstance);
-//        Bmob.initialize(sInstance, Constants.BOMB_APP_KEY);
 
         UmengClient.init(sInstance);
 
@@ -122,40 +114,17 @@ public class BaseApplication extends MultiDexApplication {
                 .builder()
                 .appModule(new AppModule(sInstance))////提供application
                 .httpModule(new HttpModule())//用于提供okhttp和retrofit的单例
-                .imageModule(new ImageModule())//图片加载框架默认使用glide
                 .build();
         mAppComponent.inject(this);
         Utils.initAppComponent(mAppComponent);
     }
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        Beta.unInit();
-    }
 
     /**
      * 初始化Bugly错误日志上报
      */
     private void initBugly() {
-        // 设置是否开启热更新能力，默认为true
-//        Beta.enableHotfix = true;
-        // 设置是否自动下载补丁，默认为true
-//        Beta.canAutoDownloadPatch = true;
-        // 设置是否自动合成补丁，默认为true
-//        Beta.canAutoPatch = true;
-        // 设置是否提示用户重启，默认为false
-//        Beta.canNotifyUserRestart = true;
-        // 补丁回调接口
-//        Beta.betaPatchListener = new BetaPatchListener() {}
-
-        // 设置开发设备，默认为false，上传补丁如果下发范围指定为“开发设备”，需要调用此接口来标识开发设备
-//        Bugly.setIsDevelopmentDevice(getApplication(), true);
-        // 多渠道需求塞入
-        // String channel = WalleChannelReader.getChannel(getApplication());
-        // Bugly.setAppChannel(getApplication(), channel);
-        // 这里实现SDK初始化，appId替换成你的在Bugly平台申请的appId
-        if (!BuildConfig.DEBUG) Bugly.init(getApplicationContext(), Constants.BUGLY_ID, false);
+        if (!BuildConfig.DEBUG) CrashReport.initCrashReport(getApplicationContext(), Constants.BUGLY_ID, false);
     }
 
 }

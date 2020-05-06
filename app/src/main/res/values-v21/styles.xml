@@ -15,7 +15,6 @@
     </style>
     <!-- 解决启动页白屏的问题 -->
     <style name="LauncherTheme" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/launch_bg</item>
-        <item name="android:navigationBarColor">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 </resources>

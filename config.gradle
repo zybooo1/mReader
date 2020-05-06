@@ -5,8 +5,8 @@ ext {
     compileSdkVersion = 27
     minSdkVersion = 19
     buildToolsVersion = '28.0.3'
-    versionCode = 101
-    versionName = "1.0.1"
+    versionCode = 102
+    versionName = "1.0.2"
     databaseVersion = 3
 
     //依赖库版本号
@@ -43,7 +43,7 @@ ext {
             "logger"                    : "com.orhanobut:logger:2.1.1",
             "fragmentation"             : "me.yokeyword:fragmentation:1.1.9",
             //bugly
-            "bugly-crashreport"         : "com.tencent.bugly:crashreport_upgrade:latest.release",
+            "bugly-crashreport"         : "com.tencent.bugly:crashreport:latest.release",
             "bugly-nativecrashreport"   : "com.tencent.bugly:nativecrashreport:latest.release",
             "bugly-tinker"              : "com.tencent.tinker:tinker-android-lib:1.9.9",
             //json

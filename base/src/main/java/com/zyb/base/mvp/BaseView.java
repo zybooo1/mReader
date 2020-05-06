@@ -16,17 +16,9 @@ public interface BaseView {
     /**
      * 显示消息提示
      */
-    void showMsg(CharSequence s);
+    void showToast(CharSequence s);
 
-    void showMsg(int id);
-
-    void showError(CharSequence s);
-
-    void showError(int id);
-
-    void showSuccess(CharSequence s);
-
-    void showSuccess(int id);
+    void showToast(int id);
 
     /**
      * 页面加载中
@@ -59,17 +51,5 @@ public interface BaseView {
     void showDialogLoading();
 
     void hideDialogLoading();
-
-
-    void getCompressedImgs(List<String> imgs);
-
-    /**
-     * 文件下载
-     *
-     * @see AbstractPresenter#initSingleDownload(String)
-     */
-    void onFileDownloaded(String absoluteFilePath);
-
-    void onFileDownloadError();
 
 }

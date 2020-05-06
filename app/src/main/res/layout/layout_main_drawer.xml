@@ -65,9 +65,9 @@
             android:textColor="@color/gray70"
             android:textSize="15sp"
             app:drawableCompatColor="@color/gray70"
-            app:drawableHeight="20dp"
-            app:drawableLeftCompat="@drawable/svg_cloud"
-            app:drawableWidth="20dp" />
+            app:drawableHeight="24dp"
+            app:drawableLeftCompat="@drawable/svg_backup"
+            app:drawableWidth="24dp" />
 
         <com.xw.repo.VectorCompatTextView
             android:id="@+id/feedBack"

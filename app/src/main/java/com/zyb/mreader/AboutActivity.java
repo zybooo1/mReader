@@ -19,8 +19,6 @@ import butterknife.OnClick;
  */
 public class AboutActivity extends MyActivity {
 
-    @BindView(R2.id.ivDebug)
-    View ivDebug;
     @BindView(R.id.tvVersion)
     TextView tvVersion;
 
@@ -42,7 +40,6 @@ public class AboutActivity extends MyActivity {
 
     @Override
     protected void initView() {
-        if (BuildConfig.DEBUG) ivDebug.setVisibility(View.VISIBLE);
         tvVersion.setText(CommonUtils.getVersionName(this));
     }
 
@@ -86,7 +83,7 @@ public class AboutActivity extends MyActivity {
     void clickLogo() {
         if (isCount) count++;
         if (count > 23) {
-            showMsg("恭喜你找到了彩蛋！");
+            showToast("恭喜你找到了彩蛋！");
             CrashReport.postCatchedException(new Throwable("竟然有人找到了彩蛋！"));
             count = 0;
         }

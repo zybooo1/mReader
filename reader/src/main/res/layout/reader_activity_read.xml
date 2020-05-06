@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:text="发音人"
+                android:text="音调"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toTopOf="@+id/tv1"
@@ -106,7 +106,7 @@
                     android:layout_weight="1"
                     android:button="@null"
                     android:gravity="center"
-                    android:text="女声"
+                    android:text="正常"
                     android:textColor="@drawable/reader_selector_speaker_text_color"
                     android:textSize="14sp" />
 
@@ -118,7 +118,7 @@
                     android:layout_weight="1"
                     android:button="@null"
                     android:gravity="center"
-                    android:text="男声"
+                    android:text="低沉"
                     android:textColor="@drawable/reader_selector_speaker_text_color"
                     android:textSize="14sp" />
 
@@ -130,7 +130,7 @@
                     android:layout_weight="1"
                     android:button="@null"
                     android:gravity="center"
-                    android:text="度逍遥"
+                    android:text="高"
                     android:textColor="@drawable/reader_selector_speaker_text_color"
                     android:textSize="14sp" />
 
@@ -141,7 +141,7 @@
                     android:layout_weight="1"
                     android:button="@null"
                     android:gravity="center"
-                    android:text="度丫丫"
+                    android:text="高昂"
                     android:textColor="@drawable/reader_selector_speaker_text_color"
                     android:textSize="14sp" />
             </RadioGroup>
@@ -233,10 +233,10 @@
                 android:layout_marginBottom="20dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:max="10"
+                android:max="20"
                 android:maxHeight="3dp"
                 android:minHeight="3dp"
-                android:progress="5"
+                android:progress="10"
                 android:progressDrawable="@drawable/reader_seekbar_bg"
                 android:thumb="@drawable/reader_seekbar_thumb"
                 android:thumbOffset="10dp"

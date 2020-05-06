@@ -11,6 +11,7 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.kongzue.dialog.v3.BottomMenu;
 import com.zyb.base.base.activity.MVPActivity;
 import com.zyb.base.base.fragment.BaseFragmentAdapter;
 import com.zyb.base.base.fragment.BaseLazyFragment;
@@ -19,8 +20,6 @@ import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.EventBusUtil;
-import com.zyb.base.widget.dialog.BaseDialog;
-import com.zyb.base.widget.dialog.BaseDialogFragment;
 import com.zyb.mreader.R;
 import com.zyb.mreader.di.component.DaggerActivityComponent;
 import com.zyb.mreader.di.module.ActivityModule;
@@ -151,7 +150,7 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
     }
 
     /*----------设置弹窗 Begin------------*/
-    BaseDialog ruleDialog;
+    BottomMenu ruleDialog;
     Switch fileFilterSwitch;
     RadioGroup radioGroup;
     private long currentFilterSize;
@@ -188,20 +187,19 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
         fileFilterSwitch = rootView.findViewById(R.id.fileFilterSwitch);
         radioGroup = rootView.findViewById(R.id.radioGroup);
 
-        ruleDialog = new BaseDialogFragment.Builder(this)
-                .setContentView(rootView)
-                .setAnimStyle(BaseDialog.AnimStyle.BOTTOM)
-                .setGravity(Gravity.BOTTOM)
-                .setOnClickListener(R.id.tvOk, (BaseDialog.OnClickListener<TextView>) (dialog, view) -> {
-                    hideRuleDialog();
-                    onRuleSetting();
-                })
-                .setOnClickListener(R.id.tvCancel, (BaseDialog.OnClickListener<TextView>) (dialog, view) -> hideRuleDialog())
-                .create();
+//        ruleDialog =BottomMenu.build(this)
+//                .setCustomView(rootView)
+////                .
+////                .setOnClickListener(R.id.tvOk, (BaseDialog.OnClickListener<TextView>) (dialog, view) -> {
+////                    hideRuleDialog();
+////                    onRuleSetting();
+////                })
+////                .setOnClickListener(R.id.tvCancel, (BaseDialog.OnClickListener<TextView>) (dialog, view) -> hideRuleDialog())
+//                .show();
     }
 
     public void hideRuleDialog() {
-        if (ruleDialog != null) ruleDialog.dismiss();
+//        if (ruleDialog != null) ruleDialog.dismiss();
     }
 
     private void onRuleSetting() {

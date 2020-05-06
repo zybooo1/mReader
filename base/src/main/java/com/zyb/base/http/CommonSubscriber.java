@@ -23,7 +23,7 @@ public abstract class CommonSubscriber<T> extends ResourceSubscriber<T> {
     private Context mContext;
     private BaseView mView;
     private String mErrorMsg;
-    private boolean isShowErrorState = true;
+    private boolean isshowToastState = true;
 
     protected CommonSubscriber(Context context) {
         this.mContext = context;
@@ -38,15 +38,15 @@ public abstract class CommonSubscriber<T> extends ResourceSubscriber<T> {
         this.mErrorMsg = errorMsg;
     }
 
-    protected CommonSubscriber(BaseView view, boolean isShowErrorState) {
+    protected CommonSubscriber(BaseView view, boolean isshowToastState) {
         this.mView = view;
-        this.isShowErrorState = isShowErrorState;
+        this.isshowToastState = isshowToastState;
     }
 
-    protected CommonSubscriber(BaseView view, String errorMsg, boolean isShowErrorState) {
+    protected CommonSubscriber(BaseView view, String errorMsg, boolean isshowToastState) {
         this.mView = view;
         this.mErrorMsg = errorMsg;
-        this.isShowErrorState = isShowErrorState;
+        this.isshowToastState = isshowToastState;
     }
 
     @Override
@@ -67,7 +67,7 @@ public abstract class CommonSubscriber<T> extends ResourceSubscriber<T> {
         e.printStackTrace();
         //view为null不执行
         if (mView != null || mContext != null) {
-            showError(e);
+            showToast(e);
         }
         if (mView != null) onErrorWithViewAlive(e);
 
@@ -89,18 +89,18 @@ public abstract class CommonSubscriber<T> extends ResourceSubscriber<T> {
 
     protected abstract void onErrorWithViewAlive(Throwable e);
 
-    private void showError(Throwable e) {
+    private void showToast(Throwable e) {
         if (mView != null) {
             if (mErrorMsg != null && !TextUtils.isEmpty(mErrorMsg)) {
-                mView.showError(mErrorMsg);
+                mView.showToast(mErrorMsg);
             } else if (e instanceof ApiException) {
-                mView.showError(e.toString());
+                mView.showToast(e.toString());
             } else if (e instanceof HttpException) {
-                mView.showError(handleHttpExceptionTips(e));
+                mView.showToast(handleHttpExceptionTips(e));
             } else if (e instanceof SocketTimeoutException) {
-                mView.showError(R.string.msg_error_time_out);
+                mView.showToast(R.string.msg_error_time_out);
             } else {
-                mView.showError(R.string.msg_error_unknown);
+                mView.showToast(R.string.msg_error_unknown);
             }
         } else if (mContext != null) {
             if (mErrorMsg != null && !TextUtils.isEmpty(mErrorMsg)) {

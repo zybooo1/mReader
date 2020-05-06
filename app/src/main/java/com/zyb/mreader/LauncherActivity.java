@@ -23,6 +23,7 @@ import com.kongzue.dialog.v3.MessageDialog;
 import com.zyb.base.base.activity.MyActivity;
 import com.zyb.base.router.RouterConstants;
 import com.zyb.base.router.RouterUtils;
+import com.zyb.base.utils.QMUIViewHelper;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.base.utils.constant.Constants;
 import com.zyb.base.widget.MyClickSpan;
@@ -48,11 +49,14 @@ import io.reactivex.disposables.Disposable;
  */
 public class LauncherActivity extends MyActivity
         implements OnPermission, ViewTreeObserver.OnGlobalLayoutListener {
-    private static final int DELAY_TIME = 200;
+    private static final int DELAY_TIME = 600;
 
     PreferenceHelperImpl preferenceHelper;
 
     private Disposable disposable;
+
+    @BindView(R.id.ivLogo)
+    ImageView ivLogo;
 
     @Override
     protected int getLayoutId() {
@@ -73,6 +77,8 @@ public class LauncherActivity extends MyActivity
             addInductionTxt();
             preferenceHelper.setIsFirst(false);
         }
+
+        QMUIViewHelper.fadeIn(ivLogo, 400, null, true);
 
         disposable = Observable.just(true)
                 .delay(DELAY_TIME, TimeUnit.MILLISECONDS)
@@ -171,7 +177,7 @@ public class LauncherActivity extends MyActivity
 
     private void toMain() {
         startActivityFinish(MainActivity.class);
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override

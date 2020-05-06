@@ -3,7 +3,6 @@
     <string name="base_cancel">取消</string>
     <string name="base_select_hint">请选择</string>
 
-    <string name="base_pay_title">请输入支付密码</string>
 
     <string name="base_date_year">年</string>
     <string name="base_date_month">月</string>

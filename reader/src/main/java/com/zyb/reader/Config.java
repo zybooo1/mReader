@@ -28,9 +28,11 @@ public class Config {
     public final static int PAGE_MODE_SLIDE = 2;
     public final static int PAGE_MODE_NONE = 3;
     private static final String SPEAK_SPEED_KEY = "speak_speed";
-    private static final String SPEAKER_KEY = "speaker";
+    private static final String PITCH_KEY = "pitch";
     private static final String TIMING_TIME_KEY = "timing_time";
     private static final String IS_AUTO_TIMING_KEY = "is_auto_timing";
+    private static final int DEFAULT_SPEED = 10;
+    private static final int DEFAULT_PITCH = 10;
 
     private Context mContext;
     private static Config config;
@@ -127,32 +129,31 @@ public class Config {
      * 语速
      */
     public int getSpeakSpeed() {
-//        return sp.getInt(SPEAK_SPEED_KEY, SpeechService.DEFAULT_SPEED);
-        return 1;
+        return sp.getInt(SPEAK_SPEED_KEY, DEFAULT_SPEED);
     }
-
+    public float getSpeedForTTS() {
+        float speed = sp.getInt(SPEAK_SPEED_KEY, DEFAULT_SPEED) / 10f;
+        if(speed==0) return 0.1f;
+        return speed;
+    }
     public void setSpeakSpeed(int speed) {
         sp.edit().putInt(SPEAK_SPEED_KEY, speed).apply();
     }
 
     /**
-     * 发音人
+     * 发音人(音调)
      */
-//    public OfflineResource.Speaker getSpeaker() {
-//        String speaker = sp.getString(SPEAKER_KEY, OfflineResource.Speaker.FEMALE.getOffline());
-//        if (OfflineResource.Speaker.MALE.getOffline().equals(speaker)) {
-//            return OfflineResource.Speaker.MALE;
-//        } else if (OfflineResource.Speaker.DUXY.getOffline().equals(speaker)) {
-//            return OfflineResource.Speaker.DUXY;
-//        } else if (OfflineResource.Speaker.DUYY.getOffline().equals(speaker)) {
-//            return OfflineResource.Speaker.DUYY;
-//        } else {
-//            return OfflineResource.Speaker.FEMALE;
-//        }
-//    }
+    public int getPitch() {
+        return  sp.getInt(PITCH_KEY, DEFAULT_PITCH);
+    }
+    public float getPitchForTTS() {
+        float pitch = sp.getInt(PITCH_KEY, DEFAULT_PITCH) / 10f;
+        if(pitch==0) return 0.1f;
+        return pitch;
+    }
 
-    public void setSpeaker(String offlineSpeaker) {
-        sp.edit().putString(SPEAKER_KEY, offlineSpeaker).apply();
+    public void setPitch(int pitch) {
+        sp.edit().putInt(PITCH_KEY, pitch).apply();
     }
 
     /**

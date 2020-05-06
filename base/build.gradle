@@ -56,7 +56,6 @@ dependencies {
     testImplementation rootProject.ext.dependencies["junit"]
     //bugly
     api rootProject.ext.dependencies["bugly-crashreport"]
-    api rootProject.ext.dependencies["bugly-nativecrashreport"]
     //other
     api rootProject.ext.dependencies["multidex"]
     api rootProject.ext.dependencies["xxpermissions"]
@@ -64,7 +63,6 @@ dependencies {
     api rootProject.ext.dependencies["greendao"]
     api rootProject.ext.dependencies["EventBus"]
     api rootProject.ext.dependencies["countdownview"]
-//    api rootProject.ext.dependencies["bmob"]
     // json
     api rootProject.ext.dependencies["gson"]
     //network
@@ -73,22 +71,11 @@ dependencies {
     api rootProject.ext.dependencies["retrofit-adapter-rxjava2"]
     api rootProject.ext.dependencies["okhttp"]
     api rootProject.ext.dependencies["okhttp-logging-interceptor"]
-    api rootProject.ext.dependencies["okdownload"]
-    api rootProject.ext.dependencies["okdownload_sqlite"]
-    api rootProject.ext.dependencies["okdownload_okhttp"]
     api rootProject.ext.dependencies["sardine_webdev"]
     //image
-    api rootProject.ext.dependencies["circleimageview"]
-    api rootProject.ext.dependencies["BigImageViewPager"]
-    api rootProject.ext.dependencies["luban"]
-    api rootProject.ext.dependencies["glide"]
-    api rootProject.ext.dependencies["glide-loader-okhttp3"]
-    annotationProcessor rootProject.ext.dependencies["glide-compiler"]
     //rx
     api rootProject.ext.dependencies["rxjava"]
     api rootProject.ext.dependencies["rxandroid"]
-    api rootProject.ext.dependencies["rxdownload"]
-    api rootProject.ext.dependencies["rxpermissions2"]
     //di
     api rootProject.ext.dependencies["dagger2"]
     api rootProject.ext.dependencies["butterknife"]

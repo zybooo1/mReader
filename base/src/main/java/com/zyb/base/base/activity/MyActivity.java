@@ -117,35 +117,14 @@ public abstract class MyActivity extends UIActivity
 
 
     @Override
-    public void showMsg(CharSequence s) {
+    public void showToast(CharSequence s) {
         ToastUtils.show(s);
     }
 
     @Override
-    public void showMsg(int id) {
+    public void showToast(int id) {
         ToastUtils.show(id);
     }
-
-    @Override
-    public void showError(CharSequence s) {
-        ToastUtils.show(s);
-    }
-
-    @Override
-    public void showError(int id) {
-        ToastUtils.show(id);
-    }
-
-    @Override
-    public void showSuccess(CharSequence s) {
-        ToastUtils.show(s);
-    }
-
-    @Override
-    public void showSuccess(int id) {
-        ToastUtils.show(id);
-    }
-
 
     /*----------Loading弹窗 Begin------------*/
     @Override
@@ -255,25 +234,4 @@ public abstract class MyActivity extends UIActivity
 
     }
     /*------页面状态管理End------*/
-
-
-    /**
-     * 压缩图片 {@link AbstractPresenter#compressImgs(List)}
-     */
-    @Override
-    public void getCompressedImgs(List<String> imgs) {
-        hideDialogLoading();
-    }
-
-    @Override
-    public void onFileDownloaded(String absoluteFilePath) {
-        LogUtil.e("onFileDownloaded" + absoluteFilePath);
-        hideDialogLoading();
-    }
-
-    @Override
-    public void onFileDownloadError() {
-        hideDialogLoading();
-        showError(R.string.app_name);
-    }
 }

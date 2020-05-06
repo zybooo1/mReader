@@ -47,12 +47,6 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent" />
 
-        <!--bomb-->
-<!--        <provider-->
-<!--            android:name="cn.bmob.v3.util.BmobContentProvider"-->
-<!--            android:authorities="com.zyb.mreader.BmobContentProvider">-->
-<!--        </provider>-->
-
         <activity
             android:name=".LauncherActivity"
             android:screenOrientation="portrait"

@@ -356,7 +356,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         intent.putExtra(ReadActivity.EXTRA_BOOK, book);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
@@ -662,7 +662,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
             if (book.isSelected()) deleteBooks.add(book);
         }
         if (deleteBooks.size() <= 0) {
-            showError("请选择书本");
+            showToast("请选择书本");
             return;
         }
         showDialog(true, "是否移除这些书本？", "取消", "移除",

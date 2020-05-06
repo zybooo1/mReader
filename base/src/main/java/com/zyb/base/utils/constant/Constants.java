@@ -8,8 +8,6 @@ import android.os.Environment;
 public class Constants {
     public static String BUGLY_ID = "b7a7ef8d34";
 
-    public static String BOMB_APP_KEY = "cc39935dc8053fe5e7b4065838a67e91";
-
     public static String DB_NAME = "base_db";
 
     //图片（压缩）缓存目录

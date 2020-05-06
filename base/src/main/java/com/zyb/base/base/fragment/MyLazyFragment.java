@@ -93,32 +93,12 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
 
     /*----------显示吐司 Begin------------*/
     @Override
-    public void showMsg(CharSequence s) {
+    public void showToast(CharSequence s) {
         ToastUtils.show(s);
     }
 
     @Override
-    public void showMsg(int id) {
-        ToastUtils.show(id);
-    }
-
-    @Override
-    public void showError(CharSequence s) {
-        ToastUtils.show(s);
-    }
-
-    @Override
-    public void showError(int id) {
-        ToastUtils.show(id);
-    }
-
-    @Override
-    public void showSuccess(CharSequence s) {
-        ToastUtils.show(s);
-    }
-
-    @Override
-    public void showSuccess(int id) {
+    public void showToast(int id) {
         ToastUtils.show(id);
     }
     /*----------显示吐司 End------------*/
@@ -238,23 +218,4 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
     }
     /*------页面状态管理End------*/
 
-    /**
-     * 压缩图片 {@link AbstractPresenter#compressImgs(List)}
-     */
-    @Override
-    public void getCompressedImgs(List<String> imgs) {
-        hideDialogLoading();
-    }
-
-    @Override
-    public void onFileDownloaded(String absoluteFilePath) {
-        LogUtil.e("onFileDownloaded" + absoluteFilePath);
-        hideDialogLoading();
-    }
-
-    @Override
-    public void onFileDownloadError() {
-        hideDialogLoading();
-        showError(R.string.app_name);
-    }
 }

@@ -107,17 +107,17 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
                                     mDataManager.setWebDevUserName(userName);
                                     mDataManager.setWebDevPassword(password);
                                     mDataManager.setWebDevHost(host);
-                                    mView.showMsg("登录成功");
+                                    mView.showToast("登录成功");
                                     mView.loginSuccess();
                                 } else {
-                                    mView.showMsg("登录失败");
+                                    mView.showToast("登录失败");
                                 }
                             }
 
                             @Override
                             protected void onErrorWithViewAlive(Throwable e) {
                                 mView.hideDialogLoading();
-                                mView.showMsg("登录失败");
+                                mView.showToast("登录失败");
                             }
                         }));
     }
@@ -127,7 +127,7 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
         List<Book> books = mDataManager.getAllBooks();
 
         if (books.size() <= 0) {
-            mView.showMsg("无可备份书籍");
+            mView.showToast("无可备份书籍");
             return;
         }
 
@@ -186,13 +186,13 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
                         e.printStackTrace();
                         if (mView == null) return;
                         mView.hideDialogLoading();
-                        mView.showMsg("抱歉，备份失败了");
+                        mView.showToast("抱歉，备份失败了");
                     }
 
                     @Override
                     public void onComplete() {
                         if (mView == null) return;
-                        mView.showMsg("已备份至\"猫豆阅读\"文件夹");
+                        mView.showToast("已备份至\"猫豆阅读\"文件夹");
                         mView.hideDialogLoading();
                     }
                 });
@@ -251,14 +251,14 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
                         e.printStackTrace();
                         if (mView == null) return;
                         mView.hideDialogLoading();
-                        mView.showMsg("抱歉，恢复失败了");
+                        mView.showToast("抱歉，恢复失败了");
                     }
 
                     @Override
                     public void onComplete() {
                         EventBusUtil.sendStickyEvent(new BaseEvent(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
                         if (mView == null) return;
-                        mView.showMsg("已成功恢复");
+                        mView.showToast("已成功恢复");
                         mView.hideDialogLoading();
                     }
                 });
