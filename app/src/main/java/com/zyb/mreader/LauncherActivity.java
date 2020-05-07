@@ -88,11 +88,6 @@ public class LauncherActivity extends MyActivity
     }
 
     @Override
-    public boolean statusBarDarkFont() {
-        return false;
-    }
-
-    @Override
     public int navigationBarColor() {
         return R.color.colorPrimary;
     }

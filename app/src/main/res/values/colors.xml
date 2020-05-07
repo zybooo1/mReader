@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="white">#ffffff</color>
-    <color name="window_bg">#f6f6f6</color>
 
     <color name="book_item_bg">#ffffff</color>
     <color name="book_item_fill">#46FF8126</color>
+    <color name="book_item_red_end">#EFAEA9</color>
 
     <color name="book_selected_red">#E8554D</color>
     <color name="gradient_green_top">#4AB14C</color>

@@ -130,7 +130,7 @@ ext {
             "greendao"                  : "org.greenrobot:greendao:3.2.2",
             "dialog_v3"                 : "com.kongzue.dialog_v3:dialog:3.1.9",
             "bmob"                      : "cn.bmob.android:bmob-sdk:3.7.3-rc1",
-            "sardine_webdev"            : "com.thegrizzlylabs.sardine-android:sardine-android:0.6",
+            "sardine_webdav"            : "com.thegrizzlylabs.sardine-android:sardine-android:0.6",
             "pagerslidingtabstrip"      : "com.astuetz:pagerslidingtabstrip:1.0.1",
     ]
 }

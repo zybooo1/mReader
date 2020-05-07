@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lineVisible="true"
         app:rightTitle="设置"
-        app:title="WebDev云备份" />
+        app:title="WebDav云备份" />
 
     <LinearLayout
         android:id="@+id/layoutLogin"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:text="登录WebDev"
+            android:text="登录WebDav"
             android:textColor="@color/colorAccent" />
     </LinearLayout>
 
@@ -58,7 +58,7 @@
             android:layout_marginTop="10dp"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:text="备份至WebDev"
+            android:text="备份至WebDav"
             android:textColor="@color/white90"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -83,7 +83,7 @@
             android:layout_marginTop="10dp"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:text="从WebDev恢复"
+            android:text="从WebDav恢复"
             android:textColor="@color/white90"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

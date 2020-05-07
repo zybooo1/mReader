@@ -11,6 +11,7 @@ import com.zyb.base.event.EventConstants;
 import com.zyb.base.http.CommonSubscriber;
 import com.zyb.base.mvp.AbstractPresenter;
 import com.zyb.base.utils.EventBusUtil;
+import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.base.utils.constant.Constants;
 import com.zyb.common.db.DBFactory;
@@ -26,6 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -58,18 +60,18 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
     }
 
     @Override
-    public String getWebDevHost() {
-        return mDataManager.getWebDevHost();
+    public String getWebDavHost() {
+        return mDataManager.getWebDavHost();
     }
 
     @Override
-    public String getWebDevUserName() {
-        return mDataManager.getWebDevUserName();
+    public String getWebDavUserName() {
+        return mDataManager.getWebDavUserName();
     }
 
     @Override
-    public String getWebDevPassword() {
-        return mDataManager.getWebDevPassword();
+    public String getWebDavPassword() {
+        return mDataManager.getWebDavPassword();
     }
 
     @Override
@@ -104,9 +106,9 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
                             @Override
                             protected void onNextWithViewAlive(Boolean b) {
                                 if (b) {
-                                    mDataManager.setWebDevUserName(userName);
-                                    mDataManager.setWebDevPassword(password);
-                                    mDataManager.setWebDevHost(host);
+                                    mDataManager.setWebDavUserName(userName);
+                                    mDataManager.setWebDavPassword(password);
+                                    mDataManager.setWebDavHost(host);
                                     mView.showToast("登录成功");
                                     mView.loginSuccess();
                                 } else {
@@ -135,8 +137,8 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
                 .filter(new Predicate<Book>() {
                     @Override
                     public boolean test(Book book) throws Exception {
-                        // TODO: 2020/5/1  应该过滤掉 欢迎使用.txt
-                        return true;
+                        boolean isIntroductionTxt = book.getTitle().equals("欢迎使用");
+                        return !isIntroductionTxt;
                     }
                 })
                 .flatMap(new Function<Book, ObservableSource<Boolean>>() {
@@ -150,15 +152,15 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
                                     Sardine sardine = getSardine();
                                     //把要上传的数据转成byte数组
                                     //首先判断目标存储路径文件夹存不存在
-                                    String serverHostUrl = mDataManager.getWebDevHost();
-                                    if (!sardine.exists(serverHostUrl + Constants.WEBDEV_BACKUP_PATH + "/")) {
+                                    String serverHostUrl = mDataManager.getWebDavHost();
+                                    if (!sardine.exists(serverHostUrl + Constants.WEBDAV_BACKUP_PATH + "/")) {
                                         //若不存在需要创建目录
-                                        sardine.createDirectory(serverHostUrl + Constants.WEBDEV_BACKUP_PATH + "/");
+                                        sardine.createDirectory(serverHostUrl + Constants.WEBDAV_BACKUP_PATH + "/");
                                     }
 
                                     File bookFile = new File(book.getPath());
                                     //存入数据
-                                    sardine.put(serverHostUrl + Constants.WEBDEV_BACKUP_PATH + "/" + bookFile.getName(),
+                                    sardine.put(serverHostUrl + Constants.WEBDAV_BACKUP_PATH + "/" + bookFile.getName(),
                                             bookFile, "txt");
                                     emitter.onNext(true);
                                     emitter.onComplete();
@@ -205,7 +207,7 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
                     @Override
                     public List<DavResource> apply(Boolean aBoolean) throws Exception {
                         Sardine sardine = getSardine();
-                        String serverHostUrl = mDataManager.getWebDevHost()+ Constants.WEBDEV_BACKUP_PATH+"/";
+                        String serverHostUrl = mDataManager.getWebDavHost()+ Constants.WEBDAV_BACKUP_PATH +"/";
                         List<DavResource> resources = sardine.list(serverHostUrl);
                         return resources;
                     }
@@ -220,7 +222,7 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
                                 try {
                                     for (DavResource davResource : davResources) {
                                         if(davResource.isDirectory())continue;
-                                        String serverHostUrl = mDataManager.getWebDevHost()+ Constants.WEBDEV_BACKUP_PATH+"/";
+                                        String serverHostUrl = mDataManager.getWebDavHost()+ Constants.WEBDAV_BACKUP_PATH +"/";
                                         InputStream inputStream = sardine.get(serverHostUrl+davResource.getName());
                                         //设置输入缓冲区
                                         write(davResource.getName(), inputStream);
@@ -270,29 +272,13 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
         if (!file.exists()) {
             if (!file.mkdirs()) {//若创建文件夹不成功
                 System.out.println("Unable to create external cache directory");
+                mView.showToast("无法创建本地文件夹");
+                return;
             }
         }
-
         File targetFile = new File(file, filename);
-        OutputStream os = null;
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)); // 实例化输入流，并获取网页代
-            os = new FileOutputStream(targetFile);
-            int ch = 0;
-            while ((ch = in.read())!= -1) {
-                os.write(ch);
-            }
-            reader.close();
-            os.flush();
+        if (com.zyb.base.utils.FileUtils.writeFileFromIS(targetFile,in,false)) {
             saveToDb(targetFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                os.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -320,8 +306,8 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
     private Sardine getSardine() {
         if (sardine == null) {
             sardine = new OkHttpSardine();
-            String userName = mDataManager.getWebDevUserName();
-            String password = mDataManager.getWebDevPassword();
+            String userName = mDataManager.getWebDavUserName();
+            String password = mDataManager.getWebDavPassword();
             sardine.setCredentials(userName, password);
         }
 

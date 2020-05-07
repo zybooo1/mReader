@@ -3,22 +3,18 @@ package com.zyb.mreader.module.addBook;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.RadioGroup;
 import android.widget.Switch;
-import android.widget.TextView;
 
-import com.kongzue.dialog.v3.BottomMenu;
+import com.kongzue.dialog.v3.CustomDialog;
 import com.zyb.base.base.activity.MVPActivity;
 import com.zyb.base.base.fragment.BaseFragmentAdapter;
 import com.zyb.base.base.fragment.BaseLazyFragment;
 import com.zyb.base.di.component.AppComponent;
 import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
-import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.EventBusUtil;
 import com.zyb.mreader.R;
 import com.zyb.mreader.di.component.DaggerActivityComponent;
@@ -146,11 +142,9 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        hideRuleDialog();
     }
 
     /*----------设置弹窗 Begin------------*/
-    BottomMenu ruleDialog;
     Switch fileFilterSwitch;
     RadioGroup radioGroup;
     private long currentFilterSize;
@@ -159,47 +153,41 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
     private void showRuleDialog() {
         currentFilterSize = mPresenter.getFilterSize();
         isFilterENfile = mPresenter.getIsFilterENfiles();
-        if (ruleDialog == null) {
-            initRuleDialog();
-        }
-        fileFilterSwitch.setChecked(isFilterENfile);
-        if (currentFilterSize == 0) {
-            radioGroup.check(R.id.size0);
-        } else if (currentFilterSize == 30 * 1024) {
-            radioGroup.check(R.id.size30);
-        } else if (currentFilterSize == 50 * 1024) {
-            radioGroup.check(R.id.size50);
-        } else if (currentFilterSize == 100 * 1024) {
-            radioGroup.check(R.id.size100);
-        } else {
-            radioGroup.check(R.id.size10);
-        }
+        CustomDialog.show(this, R.layout.dialog_add_book_rule, new CustomDialog.OnBindView() {
+            @Override
+            public void onBind(final CustomDialog dialog, View v) {
+                fileFilterSwitch = v.findViewById(R.id.fileFilterSwitch);
+                radioGroup = v.findViewById(R.id.radioGroup);
 
-        ruleDialog.show();
-    }
+                fileFilterSwitch.setChecked(isFilterENfile);
+                if (currentFilterSize == 0) {
+                    radioGroup.check(R.id.size0);
+                } else if (currentFilterSize == 30 * 1024) {
+                    radioGroup.check(R.id.size30);
+                } else if (currentFilterSize == 50 * 1024) {
+                    radioGroup.check(R.id.size50);
+                } else if (currentFilterSize == 100 * 1024) {
+                    radioGroup.check(R.id.size100);
+                } else {
+                    radioGroup.check(R.id.size10);
+                }
 
-    private void initRuleDialog() {
-        View rootView = getLayoutInflater().inflate(R.layout.dialog_add_book_rule, null);
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
-                CommonUtils.getScreenWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
-        rootView.setLayoutParams(layoutParams);
-
-        fileFilterSwitch = rootView.findViewById(R.id.fileFilterSwitch);
-        radioGroup = rootView.findViewById(R.id.radioGroup);
-
-//        ruleDialog =BottomMenu.build(this)
-//                .setCustomView(rootView)
-////                .
-////                .setOnClickListener(R.id.tvOk, (BaseDialog.OnClickListener<TextView>) (dialog, view) -> {
-////                    hideRuleDialog();
-////                    onRuleSetting();
-////                })
-////                .setOnClickListener(R.id.tvCancel, (BaseDialog.OnClickListener<TextView>) (dialog, view) -> hideRuleDialog())
-//                .show();
-    }
-
-    public void hideRuleDialog() {
-//        if (ruleDialog != null) ruleDialog.dismiss();
+                v.findViewById(R.id.tvOk).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.doDismiss();
+                        onRuleSetting();
+                    }
+                });
+                v.findViewById(R.id.tvCancel).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.doDismiss();
+                    }
+                });
+            }
+        })
+        .setAlign(CustomDialog.ALIGN.BOTTOM);
     }
 
     private void onRuleSetting() {

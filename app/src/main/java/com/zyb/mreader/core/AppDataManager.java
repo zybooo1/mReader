@@ -117,32 +117,32 @@ public class AppDataManager implements HttpHelper, PreferenceHelper, DbHelper, B
     }
 
     @Override
-    public String getWebDevUserName() {
-        return mPreferenceHelper.getWebDevUserName();
+    public String getWebDavUserName() {
+        return mPreferenceHelper.getWebDavUserName();
     }
 
     @Override
-    public void setWebDevUserName(String s) {
-        mPreferenceHelper.setWebDevUserName(s);
+    public void setWebDavUserName(String s) {
+        mPreferenceHelper.setWebDavUserName(s);
     }
 
     @Override
-    public String getWebDevPassword() {
-        return mPreferenceHelper.getWebDevPassword();
+    public String getWebDavPassword() {
+        return mPreferenceHelper.getWebDavPassword();
     }
 
     @Override
-    public void setWebDevPassword(String s) {
-        mPreferenceHelper.setWebDevPassword(s);
+    public void setWebDavPassword(String s) {
+        mPreferenceHelper.setWebDavPassword(s);
     }
 
     @Override
-    public String getWebDevHost() {
-        return mPreferenceHelper.getWebDevHost();
+    public String getWebDavHost() {
+        return mPreferenceHelper.getWebDavHost();
     }
 
     @Override
-    public void setWebDevHost(String s) {
-        mPreferenceHelper.setWebDevHost(s);
+    public void setWebDavHost(String s) {
+        mPreferenceHelper.setWebDavHost(s);
     }
 }

@@ -80,7 +80,7 @@ public class VerticalItemLineDecoration extends RecyclerView.ItemDecoration {
         private boolean drawFooter = true;//最后一项顶部是否画线，默认画
         private int marginLeft = CommonUtils.dp2px(15);
         private int marginRight = CommonUtils.dp2px(15);
-        private int dividerSize = 2;//横线分割线宽度，默认2px
+        private int dividerSize = 1;//横线分割线宽度，默认1px
         private int color = Color.parseColor("#ECECEC");//Color
         private Context context;
 

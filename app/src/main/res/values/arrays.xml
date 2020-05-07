@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<array name="webdev_hosts">
+<array name="webdav_hosts">
     <item>坚果云</item>
     <item>box</item>
 </array>

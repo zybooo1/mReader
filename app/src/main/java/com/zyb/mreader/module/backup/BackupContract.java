@@ -14,9 +14,9 @@ public interface BackupContract {
     }
 
     interface Presenter extends BasePresenter<View> {
-        String getWebDevHost();
-        String getWebDevUserName();
-        String getWebDevPassword();
+        String getWebDavHost();
+        String getWebDavUserName();
+        String getWebDavPassword();
 
         void login(String userName,String password,String host);
         void backup();

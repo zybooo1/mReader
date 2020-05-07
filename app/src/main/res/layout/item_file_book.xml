@@ -35,7 +35,7 @@
             android:paddingBottom="5dp"
             tools:text="麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者麦田里的守望者"
             android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_size"
@@ -46,7 +46,7 @@
             android:maxLines="1"
             android:paddingBottom="5dp"
             tools:text="2226516513516525612321133216521323213222265165135165256123211332165213232132"
-            android:textSize="13sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <TextView

@@ -5,7 +5,7 @@
     <color name="colorPrimary">#FF8126</color>
     <color name="colorPrimaryDark">#FF8126</color>
     <color name="colorAccent">#FF8126</color>
-    <color name="windowBackground">#F4F4F4</color>
+    <color name="windowBackground">#F9F9F9</color>
     <!-- 分割线的颜色 -->
     <color name="colorLine">#ECECEC</color>
     <color name="touch_bg">#0D000000</color>

@@ -60,34 +60,34 @@ public class PreferenceHelperImpl extends BaseSharePreference implements Prefere
     }
 
     @Override
-    public String getWebDevUserName() {
-        return getString(Constants.WEBDEV_USER_NAME, "");
+    public String getWebDavUserName() {
+        return getString(Constants.WEBDAV_USER_NAME, "");
     }
 
     @Override
-    public void setWebDevUserName(String s) {
-        putString(Constants.WEBDEV_USER_NAME, s);
+    public void setWebDavUserName(String s) {
+        putString(Constants.WEBDAV_USER_NAME, s);
     }
 
     @Override
-    public String getWebDevPassword() {
-        return getString(Constants.WEBDEV_PASSWORD, "");
-
-    }
-
-    @Override
-    public void setWebDevPassword(String s) {
-        putString(Constants.WEBDEV_PASSWORD, s);
-    }
-
-    @Override
-    public String getWebDevHost() {
-        return getString(Constants.WEBDEV_HOST, "");
+    public String getWebDavPassword() {
+        return getString(Constants.WEBDAV_PASSWORD, "");
 
     }
 
     @Override
-    public void setWebDevHost(String s) {
-        putString(Constants.WEBDEV_HOST, s);
+    public void setWebDavPassword(String s) {
+        putString(Constants.WEBDAV_PASSWORD, s);
+    }
+
+    @Override
+    public String getWebDavHost() {
+        return getString(Constants.WEBDAV_HOST, "");
+
+    }
+
+    @Override
+    public void setWebDavHost(String s) {
+        putString(Constants.WEBDAV_HOST, s);
     }
 }

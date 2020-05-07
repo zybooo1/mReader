@@ -13,7 +13,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@color/colorPrimary">
+            android:background="@drawable/gradient_bg_drawer">
 
             <ImageView
                 android:id="@+id/ivLogo"
@@ -33,89 +33,42 @@
                 android:text="@string/mreader_app_name"
                 android:textColor="@color/white" />
         </RelativeLayout>
-
-        <View style="@style/HorizontalSpaceStyle" />
-
-        <com.xw.repo.VectorCompatTextView
+        <com.zyb.base.widget.SettingBar
             android:id="@+id/addBook"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/touch_bg"
-            android:drawablePadding="10dp"
-            android:padding="15dp"
-            android:text="添加书籍"
-            android:textColor="@color/gray70"
-            android:textSize="15sp"
-            app:drawableCompatColor="@color/gray70"
-            app:drawableHeight="17dp"
-            app:drawableLeftCompat="@drawable/svg_book_shelf"
-            app:drawableWidth="17dp" />
-
-
-        <View style="@style/HorizontalSpaceStyle" />
-
-        <com.xw.repo.VectorCompatTextView
+            app:bar_leftText="添加书籍"
+            app:bar_rightColor="@color/gray60"
+            app:bar_rightIcon="@mipmap/ico_go_black" />
+        <com.zyb.base.widget.SettingBar
             android:id="@+id/backup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/touch_bg"
-            android:drawablePadding="10dp"
-            android:padding="15dp"
-            android:text="WebDev云备份"
-            android:textColor="@color/gray70"
-            android:textSize="15sp"
-            app:drawableCompatColor="@color/gray70"
-            app:drawableHeight="24dp"
-            app:drawableLeftCompat="@drawable/svg_backup"
-            app:drawableWidth="24dp" />
+            app:bar_leftText="WebDav云备份"
+            android:layout_marginTop="15dp"
+            app:bar_rightColor="@color/gray60"
+            app:bar_rightIcon="@mipmap/ico_go_black" />
 
-        <com.xw.repo.VectorCompatTextView
+        <com.zyb.base.widget.SettingBar
             android:id="@+id/feedBack"
-            android:layout_marginTop="2px"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/touch_bg"
-            android:drawablePadding="10dp"
-            android:padding="15dp"
-            android:text="我要吐槽"
-            android:textColor="@color/gray70"
-            android:textSize="15sp"
-            app:drawableCompatColor="@color/gray70"
-            app:drawableHeight="17dp"
-            app:drawableLeftCompat="@drawable/svg_feed_back"
-            app:drawableWidth="17dp" />
-
-        <com.xw.repo.VectorCompatTextView
+            app:bar_leftText="我要吐槽"
+            app:bar_rightColor="@color/gray60"
+            app:bar_rightIcon="@mipmap/ico_go_black" />
+        <com.zyb.base.widget.SettingBar
             android:id="@+id/about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2px"
-            android:background="@drawable/touch_bg"
-            android:drawablePadding="10dp"
-            android:padding="15dp"
-            android:text="关于"
-            android:textColor="@color/gray70"
-            android:textSize="15sp"
-            app:drawableCompatColor="@color/gray70"
-            app:drawableHeight="20dp"
-            app:drawableLeftCompat="@drawable/svg_about"
-            app:drawableWidth="20dp" />
-
-        <com.xw.repo.VectorCompatTextView
+            app:bar_leftText="关于"
+            app:bar_rightColor="@color/gray60"
+            app:bar_rightIcon="@mipmap/ico_go_black" />
+        <com.zyb.base.widget.SettingBar
             android:id="@+id/share"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2px"
-            android:background="@drawable/touch_bg"
-            android:drawablePadding="10dp"
-            android:padding="15dp"
-            android:text="推荐给朋友"
-            android:textColor="@color/gray70"
-            android:textSize="15sp"
-            app:drawableCompatColor="@color/gray70"
-            app:drawableHeight="17dp"
-            app:drawableLeftCompat="@drawable/svg_share"
-            app:drawableWidth="17dp" />
-
+            app:bar_leftText="推荐给朋友"
+            app:bar_rightColor="@color/gray60"
+            app:bar_rightIcon="@mipmap/ico_go_black" />
     </LinearLayout>
 </ScrollView>

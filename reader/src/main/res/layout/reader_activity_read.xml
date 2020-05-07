@@ -163,27 +163,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:gravity="center"
+                android:gravity="left"
+                android:paddingStart="15dp"
                 android:text="最慢"
                 android:textColor="@color/white"
                 android:textSize="10sp"
                 app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
                 app:layout_constraintLeft_toLeftOf="@+id/sbSpeed"
-                app:layout_constraintRight_toLeftOf="@+id/tv2" />
-
-
-            <TextView
-                android:id="@+id/tv2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:text="较慢"
-                android:textColor="@color/white"
-                android:textSize="10sp"
-                app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
-                app:layout_constraintLeft_toRightOf="@id/tv1"
                 app:layout_constraintRight_toLeftOf="@+id/tv3" />
+
+
 
 
             <TextView
@@ -196,20 +185,7 @@
                 android:textColor="@color/white"
                 android:textSize="10sp"
                 app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
-                app:layout_constraintLeft_toRightOf="@id/tv2"
-                app:layout_constraintRight_toLeftOf="@+id/tv4" />
-
-            <TextView
-                android:id="@+id/tv4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:text="较快"
-                android:textColor="@color/white"
-                android:textSize="10sp"
-                app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
-                app:layout_constraintLeft_toRightOf="@id/tv3"
+                app:layout_constraintLeft_toRightOf="@id/tv1"
                 app:layout_constraintRight_toLeftOf="@+id/tv5" />
 
             <TextView
@@ -217,12 +193,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:gravity="center"
+                android:gravity="right"
+                android:paddingRight="15dp"
                 android:text="最快"
                 android:textColor="@color/white"
                 android:textSize="10sp"
                 app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
-                app:layout_constraintLeft_toRightOf="@id/tv4"
+                app:layout_constraintLeft_toRightOf="@id/tv3"
                 app:layout_constraintRight_toRightOf="@+id/sbSpeed" />
 
             <SeekBar

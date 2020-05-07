@@ -50,7 +50,7 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
     }
 
     private void refreshView() {
-        if(mPresenter.getWebDevUserName().isEmpty()){
+        if(mPresenter.getWebDavUserName().isEmpty()){
             layoutLogin.setVisibility(View.VISIBLE);
         }else {
             layoutLogin.setVisibility(View.GONE);
@@ -89,14 +89,14 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
         mPresenter.recover();
     }
 
-    private EditText etUserName, etPassword, etWebDevHost;
+    private EditText etUserName, etPassword, etWebDavHost;
     private AdapterView.OnItemSelectedListener onHostsItemSelect = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if (position == 0) {
-                etWebDevHost.setText(Constants.JIANGUOYUN_HOST);
+                etWebDavHost.setText(Constants.JIANGUOYUN_HOST);
             } else {
-                etWebDevHost.setText(Constants.BOX_HOST);
+                etWebDavHost.setText(Constants.BOX_HOST);
             }
         }
 
@@ -108,7 +108,7 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
     private OnDialogButtonClickListener onOkButtonClickListener = new OnDialogButtonClickListener() {
         @Override
         public boolean onClick(BaseDialog baseDialog, View v) {
-            mPresenter.login(etUserName.getText().toString(), etPassword.getText().toString(), etWebDevHost.getText().toString());
+            mPresenter.login(etUserName.getText().toString(), etPassword.getText().toString(), etWebDavHost.getText().toString());
             return false;
         }
     };
@@ -123,27 +123,27 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
 
     private void showLoginDialog() {
         FullScreenDialog
-                .show(this, R.layout.dialog_webdev_login, new FullScreenDialog.OnBindView() {
+                .show(this, R.layout.dialog_webdav_login, new FullScreenDialog.OnBindView() {
                     @Override
                     public void onBind(FullScreenDialog dialog, View rootView) {
                         etUserName = rootView.findViewById(R.id.etUserName);
                         etPassword = rootView.findViewById(R.id.etPassword);
-                        etWebDevHost = rootView.findViewById(R.id.etWebDevHost);
-                        rootView.findViewById(R.id.webDevHelp).setOnClickListener(helpTvClick);
+                        etWebDavHost = rootView.findViewById(R.id.etWebDavHost);
+                        rootView.findViewById(R.id.webDavHelp).setOnClickListener(helpTvClick);
                         ((AppCompatSpinner) rootView.findViewById(R.id.spnHosts)).setSelection(0,true);
                         ((AppCompatSpinner) rootView.findViewById(R.id.spnHosts))
                                 .setOnItemSelectedListener(onHostsItemSelect);
-                        etUserName.setText(mPresenter.getWebDevUserName());
-                        etPassword.setText(mPresenter.getWebDevPassword());
-                        etWebDevHost.setText(mPresenter.getWebDevHost());
+                        etUserName.setText(mPresenter.getWebDavUserName());
+                        etPassword.setText(mPresenter.getWebDavPassword());
+                        etWebDavHost.setText(mPresenter.getWebDavHost());
 
                         if (BuildConfig.DEBUG) {
-                            rootView.findViewById(R.id.webDevHelp).setOnLongClickListener(new View.OnLongClickListener() {
+                            rootView.findViewById(R.id.webDavHelp).setOnLongClickListener(new View.OnLongClickListener() {
                                 @Override
                                 public boolean onLongClick(View v) {
                                     etUserName.setText(Constants.JIANGUOYUN_USERNAME);
                                     etPassword.setText(Constants.JIANGUOYUN_PASSWORD);
-                                    etWebDevHost.setText(Constants.JIANGUOYUN_HOST);
+                                    etWebDavHost.setText(Constants.JIANGUOYUN_HOST);
                                     return false;
                                 }
                             });
@@ -153,7 +153,7 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
                 .setBackgroundColor(Color.WHITE)
                 .setOkButton("完成", onOkButtonClickListener)
                 .setCancelButton("取消")
-                .setTitle("登录WebDev");
+                .setTitle("登录WebDav");
     }
 
     @Override

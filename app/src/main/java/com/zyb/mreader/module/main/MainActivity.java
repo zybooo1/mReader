@@ -109,7 +109,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     };
 
     private void onFileNotExist() {
-        showDialog(true, "本地文件已被删除，是否从书架移除它？", "取消", "移除",
+        showDialog(true, "本地文件已被删除，\n是否从书架移除它？", "取消", "移除",
                 new OnDialogButtonClickListener() {
                     @Override
                     public boolean onClick(BaseDialog baseDialog, View v) {
@@ -480,7 +480,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
 
         @Override
         public void onRightClick(View v) {
-            layoutActionTop.setRightTitle(layoutActionTop.getRightTitle().equals("全选") ? "全不选" : "全选");
+            layoutActionTop.setRightTitle(layoutActionTop.getRightTitle().equals("全选") ? "取消" : "全选");
             booksAdapter.selectOrUnselectAll();
         }
     };
@@ -634,7 +634,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         for (Book book : books) {
             if (!book.isSelected()) unselectedCount++;
         }
-        layoutActionTop.setRightTitle(unselectedCount == 0 ? "全不选" : "全选");
+        layoutActionTop.setRightTitle(unselectedCount == 0 ? "取消" : "全选");
 
     }
 

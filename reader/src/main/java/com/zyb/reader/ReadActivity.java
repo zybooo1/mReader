@@ -143,7 +143,10 @@ public class ReadActivity extends MyActivity {
             } else if (id == R.id.speaker4) {
                 config.setPitch(20);
             }
-            textToSpeech.setPitch(config.getPitchForTTS());
+            float pitch = config.getPitchForTTS();
+            textToSpeech.setPitch(pitch);
+            playSpeech(true);
+            LogUtil.e("onCheckedChanged pitch:"+ pitch);
         }
     };
 
@@ -175,13 +178,13 @@ public class ReadActivity extends MyActivity {
             } else if (intent.getAction().equals(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)) {
                 BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
                 //正在朗读读且断开蓝牙耳机 则暂停朗读
-                if (isSpeaking() && BluetoothProfile.STATE_DISCONNECTED == adapter.getProfileConnectionState(BluetoothProfile.HEADSET)) {
+                if (isSpeaking && BluetoothProfile.STATE_DISCONNECTED == adapter.getProfileConnectionState(BluetoothProfile.HEADSET)) {
                     pauseSpeech();
                 }
             } else if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
                 int i = intent.getIntExtra("state", 0);
                 //正在朗读读且拔出耳机 则暂停朗读
-                if (isSpeaking() && intent.getIntExtra("state", 0) == 0) {
+                if (isSpeaking && intent.getIntExtra("state", 0) == 0) {
                     pauseSpeech();
                 }
             }
@@ -348,7 +351,7 @@ public class ReadActivity extends MyActivity {
 
             @Override
             public Boolean prePage() {
-                if (getMenuIsShowing() || isSpeaking()) {
+                if (getMenuIsShowing() || isSpeaking) {
                     return false;
                 }
 
@@ -359,7 +362,7 @@ public class ReadActivity extends MyActivity {
             @Override
             public Boolean nextPage() {
                 LogUtil.e("setTouchListener", "nextPage");
-                if (getMenuIsShowing() || isSpeaking()) {
+                if (getMenuIsShowing() || isSpeaking) {
                     return false;
                 }
 
@@ -413,6 +416,7 @@ public class ReadActivity extends MyActivity {
     public void clickStartSpeech() {
         initTTS();
         toggleMenu();
+        isSpeaking =true;
     }
 
     @OnClick(R2.id.ivBack)
@@ -460,7 +464,7 @@ public class ReadActivity extends MyActivity {
      * 切换菜单栏的可视状态 默认是隐藏的
      */
     private void toggleMenu() {
-        if (isSpeaking() || isSpeechPause) {
+        if (isSpeaking || isSpeechPause) {
             if (rl_read_bottom.getVisibility() == View.VISIBLE) {
                 QMUIViewHelper.slideOut(rl_read_bottom, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
             } else {
@@ -512,7 +516,7 @@ public class ReadActivity extends MyActivity {
             if (isSpeechPause) {
                 resumeSpeech();
             } else {
-                pauseSpeech();
+                stopSpeech();
             }
         } else if (i == R.id.ivSearch) {
             drawerLayout.openDrawer(Gravity.END);
@@ -735,7 +739,10 @@ public class ReadActivity extends MyActivity {
             int progress = seekBar.getProgress();
             if (progress == 0) progress = 1;
             config.setSpeakSpeed(progress);
-            textToSpeech.setSpeechRate(config.getSpeedForTTS());
+            float speed = config.getSpeedForTTS();
+            textToSpeech.setSpeechRate(speed);
+            playSpeech(true);
+            LogUtil.e("onStopTrackingTouch speed:"+speed);
         }
     };
     private SeekBar.OnSeekBarChangeListener onTimingChangeListener = new SeekBar.OnSeekBarChangeListener() {
@@ -839,7 +846,7 @@ public class ReadActivity extends MyActivity {
             mSettingDialog.hide();
             return;
         }
-        if (isSpeaking()) {
+        if (isSpeaking) {
             showDialog(true, "是否确认退出？", "继续看书", "退出",
                     new OnDialogButtonClickListener() {
                         @Override
@@ -862,6 +869,8 @@ public class ReadActivity extends MyActivity {
     //------------------ System TTS Start -------------------
     private TextToSpeech textToSpeech;
     private boolean isSpeechPause;
+    private boolean isSpeaking = false;
+
     UtteranceProgressListener ttsListener = new UtteranceProgressListener() {
         @Override
         public void onStart(String utteranceId) {
@@ -877,7 +886,7 @@ public class ReadActivity extends MyActivity {
                 stopSpeech();
                 showToast("小说已经读完了");
             } else {
-                playSpeech();
+                playSpeech(false);
             }
         }
 
@@ -907,34 +916,35 @@ public class ReadActivity extends MyActivity {
                 }
                 //系统语音初始化成功
                 if (i == TextToSpeech.SUCCESS) {
-                    // 设置音调，值越大声音越尖（女生），值越小则变成男声,0<pitch<2
-                    textToSpeech.setPitch(config.getPitchForTTS());
-                    //0<speed<2
-                    textToSpeech.setSpeechRate(config.getSpeedForTTS());
+                    textToSpeech.setPitch(config.getPitchForTTS());//音调 0<pitch<2
+                    textToSpeech.setSpeechRate(config.getSpeedForTTS());//速度 0<speed<2
                     textToSpeech.setOnUtteranceProgressListener(ttsListener);
-                    playSpeech();
+                    int result = textToSpeech.setLanguage(Locale.CHINA);
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        //系统不支持中文播报
+                        showToast("暂不支持中文播报");
+                        stopSpeech();
+                        return;
+                    }
+                    playSpeech(false);
                 } else {
                     showToast("语音引擎初始化失败");
+                    stopSpeech();
                 }
             }
         });
     }
 
-    private void playSpeech() {
+    private void playSpeech(boolean isClear) {
         if (textToSpeech == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             showToast("暂不支持语音播放");
+            stopSpeech();
             return;
         }
-        int result = textToSpeech.setLanguage(Locale.CHINA);
-        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-            //系统不支持中文播报
-            showToast("暂不支持中文播报");
-            return;
-        }
-
+        isSpeaking=true;
         String content = pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence();
 
-        textToSpeech.speak(content, TextToSpeech.QUEUE_ADD, null, CommonUtils.getUUID());
+        textToSpeech.speak(content,isClear?TextToSpeech.QUEUE_FLUSH: TextToSpeech.QUEUE_ADD, null, CommonUtils.getUUID());
     }
 
     private void pauseSpeech() {
@@ -944,7 +954,7 @@ public class ReadActivity extends MyActivity {
     }
 
     private void resumeSpeech() {
-        playSpeech();
+        playSpeech(false);
         isSpeechPause = false;
         btnStopSpeech.setText("停止播放");
     }
@@ -954,11 +964,8 @@ public class ReadActivity extends MyActivity {
             QMUIViewHelper.slideOut(rl_read_bottom, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
         }
         isSpeechPause = false;
+        isSpeaking=false;
         textToSpeech.shutdown();
-    }
-
-    private boolean isSpeaking() {
-        return textToSpeech != null && textToSpeech.isSpeaking();
     }
     //------------------ System TTS End -------------------
 }

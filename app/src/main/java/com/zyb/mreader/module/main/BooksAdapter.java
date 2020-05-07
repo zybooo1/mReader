@@ -58,8 +58,8 @@ public class BooksAdapter extends BaseQuickAdapter<Book, BaseViewHolder> {
     protected void convert(BaseViewHolder helper, Book book) {
         helper.setText(R.id.item_title, book.getTitle())
                 .setText(R.id.tvReadProgress, book.getProgress())
-                .setBackgroundColor(R.id.vBg, new File(book.getPath()).exists() ?
-                        ContextCompat.getColor(mContext, R.color.book_item_fill) : ContextCompat.getColor(mContext, R.color.gray10))
+                .setTextColor(R.id.item_title, new File(book.getPath()).exists() ?
+                        ContextCompat.getColor(mContext,R.color.gray60) : ContextCompat.getColor(mContext,R.color.gray20))
                 .setGone(R.id.btnSelected, book.isSelected() && canSelect)
                 .setGone(R.id.btnUnselected, canSelect)
                 .setGone(R.id.tvReadProgress, !book.getProgress().isEmpty() && !canSelect)

@@ -71,7 +71,7 @@ dependencies {
     api rootProject.ext.dependencies["retrofit-adapter-rxjava2"]
     api rootProject.ext.dependencies["okhttp"]
     api rootProject.ext.dependencies["okhttp-logging-interceptor"]
-    api rootProject.ext.dependencies["sardine_webdev"]
+    api rootProject.ext.dependencies["sardine_webdav"]
     //image
     //rx
     api rootProject.ext.dependencies["rxjava"]

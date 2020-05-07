@@ -21,12 +21,12 @@ public interface PreferenceHelper extends BasePreferenceHelper {
     boolean isFirst();
     void setIsFirst(boolean isFirst);
 
-    String getWebDevUserName();
-    void setWebDevUserName(String s);
+    String getWebDavUserName();
+    void setWebDavUserName(String s);
 
-    String getWebDevPassword();
-    void setWebDevPassword(String s);
+    String getWebDavPassword();
+    void setWebDavPassword(String s);
 
-    String getWebDevHost();
-    void setWebDevHost(String s);
+    String getWebDavHost();
+    void setWebDavHost(String s);
 }
