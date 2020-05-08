@@ -501,7 +501,7 @@ public class SimulationAnimation extends AnimationProvider {
         mPath0.close();
 
         canvas.save();
-        // TODO: 2019/7/10 api 28 以上此方法报错
+        // TODO: 2019/7/10 target api 28 以上此方法报错
         canvas.clipPath(path, Region.Op.XOR);
 //        canvas.clipPath(path, Region.Op.DIFFERENCE);
         canvas.drawBitmap(bitmap, 0, 0, null);

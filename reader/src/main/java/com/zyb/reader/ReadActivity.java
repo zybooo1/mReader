@@ -4,11 +4,14 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothHeadset;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
@@ -30,7 +33,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -106,8 +108,6 @@ public class ReadActivity extends MyActivity {
     RoundButton viewProgressPercent;
     @BindView(R2.id.tv_pre)
     TextView tv_pre;
-    @BindView(R2.id.rgSpeaker)
-    RadioGroup rgSpeaker;
     @BindView(R2.id.sb_progress)
     SeekBar sb_progress;
     @BindView(R2.id.tv_next)
@@ -130,37 +130,6 @@ public class ReadActivity extends MyActivity {
     private PageFactory pageFactory;
     private SettingDialog mSettingDialog;
     private Boolean mIsNightMode;
-    RadioGroup.OnCheckedChangeListener onSpeakerCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int id) {
-            if (textToSpeech == null) return;
-            if (id == R.id.speaker1) {
-                config.setPitch(10);
-            } else if (id == R.id.speaker2) {
-                config.setPitch(5);
-            } else if (id == R.id.speaker3) {
-                config.setPitch(15);
-            } else if (id == R.id.speaker4) {
-                config.setPitch(20);
-            }
-            float pitch = config.getPitchForTTS();
-            textToSpeech.setPitch(pitch);
-            playSpeech(true);
-            LogUtil.e("onCheckedChanged pitch:"+ pitch);
-        }
-    };
-
-    private void changeSpeaker(float pitch) {
-        if (pitch == 5) {
-            rgSpeaker.check(R.id.speaker2);
-        } else if (pitch == 10) {
-            rgSpeaker.check(R.id.speaker1);
-        } else if (pitch == 15) {
-            rgSpeaker.check(R.id.speaker3);
-        } else if (pitch == 20) {
-            rgSpeaker.check(R.id.speaker4);
-        }
-    }
 
 
     // 接收电池信息更新、时间更新的广播
@@ -250,8 +219,6 @@ public class ReadActivity extends MyActivity {
         smartRefresh.setOnLoadMoreListener(loadMoreListener);
         etSearch.setOnKeyListener(onKeyListener);
         etSearch.addTextChangedListener(searchTextWatcher);
-
-        rgSpeaker.setOnCheckedChangeListener(onSpeakerCheckedChangeListener);
 
         //View绘制完毕后初始化
         pageWidget.post(() -> {
@@ -416,7 +383,7 @@ public class ReadActivity extends MyActivity {
     public void clickStartSpeech() {
         initTTS();
         toggleMenu();
-        isSpeaking =true;
+        isSpeaking = true;
     }
 
     @OnClick(R2.id.ivBack)
@@ -703,7 +670,34 @@ public class ReadActivity extends MyActivity {
             case EventConstants.EVENT_CLOSE_READ_DRAWER:
                 drawerLayout.closeDrawer(Gravity.START);
                 break;
-            default:
+            case EventConstants.EVENT_SPEECH_STOP:
+                stopSpeech();
+                break;
+            case EventConstants.EVENT_SPEECH_FINISH_PAGE:
+                pageFactory.nextPage();
+                if (pageFactory.islastPage()) {
+                    stopSpeech();
+                    showToast("小说已经读完了");
+                } else {
+                    isSpeaking = true;
+                    //继续朗读
+                    String content = pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence();
+                    BaseEvent<String> e = new BaseEvent<>(EventConstants.EVENT_SPEECH_STRING_DATA,
+                            content);
+                    EventBusUtil.sendStickyEvent(e);
+                    LogUtil.e(content);
+                }
+                break;
+            case EventConstants.EVENT_SPEECH_PAUSE:
+                pauseSpeech();
+                break;
+            case EventConstants.EVENT_SPEECH_START:
+                String content = pageFactory.getCurrentPage().getLineToString() + pageFactory.getNextPageFirstSentence();
+                BaseEvent<String> event2 = new BaseEvent<>(EventConstants.EVENT_SPEECH_STRING_DATA,
+                        content);
+                EventBusUtil.sendStickyEvent(event2);
+                isSpeechPause = false;
+                btnStopSpeech.setText("停止播放");
                 break;
         }
     }
@@ -742,7 +736,7 @@ public class ReadActivity extends MyActivity {
             float speed = config.getSpeedForTTS();
             textToSpeech.setSpeechRate(speed);
             playSpeech(true);
-            LogUtil.e("onStopTrackingTouch speed:"+speed);
+            LogUtil.e("onStopTrackingTouch speed:" + speed);
         }
     };
     private SeekBar.OnSeekBarChangeListener onTimingChangeListener = new SeekBar.OnSeekBarChangeListener() {
@@ -796,7 +790,7 @@ public class ReadActivity extends MyActivity {
         countDownView.start((long) (time * 60000));
         countDownView.setOnCountdownEndListener(cv -> {
             hideTimer();
-//            stopSpeech();
+            stopSpeech();
         });
     }
 
@@ -823,7 +817,7 @@ public class ReadActivity extends MyActivity {
         pageFactory.clear();
         pageWidget = null;
         unregisterReceiver(myReceiver);
-//        stopSpeech();
+        stopSpeech();
         super.onDestroy();
     }
 
@@ -906,7 +900,6 @@ public class ReadActivity extends MyActivity {
             showTimer(config.getTimingTime());
         }
         sbSpeed.setProgress(config.getSpeakSpeed());
-        changeSpeaker(config.getPitch());
         textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
@@ -926,7 +919,7 @@ public class ReadActivity extends MyActivity {
                         stopSpeech();
                         return;
                     }
-                    playSpeech(false);
+                    playSpeech(true);
                 } else {
                     showToast("语音引擎初始化失败");
                     stopSpeech();
@@ -935,16 +928,19 @@ public class ReadActivity extends MyActivity {
         });
     }
 
-    private void playSpeech(boolean isClear) {
+    private void playSpeech(boolean isFirstPage) {
         if (textToSpeech == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             showToast("暂不支持语音播放");
             stopSpeech();
             return;
         }
-        isSpeaking=true;
+        isSpeaking = true;
         String content = pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence();
+        if (isFirstPage)
+            content = pageFactory.getCurrentPage().getLineToString() + pageFactory.getNextPageFirstSentence();
 
-        textToSpeech.speak(content,isClear?TextToSpeech.QUEUE_FLUSH: TextToSpeech.QUEUE_ADD, null, CommonUtils.getUUID());
+        LogUtil.e("playSpeech---", content);
+        textToSpeech.speak(content, TextToSpeech.QUEUE_FLUSH, null, CommonUtils.getUUID());
     }
 
     private void pauseSpeech() {
@@ -954,7 +950,7 @@ public class ReadActivity extends MyActivity {
     }
 
     private void resumeSpeech() {
-        playSpeech(false);
+        playSpeech(true);
         isSpeechPause = false;
         btnStopSpeech.setText("停止播放");
     }
@@ -964,8 +960,9 @@ public class ReadActivity extends MyActivity {
             QMUIViewHelper.slideOut(rl_read_bottom, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
         }
         isSpeechPause = false;
-        isSpeaking=false;
-        textToSpeech.shutdown();
+        isSpeaking = false;
+        if (textToSpeech != null) textToSpeech.shutdown();
     }
     //------------------ System TTS End -------------------
+
 }

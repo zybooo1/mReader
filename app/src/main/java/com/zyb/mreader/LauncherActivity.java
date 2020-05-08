@@ -1,6 +1,5 @@
 package com.zyb.mreader;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.text.SpannableString;
@@ -37,8 +36,6 @@ import com.zyb.reader.util.FileUtils;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import io.reactivex.Observable;
@@ -123,7 +120,7 @@ public class LauncherActivity extends MyActivity
         View view = getLayoutInflater().inflate(R.layout.dialog_permission, null);
         view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        TextView content =view.findViewById(R.id.tv4);
+        TextView content = view.findViewById(R.id.tv4);
         content.setMovementMethod(LinkMovementMethod.getInstance());
         SpannableString spannableString = new SpannableString("同时，猫豆阅读采用严格的数据安全措施保护你的个人信息安全。你选择" +
                 "「同意」即表示充分阅读、理解并接受《猫豆阅读用户协议》、《猫豆阅读隐私政策》的全部内容。你也可以选择「不同意」，猫豆阅读将无法为你提供产品和服务。");
@@ -214,7 +211,7 @@ public class LauncherActivity extends MyActivity
             if (tmpDir == null || !tmpDir.exists()) tmpDir = getExternalFilesDir("tmpTxt");
 
             assert tmpDir != null;
-            FileUtils.copyFromAssets(getAssets(), txtName, tmpDir.getAbsolutePath()+File.separator + txtName, true);
+            FileUtils.copyFromAssets(getAssets(), txtName, tmpDir.getAbsolutePath() + File.separator + txtName, true);
 
             File resultFile = new File(tmpDir.getAbsolutePath() + File.separator + txtName);
 

@@ -17,4 +17,11 @@ public class EventConstants {
 
     //书籍添加
     public static final int RESEARCH_BOOK = 0x501;//重新搜索书籍
+
+    //reader
+    public static final int EVENT_SPEECH_STRING_DATA = 0x400;//开始朗读内容
+    public static final int EVENT_SPEECH_FINISH_PAGE = 0x401;//朗读一页完毕
+    public static final int EVENT_SPEECH_STOP = 0x402;//朗读停止
+    public static final int EVENT_SPEECH_PAUSE = 0x403;//朗读暂停
+    public static final int EVENT_SPEECH_START = 0x404;//朗读开始
 }
