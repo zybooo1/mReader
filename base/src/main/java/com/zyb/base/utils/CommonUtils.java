@@ -83,16 +83,6 @@ public class CommonUtils {
      * @param activity Activity
      * @param msg      message
      */
-    public static void showMessage(Activity activity, String msg) {
-        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Show message
-     *
-     * @param activity Activity
-     * @param msg      message
-     */
     public static void showSnackMessage(Activity activity, String msg) {
         Snackbar snackbar = Snackbar.make(activity.getWindow().getDecorView(), msg, Snackbar.LENGTH_SHORT);
         View view = snackbar.getView();

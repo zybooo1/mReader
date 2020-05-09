@@ -58,9 +58,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -255,7 +252,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
 
     @Override
     public void toBackup() {
-       startActivity(BackupActivity.class);
+        startActivity(BackupActivity.class);
     }
 
     @Override
@@ -313,10 +310,13 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     }
 
     private void initPageColor() {
+        if (Config.getInstance().getDayOrNight()) {
+            mContent.setBackgroundColor(Color.BLACK);
+            return;
+        }
         switch (Config.getInstance().getBookBgType()) {
             case Config.BOOK_BG_DEFAULT:
                 //为了性能 不设置图片了
-//                mContent.setBackgroundResource(com.zyb.reader.R.drawable.reader_paper);
                 mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.reader_read_bg_default));
                 break;
             case Config.BOOK_BG_1:
@@ -332,8 +332,6 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                 mContent.setBackgroundColor(ContextCompat.getColor(this, com.zyb.reader.R.color.reader_read_bg_4));
                 break;
         }
-        if (Config.getInstance().getDayOrNight())
-            mContent.setBackgroundColor(Color.BLACK);
     }
 
     private void readBook() {
@@ -354,9 +352,8 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
 
         Intent intent = new Intent(MainActivity.this, ReadActivity.class);
         intent.putExtra(ReadActivity.EXTRA_BOOK, book);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        overridePendingTransition(0, android.R.anim.fade_out);
     }
 
     @Override

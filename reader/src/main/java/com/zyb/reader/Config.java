@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 
+import com.zyb.base.utils.LogUtil;
+
 /**
  * 阅读设置
  */
@@ -31,7 +33,7 @@ public class Config {
     private static final String PITCH_KEY = "pitch";
     private static final String TIMING_TIME_KEY = "timing_time";
     private static final String IS_AUTO_TIMING_KEY = "is_auto_timing";
-    private static final int DEFAULT_SPEED = 10;
+    private static final int DEFAULT_SPEED = 25;
     private static final int DEFAULT_PITCH = 10;
 
     private Context mContext;
@@ -132,8 +134,8 @@ public class Config {
         return sp.getInt(SPEAK_SPEED_KEY, DEFAULT_SPEED);
     }
     public float getSpeedForTTS() {
-        float speed = sp.getInt(SPEAK_SPEED_KEY, DEFAULT_SPEED) / 10f;
-        if(speed==0) return 0.1f;
+        float speed = (sp.getInt(SPEAK_SPEED_KEY, DEFAULT_SPEED)+5) / 10f;
+        LogUtil.e("getSpeedForTTS---"+speed);
         return speed;
     }
     public void setSpeakSpeed(int speed) {

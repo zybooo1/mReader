@@ -4,14 +4,12 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothHeadset;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
@@ -124,6 +122,8 @@ public class ReadActivity extends MyActivity {
     ImageView btnAddBookMark;
     @BindView(R2.id.rl_read_bottom)
     ConstraintLayout rl_read_bottom;
+    @BindView(R2.id.layoutRoot)
+    ConstraintLayout layoutRoot;
 
     private Config config;
     private Book book;
@@ -670,34 +670,7 @@ public class ReadActivity extends MyActivity {
             case EventConstants.EVENT_CLOSE_READ_DRAWER:
                 drawerLayout.closeDrawer(Gravity.START);
                 break;
-            case EventConstants.EVENT_SPEECH_STOP:
-                stopSpeech();
-                break;
-            case EventConstants.EVENT_SPEECH_FINISH_PAGE:
-                pageFactory.nextPage();
-                if (pageFactory.islastPage()) {
-                    stopSpeech();
-                    showToast("小说已经读完了");
-                } else {
-                    isSpeaking = true;
-                    //继续朗读
-                    String content = pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence();
-                    BaseEvent<String> e = new BaseEvent<>(EventConstants.EVENT_SPEECH_STRING_DATA,
-                            content);
-                    EventBusUtil.sendStickyEvent(e);
-                    LogUtil.e(content);
-                }
-                break;
-            case EventConstants.EVENT_SPEECH_PAUSE:
-                pauseSpeech();
-                break;
-            case EventConstants.EVENT_SPEECH_START:
-                String content = pageFactory.getCurrentPage().getLineToString() + pageFactory.getNextPageFirstSentence();
-                BaseEvent<String> event2 = new BaseEvent<>(EventConstants.EVENT_SPEECH_STRING_DATA,
-                        content);
-                EventBusUtil.sendStickyEvent(event2);
-                isSpeechPause = false;
-                btnStopSpeech.setText("停止播放");
+            default:
                 break;
         }
     }
@@ -903,22 +876,10 @@ public class ReadActivity extends MyActivity {
         textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
-                LogUtil.e("intTTS:" + textToSpeech.getDefaultEngine());
-                for (TextToSpeech.EngineInfo engine : textToSpeech.getEngines()) {
-                    LogUtil.e("EngineInfo:" + engine.label);
-                }
                 //系统语音初始化成功
                 if (i == TextToSpeech.SUCCESS) {
-                    textToSpeech.setPitch(config.getPitchForTTS());//音调 0<pitch<2
-                    textToSpeech.setSpeechRate(config.getSpeedForTTS());//速度 0<speed<2
                     textToSpeech.setOnUtteranceProgressListener(ttsListener);
-                    int result = textToSpeech.setLanguage(Locale.CHINA);
-                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        //系统不支持中文播报
-                        showToast("暂不支持中文播报");
-                        stopSpeech();
-                        return;
-                    }
+                    textToSpeech.setLanguage(Locale.CHINA);
                     playSpeech(true);
                 } else {
                     showToast("语音引擎初始化失败");
@@ -935,12 +896,14 @@ public class ReadActivity extends MyActivity {
             return;
         }
         isSpeaking = true;
-        String content = pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence();
-        if (isFirstPage)
-            content = pageFactory.getCurrentPage().getLineToString() + pageFactory.getNextPageFirstSentence();
+        String content = "暂不支持语音播放";
+//        String content = pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence();
+//        if (isFirstPage)
+//            content = pageFactory.getCurrentPage().getLineToString() + pageFactory.getNextPageFirstSentence();
+        textToSpeech.stop();
 
         LogUtil.e("playSpeech---", content);
-        textToSpeech.speak(content, TextToSpeech.QUEUE_FLUSH, null, CommonUtils.getUUID());
+        textToSpeech.speak(content, TextToSpeech.QUEUE_ADD, null, CommonUtils.getUUID());
     }
 
     private void pauseSpeech() {

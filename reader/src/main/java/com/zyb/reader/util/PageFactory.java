@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.hjq.toast.ToastUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.common.db.DBFactory;
@@ -358,7 +359,7 @@ public class PageFactory {
         if (currentPage.getBegin() <= 0) {
             Log.e(TAG, "当前是第一页");
             if (!m_isfirstPage) {
-                Toast.makeText(mContext, "当前是第一页", Toast.LENGTH_SHORT).show();
+                ToastUtils.show("当前是第一页");
             }
             m_isfirstPage = true;
             return;
@@ -377,7 +378,7 @@ public class PageFactory {
         if (currentPage.getEnd() >= mBookUtil.getBookLen()) {
             Log.e(TAG, "已经是最后一页了");
             if (!m_islastPage) {
-                Toast.makeText(mContext, "已经是最后一页了", Toast.LENGTH_SHORT).show();
+                ToastUtils.show("已经是最后一页了");
             }
             m_islastPage = true;
             return;
@@ -444,7 +445,7 @@ public class PageFactory {
                 PageFactory.mStatus = PageFactory.Status.FAIL;
                 drawStatus(mBookPageWidget.getCurPage());
                 drawStatus(mBookPageWidget.getNextPage());
-                Toast.makeText(mContext, "打开书本失败！", Toast.LENGTH_SHORT).show();
+                ToastUtils.show("打开书本失败！");
             }
         }
 
