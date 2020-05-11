@@ -21,7 +21,7 @@
     <LinearLayout
         android:id="@+id/layoutLogin"
         android:visibility="gone"
-        tools:visibility="visible"
+        tools:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center">
@@ -40,53 +40,11 @@
             android:text="登录WebDav"
             android:textColor="@color/colorAccent" />
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/backup"
-        android:layout_margin="25dp"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_books"
+        tools:itemCount="20"
+        tools:listitem="@layout/item_file_book"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:background="@drawable/gradient_bg_backup">
-        <ImageView
-            app:srcCompat="@drawable/svg_backup"
-            android:tint="@color/white90"
-            android:layout_width="36dp"
-            android:layout_height="36dp"/>
-        <TextView
-            android:layout_marginTop="10dp"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:text="备份至WebDav"
-            android:textColor="@color/white90"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/recover"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:background="@drawable/gradient_bg_recover">
-        <ImageView
-            app:srcCompat="@drawable/svg_recover"
-            android:tint="@color/white90"
-            android:layout_width="36dp"
-            android:layout_height="36dp"/>
-        <TextView
-            android:layout_marginTop="10dp"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:text="从WebDav恢复"
-            android:textColor="@color/white90"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

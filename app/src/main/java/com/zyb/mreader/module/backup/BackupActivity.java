@@ -68,16 +68,6 @@ public class BackupActivity extends MVPActivity<BackupPresenter> implements
         startActivity(LoginActivity.class);
     }
 
-    @OnClick(R.id.backup)
-    void backup() {
-        mPresenter.backup();
-    }
-
-    @OnClick(R.id.recover)
-    void recover() {
-        mPresenter.recover();
-    }
-
     //----------------- Login End -------------------------
 
 }
