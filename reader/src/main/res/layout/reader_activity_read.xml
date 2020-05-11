@@ -102,22 +102,6 @@
                 android:textSize="10sp"
                 app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
                 app:layout_constraintLeft_toLeftOf="@+id/sbSpeed"
-                app:layout_constraintRight_toLeftOf="@+id/tv3" />
-
-
-
-
-            <TextView
-                android:id="@+id/tv3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:text="正常"
-                android:textColor="@color/white"
-                android:textSize="10sp"
-                app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
-                app:layout_constraintLeft_toRightOf="@id/tv1"
                 app:layout_constraintRight_toLeftOf="@+id/tv5" />
 
             <TextView
@@ -131,7 +115,7 @@
                 android:textColor="@color/white"
                 android:textSize="10sp"
                 app:layout_constraintBottom_toTopOf="@+id/sbSpeed"
-                app:layout_constraintLeft_toRightOf="@id/tv3"
+                app:layout_constraintLeft_toRightOf="@id/tv1"
                 app:layout_constraintRight_toRightOf="@+id/sbSpeed" />
 
             <SeekBar
@@ -142,7 +126,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:max="45"
+                android:max="47"
                 android:maxHeight="3dp"
                 android:minHeight="3dp"
                 android:progress="10"

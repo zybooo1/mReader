@@ -134,7 +134,7 @@ public class Config {
         return sp.getInt(SPEAK_SPEED_KEY, DEFAULT_SPEED);
     }
     public float getSpeedForTTS() {
-        float speed = (sp.getInt(SPEAK_SPEED_KEY, DEFAULT_SPEED)+5) / 10f;
+        float speed = (sp.getInt(SPEAK_SPEED_KEY, DEFAULT_SPEED)+3) / 10f;
         LogUtil.e("getSpeedForTTS---"+speed);
         return speed;
     }

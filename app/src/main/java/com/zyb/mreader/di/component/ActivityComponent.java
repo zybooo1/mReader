@@ -8,6 +8,7 @@ import com.zyb.mreader.di.module.ActivityModule;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.module.addBook.AddBookActivity;
 import com.zyb.mreader.module.backup.BackupActivity;
+import com.zyb.mreader.module.backup.login.LoginActivity;
 import com.zyb.mreader.module.main.MainActivity;
 
 import dagger.Component;
@@ -21,4 +22,5 @@ public interface ActivityComponent {
   void inject(AddBookActivity activity);
   void inject(MainActivity activity);
   void inject(BackupActivity activity);
+  void inject(LoginActivity activity);
 }

@@ -38,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:bar_leftText="添加书籍"
+            app:bar_lineVisible="false"
             app:bar_rightColor="@color/gray60"
             app:bar_rightIcon="@mipmap/ico_go_black" />
         <com.zyb.base.widget.SettingBar
@@ -68,6 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:bar_leftText="推荐给朋友"
+            app:bar_lineVisible="false"
             app:bar_rightColor="@color/gray60"
             app:bar_rightIcon="@mipmap/ico_go_black" />
     </LinearLayout>

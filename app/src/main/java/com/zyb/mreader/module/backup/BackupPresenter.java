@@ -75,56 +75,6 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
     }
 
     @Override
-    public void login(String userName, String password, String host) {
-        addSubscribe(
-                Flowable.create(new FlowableOnSubscribe<Boolean>() {
-                    @Override
-                    public void subscribe(FlowableEmitter<Boolean> emitter) throws Exception {
-                        try {
-                            Sardine sardine = new OkHttpSardine();
-                            sardine.setCredentials(userName, password);
-                            emitter.onNext(sardine.exists(host));
-                            emitter.onComplete();
-                        } catch (Exception e) {
-                            emitter.onError(e);
-                        }
-                    }
-                }, BackpressureStrategy.BUFFER)
-                        .compose(RxUtil.<Boolean>rxSchedulerHelper())
-                        .subscribeWith(new CommonSubscriber<Boolean>(mView) {
-
-                            @Override
-                            protected void onStartWithViewAlive() {
-                                mView.showDialogLoading();
-                            }
-
-                            @Override
-                            protected void onCompleteWithViewAlive() {
-                                mView.hideDialogLoading();
-                            }
-
-                            @Override
-                            protected void onNextWithViewAlive(Boolean b) {
-                                if (b) {
-                                    mDataManager.setWebDavUserName(userName);
-                                    mDataManager.setWebDavPassword(password);
-                                    mDataManager.setWebDavHost(host);
-                                    mView.showToast("登录成功");
-                                    mView.loginSuccess();
-                                } else {
-                                    mView.showToast("登录失败");
-                                }
-                            }
-
-                            @Override
-                            protected void onErrorWithViewAlive(Throwable e) {
-                                mView.hideDialogLoading();
-                                mView.showToast("登录失败");
-                            }
-                        }));
-    }
-
-    @Override
     public void backup() {
         List<Book> books = mDataManager.getAllBooks();
 

@@ -878,6 +878,7 @@ public class ReadActivity extends MyActivity {
             public void onInit(int i) {
                 //系统语音初始化成功
                 if (i == TextToSpeech.SUCCESS) {
+                    textToSpeech.setSpeechRate(config.getSpeedForTTS());//速度 0<speed<2
                     textToSpeech.setOnUtteranceProgressListener(ttsListener);
                     textToSpeech.setLanguage(Locale.CHINA);
                     playSpeech(true);
@@ -896,10 +897,9 @@ public class ReadActivity extends MyActivity {
             return;
         }
         isSpeaking = true;
-        String content = "暂不支持语音播放";
-//        String content = pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence();
-//        if (isFirstPage)
-//            content = pageFactory.getCurrentPage().getLineToString() + pageFactory.getNextPageFirstSentence();
+        String content = pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence();
+        if (isFirstPage)
+            content = pageFactory.getCurrentPage().getLineToString() + pageFactory.getNextPageFirstSentence();
         textToSpeech.stop();
 
         LogUtil.e("playSpeech---", content);

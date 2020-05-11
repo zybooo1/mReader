@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * 列表适配器
- */
+ * */
 public class FilesAdapter extends BaseQuickAdapter<BookFiles, BaseViewHolder> {
     private BookFilesContract.Presenter mPresenter;
 

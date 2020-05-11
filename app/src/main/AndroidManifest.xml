@@ -41,13 +41,6 @@
         <!--value的值填写渠道名称，例如yingyongbao。这里设置动态渠道变量-->
         <meta-data android:value="default" android:name="UMENG_CHANNEL"/>
 
-        <!--bugly tinker-->
-        <activity
-            android:name="com.tencent.bugly.beta.ui.BetaActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|locale"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent" />
-
         <activity
             android:name=".LauncherActivity"
             android:screenOrientation="portrait"
@@ -71,6 +64,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".module.backup.BackupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".module.backup.login.LoginActivity"
             android:screenOrientation="portrait" />
     </application>
 
