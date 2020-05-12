@@ -1,27 +1,13 @@
-package com.zyb.mreader.module.backup.login;
+package com.zyb.mreader.module.webdav.login;
 
 
-import android.os.Environment;
-
-import com.thegrizzlylabs.sardineandroid.DavResource;
 import com.thegrizzlylabs.sardineandroid.Sardine;
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine;
-import com.zyb.base.event.BaseEvent;
-import com.zyb.base.event.EventConstants;
 import com.zyb.base.http.CommonSubscriber;
 import com.zyb.base.mvp.AbstractPresenter;
-import com.zyb.base.utils.EventBusUtil;
 import com.zyb.base.utils.RxUtil;
-import com.zyb.base.utils.constant.Constants;
-import com.zyb.common.db.DBFactory;
-import com.zyb.common.db.bean.Book;
 import com.zyb.mreader.core.AppDataManager;
 import com.zyb.mreader.core.prefs.PreferenceHelperImpl;
-import com.zyb.mreader.utils.FileUtils;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -29,14 +15,6 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 
 /**
  *

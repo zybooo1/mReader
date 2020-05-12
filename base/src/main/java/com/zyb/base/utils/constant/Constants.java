@@ -42,6 +42,7 @@ public class Constants {
     public static final String JIANGUOYUN_HOST = "https://dav.jianguoyun.com/dav/";
     public static final String BOX_HOST = "https://dav.box.com/dav/";
 
+    public static final String DEFAULT_FILEPROVIDER = "com.zyb.mreader.fileprovider";
     public static final int TEXT_SIZE_SP_DEFAULT = 20;
     public static final int READ_BG_DEFAULT = 0;
     public static final int READ_BG_1 = 1;

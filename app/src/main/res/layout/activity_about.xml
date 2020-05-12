@@ -33,7 +33,7 @@
         android:padding="15dp"
         android:text="@string/mreader_app_name"
         android:textColor="@color/gray60"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivLogo" />

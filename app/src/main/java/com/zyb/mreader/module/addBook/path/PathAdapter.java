@@ -1,4 +1,4 @@
-package com.zyb.mreader.module.addBook.path.adapter;
+package com.zyb.mreader.module.addBook.path;
 
 import android.support.annotation.Nullable;
 

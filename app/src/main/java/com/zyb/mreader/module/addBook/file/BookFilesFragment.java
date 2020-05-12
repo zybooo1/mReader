@@ -1,11 +1,9 @@
 package com.zyb.mreader.module.addBook.file;
 
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.zyb.base.base.fragment.MVPFragment;
@@ -13,14 +11,12 @@ import com.zyb.base.di.component.AppComponent;
 import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
 import com.zyb.base.utils.EventBusUtil;
-import com.zyb.base.utils.QMUIViewHelper;
 import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
 import com.zyb.common.db.bean.BookFiles;
 import com.zyb.mreader.R;
 import com.zyb.mreader.di.component.DaggerFragmentComponent;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.di.module.FragmentModule;
-import com.zyb.mreader.module.addBook.file.adapter.FilesAdapter;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

@@ -14,14 +14,13 @@
         app:barStyle="light"
         app:layout_constraintTop_toTopOf="parent"
         app:lineVisible="true"
-        app:rightTitle="设置"
-        app:title="WebDav云备份" />
+        app:title="WebDav登录" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginLeft="25dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="25dp">
 
         <android.support.v7.widget.AppCompatSpinner
@@ -104,6 +103,19 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp" />
 
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="25dp"
+        android:background="@drawable/selector_button"
+        android:enabled="false"
+        android:text="登录"
+        android:textColor="@color/white90"
+        android:textSize="16sp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -126,5 +138,6 @@
             android:text="坚果云参考文档"
             android:textColor="@color/colorAccent" />
     </LinearLayout>
+    
 
 </LinearLayout>

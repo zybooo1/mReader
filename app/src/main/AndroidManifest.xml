@@ -41,6 +41,16 @@
         <!--value的值填写渠道名称，例如yingyongbao。这里设置动态渠道变量-->
         <meta-data android:value="default" android:name="UMENG_CHANNEL"/>
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.zyb.mreader.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/mreader_fileprovider_paths" />
+        </provider>
+
         <activity
             android:name=".LauncherActivity"
             android:screenOrientation="portrait"
@@ -63,10 +73,13 @@
             android:name=".AboutActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".module.backup.BackupActivity"
+            android:name=".module.webdav.WebdavActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".module.backup.login.LoginActivity"
+            android:name=".module.webdav.login.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".module.webdav.bookSelect.BookSelectActivity"
             android:screenOrientation="portrait" />
     </application>
 

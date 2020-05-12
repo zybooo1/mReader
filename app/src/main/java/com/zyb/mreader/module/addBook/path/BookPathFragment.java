@@ -20,7 +20,6 @@ import com.zyb.mreader.R;
 import com.zyb.mreader.di.component.DaggerFragmentComponent;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.di.module.FragmentModule;
-import com.zyb.mreader.module.addBook.path.adapter.PathAdapter;
 import com.zyb.mreader.utils.FileStack;
 import com.zyb.mreader.utils.FileTypeComparator;
 import com.zyb.mreader.utils.FileUtils;

@@ -1,14 +1,12 @@
-package com.zyb.mreader.module.backup.login;
+package com.zyb.mreader.module.webdav.login;
 
 
-import android.graphics.Color;
 import android.support.v7.widget.AppCompatSpinner;
-import android.view.View;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.Button;
 import android.widget.EditText;
 
-import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
-import com.kongzue.dialog.util.BaseDialog;
-import com.kongzue.dialog.v3.FullScreenDialog;
 import com.zyb.base.base.activity.MVPActivity;
 import com.zyb.base.di.component.AppComponent;
 import com.zyb.base.router.RouterConstants;
@@ -31,14 +29,39 @@ import butterknife.OnLongClick;
  */
 public class LoginActivity extends MVPActivity<LoginPresenter> implements
         LoginContract.View {
+    public static final int RESULT_SUCCESS = 0x586;
     @BindView(R.id.etUserName)
     public EditText etUserName;
     @BindView(R.id.etPassword)
     public EditText etPassword;
     @BindView(R.id.etWebDavHost)
     public EditText etWebDavHost;
+    @BindView(R.id.btnLogin)
+    public Button btnLogin;
     @BindView(R.id.spnHosts)
     public AppCompatSpinner spnHosts;
+    private TextWatcher watcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if(etWebDavHost.getText().toString().trim().isEmpty()||
+                    etUserName.getText().toString().trim().isEmpty()||
+                    etPassword.getText().toString().trim().isEmpty()){
+                btnLogin.setEnabled(false);
+            }else {
+                btnLogin.setEnabled(true);
+            }
+        }
+    };
 
     @Override
     protected int getLayoutId() {
@@ -52,6 +75,10 @@ public class LoginActivity extends MVPActivity<LoginPresenter> implements
 
     @Override
     protected void initView() {
+        etUserName.addTextChangedListener(watcher);
+        etPassword.addTextChangedListener(watcher);
+        etWebDavHost.addTextChangedListener(watcher);
+
         etUserName.setText(mPresenter.getWebDavUserName());
         etPassword.setText(mPresenter.getWebDavPassword());
         etWebDavHost.setText(mPresenter.getWebDavHost());
@@ -70,8 +97,8 @@ public class LoginActivity extends MVPActivity<LoginPresenter> implements
                 .inject(this);
     }
 
-    @OnClick(R.id.webDavHelp)
-    public void loginClick() {
+    @OnClick(R.id.btnLogin)
+    public void btnLogin() {
         mPresenter.login(etUserName.getText().toString(), etPassword.getText().toString(), etWebDavHost.getText().toString());
     }
 

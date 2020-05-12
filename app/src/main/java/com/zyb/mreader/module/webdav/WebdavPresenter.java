@@ -1,7 +1,8 @@
-package com.zyb.mreader.module.backup;
+package com.zyb.mreader.module.webdav;
 
 
 import android.os.Environment;
+import android.view.View;
 
 import com.thegrizzlylabs.sardineandroid.DavResource;
 import com.thegrizzlylabs.sardineandroid.Sardine;
@@ -11,7 +12,6 @@ import com.zyb.base.event.EventConstants;
 import com.zyb.base.http.CommonSubscriber;
 import com.zyb.base.mvp.AbstractPresenter;
 import com.zyb.base.utils.EventBusUtil;
-import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.RxUtil;
 import com.zyb.base.utils.constant.Constants;
 import com.zyb.common.db.DBFactory;
@@ -20,22 +20,14 @@ import com.zyb.mreader.core.AppDataManager;
 import com.zyb.mreader.core.prefs.PreferenceHelperImpl;
 import com.zyb.mreader.utils.FileUtils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -49,35 +41,68 @@ import io.reactivex.functions.Predicate;
  *
  */
 
-public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppDataManager> implements BackupContract.Presenter {
+public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppDataManager> implements WebdavContract.Presenter {
 
     PreferenceHelperImpl preferenceHelper;
 
     @Inject
-    BackupPresenter(AppDataManager dataManager) {
+    WebdavPresenter(AppDataManager dataManager) {
         super(dataManager);
         preferenceHelper = new PreferenceHelperImpl();
     }
 
     @Override
-    public String getWebDavHost() {
-        return mDataManager.getWebDavHost();
+    public boolean haveWebdavAccount() {
+        return !mDataManager.getWebDavHost().isEmpty() &&
+                !mDataManager.getWebDavUserName().isEmpty() &&
+                !mDataManager.getWebDavPassword().isEmpty();
     }
 
     @Override
-    public String getWebDavUserName() {
-        return mDataManager.getWebDavUserName();
+    public void getWebDavBooks() {
+        RxUtil.createFlowableData(getSardine())
+                .map(new Function<Sardine, List< DavResource>>() {
+                    @Override
+                    public List< DavResource> apply(Sardine sardine) throws Exception {
+                        String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
+                        List<DavResource> list = sardine.list(serverHostUrl);
+                        Iterator<DavResource> it = list.iterator();
+                        while(it.hasNext()){
+                            DavResource davResource = it.next();
+                            if(davResource.isDirectory()){
+                              it.remove();
+                            }
+                        }
+                        return list;
+                    }
+                })
+                .compose(RxUtil.rxSchedulerHelper())
+                .subscribe(new CommonSubscriber<List< DavResource>>(mView) {
+                    @Override
+                    protected void onStartWithViewAlive() {
+                        mView.showDialogLoading();
+                    }
+
+                    @Override
+                    protected void onCompleteWithViewAlive() {
+                        mView.hideDialogLoading();
+                    }
+
+                    @Override
+                    protected void onNextWithViewAlive(List< DavResource> davResources) {
+                        mView.onBooksLoaded(davResources);
+                    }
+
+                    @Override
+                    protected void onErrorWithViewAlive(Throwable e) {
+                        mView.showToast("抱歉，获取书籍失败了");
+                        mView.hideDialogLoading();
+                    }
+                });
     }
 
     @Override
-    public String getWebDavPassword() {
-        return mDataManager.getWebDavPassword();
-    }
-
-    @Override
-    public void backup() {
-        List<Book> books = mDataManager.getAllBooks();
-
+    public void upload(List<Book> books) {
         if (books.size() <= 0) {
             mView.showToast("无可备份书籍");
             return;
@@ -146,22 +171,71 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
                         if (mView == null) return;
                         mView.showToast("已备份至\"猫豆阅读\"文件夹");
                         mView.hideDialogLoading();
+                        getWebDavBooks();
                     }
                 });
     }
 
     @Override
-    public void recover() {
-        Observable.just(true)
-                .map(new Function<Boolean, List<DavResource>>() {
+    public void download(DavResource davResource, int position) {
+        Observable.just(davResource)
+                .flatMap(new Function<DavResource, ObservableSource<Boolean>>() {
                     @Override
-                    public List<DavResource> apply(Boolean aBoolean) throws Exception {
+                    public ObservableSource<Boolean> apply(DavResource davResources) throws Exception {
                         Sardine sardine = getSardine();
-                        String serverHostUrl = mDataManager.getWebDavHost()+ Constants.WEBDAV_BACKUP_PATH +"/";
-                        List<DavResource> resources = sardine.list(serverHostUrl);
-                        return resources;
+                        return Observable.create(new ObservableOnSubscribe<Boolean>() {
+                            @Override
+                            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
+                                try {
+                                    if (davResource.isDirectory())
+                                        emitter.onError(new Throwable("can not download a directory"));
+                                    String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
+                                    InputStream inputStream = sardine.get(serverHostUrl + davResource.getName());
+                                    //设置输入缓冲区
+                                    write(davResource.getName(), inputStream);
+                                    emitter.onNext(true);
+                                    emitter.onComplete();
+                                } catch (Exception e) {
+                                    emitter.onError(e);
+                                }
+                            }
+                        });
                     }
                 })
+                .compose(RxUtil.<Boolean>rxObservableSchedulerHelper())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        if (mView == null) return;
+                        mView.showDialogLoading();
+                    }
+
+                    @Override
+                    public void onNext(Boolean b) {
+                        if (mView == null) return;
+                        mView.onBookDownloaded(position);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (mView == null) return;
+                        mView.hideDialogLoading();
+                        mView.showToast("抱歉，下载失败了");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        EventBusUtil.sendStickyEvent(new BaseEvent(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
+                        if (mView == null) return;
+                        mView.hideDialogLoading();
+                    }
+                });
+    }
+
+    @Override
+    public void delete(List<DavResource> davResources) {
+        Observable.just(davResources)
                 .flatMap(new Function<List<DavResource>, ObservableSource<Boolean>>() {
                     @Override
                     public ObservableSource<Boolean> apply(List<DavResource> davResources) throws Exception {
@@ -171,11 +245,8 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
                             public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
                                 try {
                                     for (DavResource davResource : davResources) {
-                                        if(davResource.isDirectory())continue;
-                                        String serverHostUrl = mDataManager.getWebDavHost()+ Constants.WEBDAV_BACKUP_PATH +"/";
-                                        InputStream inputStream = sardine.get(serverHostUrl+davResource.getName());
-                                        //设置输入缓冲区
-                                        write(davResource.getName(), inputStream);
+                                        String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
+                                        sardine.delete(serverHostUrl + davResource.getName());
                                         emitter.onNext(true);
                                     }
                                     emitter.onComplete();
@@ -196,6 +267,7 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
 
                     @Override
                     public void onNext(Boolean b) {
+                        if (mView == null) return;
                     }
 
                     @Override
@@ -203,15 +275,14 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
                         e.printStackTrace();
                         if (mView == null) return;
                         mView.hideDialogLoading();
-                        mView.showToast("抱歉，恢复失败了");
+                        mView.showToast("抱歉，删除失败了");
                     }
 
                     @Override
                     public void onComplete() {
-                        EventBusUtil.sendStickyEvent(new BaseEvent(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
                         if (mView == null) return;
-                        mView.showToast("已成功恢复");
                         mView.hideDialogLoading();
+                        mView.onBookDeleted();
                     }
                 });
     }
@@ -227,7 +298,7 @@ public class BackupPresenter extends AbstractPresenter<BackupContract.View, AppD
             }
         }
         File targetFile = new File(file, filename);
-        if (com.zyb.base.utils.FileUtils.writeFileFromIS(targetFile,in,false)) {
+        if (com.zyb.base.utils.FileUtils.writeFileFromIS(targetFile, in, false)) {
             saveToDb(targetFile);
         }
     }

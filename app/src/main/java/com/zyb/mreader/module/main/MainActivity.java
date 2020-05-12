@@ -3,9 +3,11 @@ package com.zyb.mreader.module.main;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Vibrator;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +39,7 @@ import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.QMUIViewHelper;
 import com.zyb.base.utils.constant.ApiConstants;
+import com.zyb.base.utils.constant.Constants;
 import com.zyb.base.widget.WebActivity;
 import com.zyb.base.widget.decoration.GridItemSpaceDecoration;
 import com.zyb.common.db.DBFactory;
@@ -47,7 +50,7 @@ import com.zyb.mreader.di.component.DaggerActivityComponent;
 import com.zyb.mreader.di.module.ActivityModule;
 import com.zyb.mreader.di.module.ApiModule;
 import com.zyb.mreader.module.addBook.AddBookActivity;
-import com.zyb.mreader.module.backup.BackupActivity;
+import com.zyb.mreader.module.webdav.WebdavActivity;
 import com.zyb.mreader.widget.ContentScaleAnimation;
 import com.zyb.mreader.widget.Rotate3DAnimation;
 import com.zyb.reader.Config;
@@ -58,6 +61,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -252,7 +256,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
 
     @Override
     public void toBackup() {
-        startActivity(BackupActivity.class);
+        startActivity(WebdavActivity.class);
     }
 
     @Override
@@ -652,8 +656,8 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
             QMUIViewHelper.slideOut(layoutActionBottom, ANIM_HIDE_DURATION, QMUIViewHelper.QMUIDirection.TOP_TO_BOTTOM);
     }
 
-    @OnClick(R.id.layoutActionBottom)
-    public void onDeleteClick() {
+    @OnClick(R.id.btnDelete)
+    public void btnDelete() {
         List<Book> deleteBooks = new ArrayList<>();
         for (Book book : books) {
             if (book.isSelected()) deleteBooks.add(book);
@@ -672,6 +676,37 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                         return false;
                     }
                 }, null);
+    }
+    @OnClick(R.id.btnShare)
+    public void btnShare() {
+        List<Book> deleteBooks = new ArrayList<>();
+        for (Book book : books) {
+            if (book.isSelected()) deleteBooks.add(book);
+        }
+        if (deleteBooks.size() <= 0) {
+            showToast("请选择书本");
+            return;
+        }
+        if (deleteBooks.size() > 1) {
+            showToast("只能分享单个文件哦~");
+            return;
+        }
+        File file =new File(deleteBooks.get(0).getPath());
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.addCategory("android.intent.category.DEFAULT");
+        Uri pdfUri;
+        pdfUri = Uri.fromFile(file);
+        intent.putExtra(Intent.EXTRA_STREAM, pdfUri);
+        intent.setType("application/txt");
+        try {
+            pdfUri = FileProvider.getUriForFile(this, Constants.DEFAULT_FILEPROVIDER, file);
+            intent.putExtra(Intent.EXTRA_STREAM, pdfUri);
+            startActivity(Intent.createChooser(intent, "分享书籍"));
+        } catch (Exception e) {
+            startActivity(Intent.createChooser(intent, "分享书籍"));
+            e.printStackTrace();
+        }
     }
     //==============书架拖拽功能End================
 

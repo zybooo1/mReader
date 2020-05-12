@@ -9,6 +9,9 @@
     <!-- 分割线的颜色 -->
     <color name="colorLine">#ECECEC</color>
     <color name="touch_bg">#0D000000</color>
+    <color name="gradient_primary_bottom">#FFB326</color>
+    <color name="gradient_pressed_start">#FF9F26</color>
+    <color name="gradient_pressed_end">#FF6D26</color>
 
     <color name="book_loading_background">#00ffffff</color>
     <color name="book_loading_book">#cdcdcd</color>
