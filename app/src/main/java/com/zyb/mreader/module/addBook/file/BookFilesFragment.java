@@ -21,6 +21,7 @@ import com.zyb.mreader.di.module.FragmentModule;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

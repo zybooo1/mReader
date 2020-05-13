@@ -13,26 +13,39 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:barStyle="light"
-        app:rightTitle="全选"
         app:lineVisible="true"
+        app:rightTitle="全选"
         app:title="选择书籍" />
+
+    <TextView
+        android:id="@+id/layoutEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:text="你的书架还没有书耶~"
+        android:visibility="gone"
+        tools:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="0dp"
+        android:layout_weight="1"
         tools:itemCount="20"
         tools:listitem="@layout/item_book_select" />
-<TextView
-    android:id="@+id/btnCommit"
-    android:textColor="@color/white90"
-    android:textSize="16sp"
-    android:text="上传"
-    android:gravity="center"
-    android:padding="15dp"
-    android:background="@color/colorPrimary"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/btnCommit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="上传"
+        android:textColor="@color/white90"
+        android:textSize="16sp" />
 
 </LinearLayout>

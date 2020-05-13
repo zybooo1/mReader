@@ -4,9 +4,11 @@ import android.support.annotation.Nullable;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.thegrizzlylabs.sardineandroid.DavResource;
 import com.zyb.common.db.bean.Book;
 import com.zyb.mreader.R;
 import com.zyb.mreader.utils.FileUtils;
+import com.zyb.mreader.utils.WevdavUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,9 +18,11 @@ import java.util.List;
  * 列表适配器
  */
 public class BookSelectAdapter extends BaseQuickAdapter<Book, BaseViewHolder> {
+    List<DavResource> davResources;
 
-    public BookSelectAdapter(@Nullable List<Book> books) {
+    public BookSelectAdapter(@Nullable List<Book> books, List<DavResource> davResources) {
         super(R.layout.item_book_select, books);
+        this.davResources = davResources;
     }
 
     @Override
@@ -29,9 +33,12 @@ public class BookSelectAdapter extends BaseQuickAdapter<Book, BaseViewHolder> {
             size = FileUtils.getFileSize(file.length());
         }
 
+        boolean fileUploaded = WevdavUtils.isFileUploaded(book.getTitle(), davResources);
         helper.setText(R.id.tv_title, book.getTitle())
                 .setText(R.id.tv_size, size)
-                .setChecked(R.id.cbSelect, book.isSelected());
+                .setChecked(R.id.cbSelect, book.isSelected())
+                .setGone(R.id.tvUploaded, fileUploaded)
+                .setGone(R.id.cbSelect, !fileUploaded);
     }
 
     /**

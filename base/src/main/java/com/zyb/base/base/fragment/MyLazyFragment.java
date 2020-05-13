@@ -15,12 +15,8 @@ import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.v3.MessageDialog;
 import com.kongzue.dialog.v3.WaitDialog;
 import com.zyb.base.R;
-import com.zyb.base.mvp.AbstractPresenter;
 import com.zyb.base.mvp.BaseView;
 import com.zyb.base.umeng.UmengClient;
-import com.zyb.base.utils.LogUtil;
-
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -66,7 +62,6 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
     public void onDestroy() {
         super.onDestroy();
         if (isUnbindButterKnife()) mButterKnife.unbind();
-        hideDialogLoading();
     }
 
     /**
@@ -105,15 +100,10 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
 
 
     /*----------Loading弹窗 Begin------------*/
-    com.kongzue.dialog.v3.WaitDialog loadingDialog;
 
     @Override
     public void showDialogLoading(String msg) {
-        if (loadingDialog == null) {
-            loadingDialog = (com.kongzue.dialog.v3.WaitDialog) WaitDialog.build(getFragmentActivity());
-        }
-        loadingDialog.setMessage(msg);
-        loadingDialog.show();
+        WaitDialog.show(mActivity, msg);
     }
 
     @Override
@@ -123,7 +113,7 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
 
     @Override
     public void hideDialogLoading() {
-        if (loadingDialog != null) loadingDialog.doDismiss();
+        WaitDialog.dismiss();
     }
     /*----------Loading弹窗 End------------*/
 

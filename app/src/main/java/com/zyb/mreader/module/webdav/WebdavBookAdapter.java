@@ -7,6 +7,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.thegrizzlylabs.sardineandroid.DavResource;
 import com.zyb.mreader.R;
+import com.zyb.mreader.utils.WevdavUtils;
 
 import java.util.List;
 
@@ -84,14 +85,14 @@ public class WebdavBookAdapter extends BaseQuickAdapter<DavResource, BaseViewHol
     @Override
     protected void convert(BaseViewHolder helper, DavResource book) {
         int position = helper.getLayoutPosition();
+        boolean fileDownloaded = WevdavUtils.isFileDownloaded(book.getDisplayName());
         helper.setText(R.id.tvTitle, book.getDisplayName())
                 .setText(R.id.item_title, book.getDisplayName())
                 .setText(R.id.tvInfo, book.getPath())
                 .setChecked(R.id.cbSelect, isItemSelected(position))
                 .setGone(R.id.cbSelect, isCanSelect())
-                .setGone(R.id.tvDownloaded, !isCanSelect()&&false)
-                .setGone(R.id.btnDownload, !isCanSelect()&&true)
-                .addOnClickListener(R.id.tvDownloaded);
+                .setGone(R.id.tvDownloaded, !isCanSelect()&&fileDownloaded)
+                .setGone(R.id.btnDownload, !isCanSelect()&&!fileDownloaded)
+                .addOnClickListener(R.id.btnDownload);
     }
-
 }

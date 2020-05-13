@@ -46,7 +46,14 @@
             android:textSize="12sp"
             tools:text="2226516513516525612321133216521323213222265165135165256123211332165213232132" />
     </LinearLayout>
-
+    <TextView
+        android:id="@+id/tvUploaded"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="已上传"
+        android:visibility="gone"
+        tools:visibility="visible" />
     <CheckBox
         android:id="@+id/cbSelect"
         android:clickable="false"

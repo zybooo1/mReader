@@ -43,12 +43,10 @@ public class LoginActivity extends MVPActivity<LoginPresenter> implements
     private TextWatcher watcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-
         }
 
         @Override
@@ -84,7 +82,6 @@ public class LoginActivity extends MVPActivity<LoginPresenter> implements
         etWebDavHost.setText(mPresenter.getWebDavHost());
 
         spnHosts.setSelection(0, true);
-
     }
 
     @Override
@@ -128,9 +125,9 @@ public class LoginActivity extends MVPActivity<LoginPresenter> implements
         }
     }
 
-
     @Override
     public void loginSuccess() {
+        setResult(RESULT_SUCCESS);
         finish();
     }
 }

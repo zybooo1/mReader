@@ -2,7 +2,6 @@ package com.zyb.mreader.module.webdav;
 
 
 import android.os.Environment;
-import android.view.View;
 
 import com.thegrizzlylabs.sardineandroid.DavResource;
 import com.thegrizzlylabs.sardineandroid.Sardine;
@@ -22,12 +21,15 @@ import com.zyb.mreader.utils.FileUtils;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -35,7 +37,6 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 
 /**
  *
@@ -61,23 +62,23 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
     @Override
     public void getWebDavBooks() {
         RxUtil.createFlowableData(getSardine())
-                .map(new Function<Sardine, List< DavResource>>() {
+                .map(new Function<Sardine, List<DavResource>>() {
                     @Override
-                    public List< DavResource> apply(Sardine sardine) throws Exception {
+                    public List<DavResource> apply(Sardine sardine) throws Exception {
                         String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
                         List<DavResource> list = sardine.list(serverHostUrl);
                         Iterator<DavResource> it = list.iterator();
-                        while(it.hasNext()){
+                        while (it.hasNext()) {
                             DavResource davResource = it.next();
-                            if(davResource.isDirectory()){
-                              it.remove();
+                            if (davResource.isDirectory()) {
+                                it.remove();
                             }
                         }
                         return list;
                     }
                 })
                 .compose(RxUtil.rxSchedulerHelper())
-                .subscribe(new CommonSubscriber<List< DavResource>>(mView) {
+                .subscribe(new CommonSubscriber<List<DavResource>>(mView) {
                     @Override
                     protected void onStartWithViewAlive() {
                         mView.showDialogLoading();
@@ -89,7 +90,7 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                     }
 
                     @Override
-                    protected void onNextWithViewAlive(List< DavResource> davResources) {
+                    protected void onNextWithViewAlive(List<DavResource> davResources) {
                         mView.onBooksLoaded(davResources);
                     }
 
@@ -103,75 +104,52 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
 
     @Override
     public void upload(List<Book> books) {
-        if (books.size() <= 0) {
-            mView.showToast("无可备份书籍");
-            return;
-        }
-
-        Observable.fromIterable(books)
-                .filter(new Predicate<Book>() {
-                    @Override
-                    public boolean test(Book book) throws Exception {
-                        boolean isIntroductionTxt = book.getTitle().equals("欢迎使用");
-                        return !isIntroductionTxt;
+        Flowable.create(new FlowableOnSubscribe<String>() {
+            @Override
+            public void subscribe(FlowableEmitter<String> emitter) throws Exception {
+                for (Book book : books) {
+                    if (book.getTitle().equals("欢迎使用")) continue;
+                    Sardine sardine = getSardine();
+                    //把要上传的数据转成byte数组
+                    //首先判断目标存储路径文件夹存不存在
+                    String serverHostUrl = mDataManager.getWebDavHost();
+                    if (!sardine.exists(serverHostUrl + Constants.WEBDAV_BACKUP_PATH + "/")) {
+                        //若不存在需要创建目录
+                        sardine.createDirectory(serverHostUrl + Constants.WEBDAV_BACKUP_PATH + "/");
                     }
-                })
-                .flatMap(new Function<Book, ObservableSource<Boolean>>() {
-                    @Override
-                    public ObservableSource<Boolean> apply(Book book) throws Exception {
 
-                        return Observable.create(new ObservableOnSubscribe<Boolean>() {
-                            @Override
-                            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
-                                try {
-                                    Sardine sardine = getSardine();
-                                    //把要上传的数据转成byte数组
-                                    //首先判断目标存储路径文件夹存不存在
-                                    String serverHostUrl = mDataManager.getWebDavHost();
-                                    if (!sardine.exists(serverHostUrl + Constants.WEBDAV_BACKUP_PATH + "/")) {
-                                        //若不存在需要创建目录
-                                        sardine.createDirectory(serverHostUrl + Constants.WEBDAV_BACKUP_PATH + "/");
-                                    }
-
-                                    File bookFile = new File(book.getPath());
-                                    //存入数据
-                                    sardine.put(serverHostUrl + Constants.WEBDAV_BACKUP_PATH + "/" + bookFile.getName(),
-                                            bookFile, "txt");
-                                    emitter.onNext(true);
-                                    emitter.onComplete();
-                                } catch (Exception e) {
-                                    emitter.onError(e);
-                                }
-                            }
-                        });
-                    }
-                }, true)
-                .compose(RxUtil.<Boolean>rxObservableSchedulerHelper())
-                .subscribe(new Observer<Boolean>() {
+                    File bookFile = new File(book.getPath());
+                    //存入数据
+                    sardine.put(serverHostUrl + Constants.WEBDAV_BACKUP_PATH + "/" + bookFile.getName(),
+                            bookFile, "txt");
+                    emitter.onNext(book.getPath());
+                }
+                emitter.onComplete();
+            }
+        }, BackpressureStrategy.BUFFER)
+                .compose(RxUtil.rxSchedulerHelper())
+                .subscribe(new CommonSubscriber<String>(mView) {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        if (mView == null) return;
+                    protected void onStartWithViewAlive() {
                         mView.showDialogLoading();
                     }
 
                     @Override
-                    public void onNext(Boolean b) {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (mView == null) return;
-                        mView.hideDialogLoading();
-                        mView.showToast("抱歉，备份失败了");
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        if (mView == null) return;
-                        mView.showToast("已备份至\"猫豆阅读\"文件夹");
+                    protected void onCompleteWithViewAlive() {
+                        mView.showToast("已上传至\"" + Constants.WEBDAV_BACKUP_PATH + "\"文件夹");
                         mView.hideDialogLoading();
                         getWebDavBooks();
+                    }
+
+                    @Override
+                    protected void onNextWithViewAlive(String s) {
+
+                    }
+
+                    @Override
+                    protected void onErrorWithViewAlive(Throwable e) {
+                        mView.hideDialogLoading();
+                        mView.showToast("抱歉，上传失败了");
                     }
                 });
     }
@@ -186,18 +164,27 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                         return Observable.create(new ObservableOnSubscribe<Boolean>() {
                             @Override
                             public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
-                                try {
-                                    if (davResource.isDirectory())
-                                        emitter.onError(new Throwable("can not download a directory"));
-                                    String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
-                                    InputStream inputStream = sardine.get(serverHostUrl + davResource.getName());
-                                    //设置输入缓冲区
-                                    write(davResource.getName(), inputStream);
-                                    emitter.onNext(true);
-                                    emitter.onComplete();
-                                } catch (Exception e) {
-                                    emitter.onError(e);
+                                if (davResource.isDirectory())
+                                    emitter.onError(new Throwable("can not download a directory"));
+                                String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + File.separator;
+                                InputStream inputStream = sardine.get(serverHostUrl + davResource.getName());
+
+                                File file = new File(Environment.getExternalStorageDirectory() + File.separator + Constants.WEBDAV_BACKUP_PATH);
+                                if (!file.exists()) {
+                                    if (!file.mkdirs()) {//若创建文件夹不成功
+                                        System.out.println("Unable to create external cache directory");
+                                        mView.showToast("无法创建本地文件夹");
+                                        return;
+                                    }
                                 }
+                                File targetFile = new File(file, davResource.getName());
+                                boolean isSaved = com.zyb.base.utils.FileUtils.writeFileFromIS(targetFile, inputStream, false);
+                                if (isSaved) {
+                                    saveToDb(targetFile);
+                                }
+
+                                emitter.onNext(isSaved);
+                                emitter.onComplete();
                             }
                         });
                     }
@@ -211,8 +198,12 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                     }
 
                     @Override
-                    public void onNext(Boolean b) {
+                    public void onNext(Boolean isSaved) {
                         if (mView == null) return;
+                        if (!isSaved) {
+                            mView.showToast("抱歉，下载失败了~");
+                            return;
+                        }
                         mView.onBookDownloaded(position);
                     }
 
@@ -285,22 +276,6 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                         mView.onBookDeleted();
                     }
                 });
-    }
-
-    private void write(String filename, InputStream in) {
-
-        File file = new File(Environment.getExternalStorageDirectory() + "/猫豆阅读");
-        if (!file.exists()) {
-            if (!file.mkdirs()) {//若创建文件夹不成功
-                System.out.println("Unable to create external cache directory");
-                mView.showToast("无法创建本地文件夹");
-                return;
-            }
-        }
-        File targetFile = new File(file, filename);
-        if (com.zyb.base.utils.FileUtils.writeFileFromIS(targetFile, in, false)) {
-            saveToDb(targetFile);
-        }
     }
 
     private void saveToDb(File bookFile) {

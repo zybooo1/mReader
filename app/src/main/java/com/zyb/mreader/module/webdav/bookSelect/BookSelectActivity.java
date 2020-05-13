@@ -16,7 +16,9 @@ import com.zyb.mreader.R;
 import com.zyb.mreader.di.component.DaggerActivityComponent;
 import com.zyb.mreader.di.module.ActivityModule;
 import com.zyb.mreader.di.module.ApiModule;
+import com.zyb.mreader.utils.WevdavUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +33,10 @@ public class BookSelectActivity extends MVPActivity<BookSelectPresenter> impleme
         BookSelectContract.View {
     public static final int RESULT_SUCCESS = 0x587;
     public static final String RESULT_FLAG = "result_flag_select";
+    List<DavResource> davResources = new ArrayList<>();
 
+    @BindView(R.id.layoutEmpty)
+    View layoutEmpty;
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -51,7 +56,6 @@ public class BookSelectActivity extends MVPActivity<BookSelectPresenter> impleme
         }
     };
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.activity_book_select;
@@ -64,40 +68,34 @@ public class BookSelectActivity extends MVPActivity<BookSelectPresenter> impleme
 
     @Override
     protected void initView() {
-        List<Book> books = mPresenter.getBooks();
-        Iterator<Book> it = books.iterator();
-        while(it.hasNext()){
-            Book book = it.next();
-            if(book.getTitle().equals("欢迎使用")){
-                it.remove();
-            }
-        }
-        booksList.addAll(books);
-
-        booksAdapter = new BookSelectAdapter(booksList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(new VerticalItemLineDecoration(this));
-        recyclerView.setAdapter(booksAdapter);
-        booksAdapter.bindToRecyclerView(recyclerView);
-        booksAdapter.setOnItemClickListener(onItemClick);
+        mPresenter.getWebDavBooks();
     }
+
     @Override
     public void onRightClick(View v) {
         getTitleBar().setRightTitle(getTitleBar().getRightTitle().equals("全选") ? "取消" : "全选");
         booksAdapter.selectOrUnselectAll();
     }
+
     @OnClick(R.id.btnCommit)
     public void btnCommit() {
         ArrayList<Book> selectedBooks = booksAdapter.getSelectedBooks();
-        if(selectedBooks.size()==0){
+        Iterator<Book> iterator = selectedBooks.iterator();
+        while (iterator.hasNext()) {
+            Book b = iterator.next();
+            if (WevdavUtils.isFileUploaded(b.getTitle(), davResources))
+                iterator.remove();
+        }
+        if (selectedBooks.size() == 0) {
             showToast("请选择书籍");
             return;
         }
-        Intent intent =new Intent();
-        intent.putExtra(RESULT_FLAG,selectedBooks);
-        setResult(RESULT_SUCCESS,intent);
+        Intent intent = new Intent();
+        intent.putExtra(RESULT_FLAG, selectedBooks);
+        setResult(RESULT_SUCCESS, intent);
         finish();
     }
+
     @Override
     protected void setupActivityComponent(AppComponent appComponent) {
         DaggerActivityComponent.builder()
@@ -108,4 +106,34 @@ public class BookSelectActivity extends MVPActivity<BookSelectPresenter> impleme
                 .inject(this);
     }
 
+    @Override
+    public void onBooksLoaded(List<DavResource> davResources) {
+        this.davResources.addAll(davResources);
+
+        List<Book> books = mPresenter.getBooks();
+        Iterator<Book> it = books.iterator();
+        while (it.hasNext()) {
+            Book book = it.next();
+            if (book.getTitle().equals("欢迎使用") || !new File(book.getPath()).exists()) {
+                it.remove();
+            }
+        }
+        booksList.addAll(books);
+        layoutEmpty.setVisibility(booksList.size()<=0?View.VISIBLE:View.GONE);
+
+        booksAdapter = new BookSelectAdapter(booksList, this.davResources);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(new VerticalItemLineDecoration(this));
+        recyclerView.setAdapter(booksAdapter);
+        booksAdapter.bindToRecyclerView(recyclerView);
+        booksAdapter.setOnItemClickListener(onItemClick);
+    }
+
+    @Override
+    protected void onDestroy() {
+        for (Book book : booksList) {
+            book.setSelected(false);
+        }
+        super.onDestroy();
+    }
 }

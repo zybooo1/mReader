@@ -107,7 +107,6 @@ public abstract class MyActivity extends UIActivity
     protected void onDestroy() {
         super.onDestroy();
         if (mButterKnife != null) mButterKnife.unbind();
-        hideDialogLoading();
     }
 
     @Override
@@ -129,7 +128,7 @@ public abstract class MyActivity extends UIActivity
     /*----------Loading弹窗 Begin------------*/
     @Override
     public void showDialogLoading(String msg) {
-        WaitDialog.showWait(this,msg);
+        WaitDialog.show(this,msg);
     }
 
     @Override

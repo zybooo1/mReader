@@ -7,6 +7,7 @@ import com.zyb.base.utils.constant.Constants;
 import com.zyb.common.db.bean.DaoMaster;
 import com.zyb.common.db.bean.DaoSession;
 
+import org.greenrobot.greendao.identityscope.IdentityScopeType;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 /**
@@ -53,6 +54,8 @@ public class DBManage {
      */
     public synchronized DaoSession getDaoSession() {
         if (null == mDaoSession) {
+            //不使用缓存
+//            mDaoSession = getDaoMaster().newSession(IdentityScopeType.None);
             mDaoSession = getDaoMaster().newSession();
         }
         return mDaoSession;
