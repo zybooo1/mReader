@@ -54,7 +54,7 @@ public class FileUtils {
     public static String getFilePrefix(File file) {
         if (file==null||file.getName().isEmpty()) return "";
         String fileName=file.getName();
-        String[] token = fileName.split(".");
+        String[] token = fileName.split("\\.");
         if(token.length<=1) return "";
         return token[1];
     }

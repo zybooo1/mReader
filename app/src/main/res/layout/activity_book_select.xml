@@ -41,7 +41,7 @@
         android:id="@+id/btnCommit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/gradient_bg_drawer"
         android:gravity="center"
         android:padding="15dp"
         android:text="上传"

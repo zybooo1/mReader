@@ -34,6 +34,7 @@ import com.zyb.mreader.module.webdav.login.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -269,7 +270,7 @@ public class WebdavActivity extends MVPActivity<WebdavPresenter> implements
             showToast("请选择书本");
             return;
         }
-        showDialog(true, "是否删除这些书本？", "取消", "移除",
+        showDialog(true, "将从云盘里删除这些书本", "取消", "删除",
                 new OnDialogButtonClickListener() {
                     @Override
                     public boolean onClick(BaseDialog baseDialog, View v) {

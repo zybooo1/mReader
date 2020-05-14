@@ -77,6 +77,11 @@ public class BookSelectPresenter extends AbstractPresenter<BookSelectContract.Vi
                 });
     }
 
+    @Override
+    public void detachAllBooks() {
+        mDataManager.detachAll();
+    }
+
     Sardine sardine;
 
     private Sardine getSardine() {

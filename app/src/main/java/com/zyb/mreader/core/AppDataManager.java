@@ -77,6 +77,11 @@ public class AppDataManager implements HttpHelper, PreferenceHelper, DbHelper, B
     }
 
     @Override
+    public void detachAll() {
+        mGreenDaoHelper.detachAll();
+    }
+
+    @Override
     public void setIsFilterENfiles(boolean isFilterENfiles) {
         mPreferenceHelper.setIsFilterENfiles(isFilterENfiles);
     }

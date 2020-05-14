@@ -30,4 +30,5 @@ public interface DbHelper {
     void updateBookFiles(List<BookFiles> books);
 
     void sortBook(Book book, int newPosition);
+    void detachAll();
 }

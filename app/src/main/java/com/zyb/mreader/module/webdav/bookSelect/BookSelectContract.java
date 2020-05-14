@@ -16,5 +16,6 @@ public interface BookSelectContract {
     interface Presenter extends BasePresenter<View> {
         List<Book> getBooks();
         void getWebDavBooks();
+        void detachAllBooks();
     }
 }

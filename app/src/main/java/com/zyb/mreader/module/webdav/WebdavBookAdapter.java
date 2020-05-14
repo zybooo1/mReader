@@ -86,13 +86,21 @@ public class WebdavBookAdapter extends BaseQuickAdapter<DavResource, BaseViewHol
     protected void convert(BaseViewHolder helper, DavResource book) {
         int position = helper.getLayoutPosition();
         boolean fileDownloaded = WevdavUtils.isFileDownloaded(book.getDisplayName());
-        helper.setText(R.id.tvTitle, book.getDisplayName())
-                .setText(R.id.item_title, book.getDisplayName())
+        helper.setText(R.id.tvTitle, getDavResourceName(book))
+                .setText(R.id.item_title, getDavResourceName(book))
                 .setText(R.id.tvInfo, book.getPath())
                 .setChecked(R.id.cbSelect, isItemSelected(position))
                 .setGone(R.id.cbSelect, isCanSelect())
                 .setGone(R.id.tvDownloaded, !isCanSelect()&&fileDownloaded)
                 .setGone(R.id.btnDownload, !isCanSelect()&&!fileDownloaded)
                 .addOnClickListener(R.id.btnDownload);
+    }
+
+    public static String getDavResourceName(DavResource davResource){
+        String name =davResource.getDisplayName();
+        if(!name.contains("."))return name;
+        String[] split = name.split("\\.");
+        if(split.length<=0)return name;
+        return split[0];
     }
 }

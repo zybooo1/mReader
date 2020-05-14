@@ -119,7 +119,7 @@ public class BookSelectActivity extends MVPActivity<BookSelectPresenter> impleme
             }
         }
         booksList.addAll(books);
-        layoutEmpty.setVisibility(booksList.size()<=0?View.VISIBLE:View.GONE);
+        layoutEmpty.setVisibility(booksList.size() <= 0 ? View.VISIBLE : View.GONE);
 
         booksAdapter = new BookSelectAdapter(booksList, this.davResources);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -131,9 +131,7 @@ public class BookSelectActivity extends MVPActivity<BookSelectPresenter> impleme
 
     @Override
     protected void onDestroy() {
-        for (Book book : booksList) {
-            book.setSelected(false);
-        }
+        mPresenter.detachAllBooks();
         super.onDestroy();
     }
 }

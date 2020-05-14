@@ -103,4 +103,9 @@ public class GreenDaoHelper implements DbHelper {
         booksManage.insertOrUpdate(book);
     }
 
+    @Override
+    public void detachAll() {
+        dbFactory.getBooksManage().detachAll();
+    }
+
 }

@@ -106,6 +106,9 @@ public class BaseDBManager<T, K> {
     public void detach(T item) {
         mDao.detach(item);
     }
+    public void detachAll() {
+        mDao.detachAll();
+    }
 
 }
 
