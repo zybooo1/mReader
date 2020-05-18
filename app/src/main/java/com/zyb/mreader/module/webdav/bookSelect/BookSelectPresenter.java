@@ -36,7 +36,7 @@ public class BookSelectPresenter extends AbstractPresenter<BookSelectContract.Vi
     }
     @Override
     public void getWebDavBooks() {
-        RxUtil.createFlowableData(getSardine())
+        addSubscribe(RxUtil.createFlowableData(getSardine())
                 .map(new Function<Sardine, List<DavResource>>() {
                     @Override
                     public List<DavResource> apply(Sardine sardine) throws Exception {
@@ -53,7 +53,7 @@ public class BookSelectPresenter extends AbstractPresenter<BookSelectContract.Vi
                     }
                 })
                 .compose(RxUtil.rxSchedulerHelper())
-                .subscribe(new CommonSubscriber<List<DavResource>>(mView) {
+                .subscribeWith(new CommonSubscriber<List<DavResource>>(mView) {
                     @Override
                     protected void onStartWithViewAlive() {
                         mView.showDialogLoading();
@@ -74,7 +74,7 @@ public class BookSelectPresenter extends AbstractPresenter<BookSelectContract.Vi
                         mView.showToast("抱歉，获取书籍失败了");
                         mView.hideDialogLoading();
                     }
-                });
+                }));
     }
 
     @Override
