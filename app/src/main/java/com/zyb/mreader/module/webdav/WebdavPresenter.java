@@ -19,8 +19,6 @@ import com.zyb.mreader.core.AppDataManager;
 import com.zyb.mreader.core.prefs.PreferenceHelperImpl;
 import com.zyb.mreader.utils.FileUtils;
 
-import org.reactivestreams.Publisher;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -32,12 +30,6 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 
 /**
@@ -158,108 +150,32 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
 
     @Override
     public void download(DavResource davResource, int position) {
-//        Observable.just(davResource)
-//                .flatMap(new Function<DavResource, ObservableSource<Boolean>>() {
-//                    @Override
-//                    public ObservableSource<Boolean> apply(DavResource davResources) throws Exception {
-//                        Sardine sardine = getSardine();
-//                        return Observable.create(new ObservableOnSubscribe<Boolean>() {
-//                            @Override
-//                            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
-//                                if (davResource.isDirectory())
-//                                    emitter.onError(new Throwable("can not download a directory"));
-//                                String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + File.separator;
-//                                InputStream inputStream = sardine.get(serverHostUrl + davResource.getName());
-//
-//                                File file = new File(Environment.getExternalStorageDirectory() + File.separator + Constants.WEBDAV_BACKUP_PATH);
-//                                if (!file.exists()) {
-//                                    if (!file.mkdirs()) {//若创建文件夹不成功
-//                                        System.out.println("Unable to create external cache directory");
-//                                        mView.showToast("无法创建本地文件夹");
-//                                        return;
-//                                    }
-//                                }
-//                                File targetFile = new File(file, davResource.getName());
-//                                boolean isSaved = com.zyb.base.utils.FileUtils.writeFileFromIS(targetFile, inputStream, false);
-//                                if (isSaved) {
-//                                    saveToDb(targetFile);
-//                                }
-//
-//                                emitter.onNext(isSaved);
-//                                emitter.onComplete();
-//                            }
-//                        });
-//                    }
-//                })
-//                .compose(RxUtil.<Boolean>rxObservableSchedulerHelper())
-//                .subscribe(new Observer<Boolean>() {
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//                        if (mView == null) return;
-//                        mView.showDialogLoading();
-//                    }
-//
-//                    @Override
-//                    public void onNext(Boolean isSaved) {
-//                        if (mView == null) return;
-//                        if (!isSaved) {
-//                            mView.showToast("抱歉，下载失败了~");
-//                            return;
-//                        }
-//                        mView.onBookDownloaded(position);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                        if (mView == null) return;
-//                        mView.hideDialogLoading();
-//                        mView.showToast("抱歉，下载失败了");
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//                        EventBusUtil.sendStickyEvent(new BaseEvent(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
-//                        if (mView == null) return;
-//                        mView.hideDialogLoading();
-//                    }
-//                });
-        addSubscribe(Flowable.create(davResource)
-                .flatMap(new Function<DavResource, Publisher<Boolean>>() {
-                    @Override
-                    public Publisher<Boolean> apply(DavResource davResource) throws Exception {
-                                                Sardine sardine = getSardine();
-                        return Observable.create(new ObservableOnSubscribe<Boolean>() {
-                            @Override
-                            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
-                                if (davResource.isDirectory())
-                                    emitter.onError(new Throwable("can not download a directory"));
-                                String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + File.separator;
-                                InputStream inputStream = sardine.get(serverHostUrl + davResource.getName());
+        addSubscribe(Flowable.create(new FlowableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(FlowableEmitter<Boolean> emitter) throws Exception {
+                if (davResource.isDirectory())
+                    emitter.onError(new Throwable("can not download a directory"));
+                String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + File.separator;
+                InputStream inputStream = sardine.get(serverHostUrl + davResource.getName());
 
-                                File file = new File(Environment.getExternalStorageDirectory() + File.separator + Constants.WEBDAV_BACKUP_PATH);
-                                if (!file.exists()) {
-                                    if (!file.mkdirs()) {//若创建文件夹不成功
-                                        System.out.println("Unable to create external cache directory");
-                                        mView.showToast("无法创建本地文件夹");
-                                        return;
-                                    }
-                                }
-                                File targetFile = new File(file, davResource.getName());
-                                boolean isSaved = com.zyb.base.utils.FileUtils.writeFileFromIS(targetFile, inputStream, false);
-                                if (isSaved) {
-                                    saveToDb(targetFile);
-                                }
-
-                                emitter.onNext(isSaved);
-                                emitter.onComplete();
-                            }
-                        });
+                File file = new File(Environment.getExternalStorageDirectory() + File.separator + Constants.WEBDAV_BACKUP_PATH);
+                if (!file.exists()) {
+                    if (!file.mkdirs()) {//若创建文件夹不成功
+                        System.out.println("Unable to create external cache directory");
+                        mView.showToast("无法创建本地文件夹");
+                        return;
                     }
+                }
+                File targetFile = new File(file, davResource.getName());
+                boolean isSaved = com.zyb.base.utils.FileUtils.writeFileFromIS(targetFile, inputStream, false);
+                if (isSaved) {
+                    saveToDb(targetFile);
+                }
 
-                        return null;
-                    }
-                })
+                emitter.onNext(isSaved);
+                emitter.onComplete();
+            }
+        }, BackpressureStrategy.BUFFER)
                 .compose(RxUtil.rxSchedulerHelper())
                 .subscribeWith(new CommonSubscriber<Boolean>(mView) {
                     @Override
@@ -274,8 +190,8 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                     }
 
                     @Override
-                    protected void onNextWithViewAlive(Boolean aBoolean) {
-                        if (!aBoolean) {
+                    protected void onNextWithViewAlive(Boolean isSaved) {
+                        if (!isSaved) {
                             mView.showToast("抱歉，下载失败了~");
                             return;
                         }
@@ -293,56 +209,46 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
 
     @Override
     public void delete(List<DavResource> davResources) {
-        Observable.just(davResources)
-                .flatMap(new Function<List<DavResource>, ObservableSource<Boolean>>() {
+
+        addSubscribe(Flowable.create(new FlowableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(FlowableEmitter<Boolean> emitter) throws Exception {
+                Sardine sardine = getSardine();
+
+                for (DavResource davResource : davResources) {
+                    String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
+                    sardine.delete(serverHostUrl + davResource.getName());
+                    emitter.onNext(true);
+                }
+                emitter.onComplete();
+            }
+        }, BackpressureStrategy.BUFFER)
+                .compose(RxUtil.rxSchedulerHelper())
+                .subscribeWith(new CommonSubscriber<Boolean>(mView) {
                     @Override
-                    public ObservableSource<Boolean> apply(List<DavResource> davResources) throws Exception {
-                        Sardine sardine = getSardine();
-                        return Observable.create(new ObservableOnSubscribe<Boolean>() {
-                            @Override
-                            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
-                                try {
-                                    for (DavResource davResource : davResources) {
-                                        String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
-                                        sardine.delete(serverHostUrl + davResource.getName());
-                                        emitter.onNext(true);
-                                    }
-                                    emitter.onComplete();
-                                } catch (Exception e) {
-                                    emitter.onError(e);
-                                }
-                            }
-                        });
-                    }
-                })
-                .compose(RxUtil.<Boolean>rxObservableSchedulerHelper())
-                .subscribe(new Observer<Boolean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        if (mView == null) return;
+                    protected void onStartWithViewAlive() {
                         mView.showDialogLoading();
                     }
 
                     @Override
-                    public void onNext(Boolean b) {
+                    protected void onCompleteWithViewAlive() {
                         if (mView == null) return;
+                        mView.hideDialogLoading();
+                        mView.onBookDeleted();
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    protected void onNextWithViewAlive(Boolean isSaved) {
+                    }
+
+                    @Override
+                    protected void onErrorWithViewAlive(Throwable e) {
                         e.printStackTrace();
                         if (mView == null) return;
                         mView.hideDialogLoading();
                         mView.showToast("抱歉，删除失败了");
                     }
-
-                    @Override
-                    public void onComplete() {
-                        if (mView == null) return;
-                        mView.hideDialogLoading();
-                        mView.onBookDeleted();
-                    }
-                });
+                }));
     }
 
     private void saveToDb(File bookFile) {

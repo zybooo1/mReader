@@ -45,7 +45,7 @@
             android:id="@+id/backup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:bar_leftText="WebDav云备份"
+            app:bar_leftText="WebDAV云备份"
             android:layout_marginTop="15dp"
             app:bar_rightColor="@color/gray60"
             app:bar_rightIcon="@mipmap/ico_go_black" />

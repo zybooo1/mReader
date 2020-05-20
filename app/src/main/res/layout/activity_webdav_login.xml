@@ -14,7 +14,7 @@
         app:barStyle="light"
         app:layout_constraintTop_toTopOf="parent"
         app:lineVisible="true"
-        app:title="WebDav登录" />
+        app:title="WebDAV登录" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:text="WebDav服务器地址" />
+            android:text="WebDAV服务器地址" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
         android:layout_marginRight="25dp"
         android:background="@drawable/ios_edit_box_bkg"
         android:gravity="center"
-        android:hint="WebDav地址"
+        android:hint="WebDAV地址"
         android:paddingLeft="15dp"
         android:paddingRight="15dp" />
 
@@ -127,7 +127,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="还没有WebDav账号？了解" />
+            android:text="还没有WebDAV账号？了解" />
 
         <TextView
             android:id="@+id/webDavHelp"

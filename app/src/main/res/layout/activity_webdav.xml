@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lineVisible="true"
         app:rightTitle="设置"
-        app:title="WebDav云备份" />
+        app:title="WebDAV云备份" />
 
     <com.hjq.bar.TitleBar
         android:id="@+id/layoutActionTop"
@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:text="登录WebDav"
+            android:text="登录WebDAV"
             android:textColor="@color/colorAccent" />
     </LinearLayout>
 
