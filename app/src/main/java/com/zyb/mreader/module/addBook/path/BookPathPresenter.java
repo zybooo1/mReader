@@ -27,7 +27,7 @@ public class BookPathPresenter extends AbstractPresenter<BookPathContract.View, 
     @Override
     public void addBook(Book book) {
         mDataManager.addBook(book);
-        EventBusUtil.sendStickyEvent(new BaseEvent(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
+        EventBusUtil.sendStickyEvent(new BaseEvent<>(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
     }
 
     @Override

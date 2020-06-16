@@ -106,7 +106,7 @@ ext {
             // 吐司工具类：https://github.com/getActivity/ToastUtils
             "toast-util"                : "com.hjq:toast:latest.integration",
             // 标题栏：https://github.com/getActivity/TitleBar
-            "titlebar"                  : "com.hjq:titlebar:latest.integration",
+            "titlebar"                  : "com.hjq:titlebar:6.0",
             // File Picker
             "FilePicker"                : "cn.imlibo:FilePicker:v0.0.5_alpha",
             "smartrefresh"              : "com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-21",
@@ -133,4 +133,5 @@ ext {
             "sardine_webdav"            : "com.thegrizzlylabs.sardine-android:sardine-android:0.6",
             "pagerslidingtabstrip"      : "com.astuetz:pagerslidingtabstrip:1.0.1",
     ]
+
 }

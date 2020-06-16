@@ -21,6 +21,7 @@ import com.zyb.mreader.utils.FileUtils;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,6 +62,9 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                     public List<DavResource> apply(Sardine sardine) throws Exception {
                         String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
                         List<DavResource> list = sardine.list(serverHostUrl);
+
+                        if(list==null||list.isEmpty()) return new ArrayList<>();
+
                         Iterator<DavResource> it = list.iterator();
                         while (it.hasNext()) {
                             DavResource davResource = it.next();
@@ -81,6 +85,7 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                     @Override
                     protected void onCompleteWithViewAlive() {
                         mView.hideDialogLoading();
+                        mView.onBooksLoadComplete();
                     }
 
                     @Override
@@ -92,6 +97,7 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                     protected void onErrorWithViewAlive(Throwable e) {
                         mView.showToast("抱歉，获取书籍失败了");
                         mView.hideDialogLoading();
+                        mView.onBooksLoadComplete();
                     }
                 }));
     }
@@ -185,7 +191,7 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
 
                     @Override
                     protected void onCompleteWithViewAlive() {
-                        EventBusUtil.sendStickyEvent(new BaseEvent(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
+                        EventBusUtil.sendStickyEvent(new BaseEvent<>(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
                         mView.hideDialogLoading();
                     }
 

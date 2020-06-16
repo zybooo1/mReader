@@ -12,6 +12,7 @@ import java.util.List;
 public interface WebdavContract {
     interface View extends BaseView {
         void onBooksLoaded(List<DavResource> books);
+        void onBooksLoadComplete();
 
         void onBookDownloaded(int position);
         void onBookDeleted();

@@ -30,8 +30,6 @@ import butterknife.BindView;
 
 public class AddBookActivity extends MVPActivity<AddBookPresenter> implements AddBookContract.View {
 
-    public static final int ADDED_RESULT = 0x123;
-
     @BindView(R.id.view_pager)
     ViewPager viewPager;
     @BindView(R.id.appbar)
@@ -93,11 +91,6 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
     }
 
     @Override
-    protected void initData() {
-
-    }
-
-    @Override
     public void onRightClick(View v) {
         super.onRightClick(v);
         showRuleDialog();
@@ -153,41 +146,30 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
     private void showRuleDialog() {
         currentFilterSize = mPresenter.getFilterSize();
         isFilterENfile = mPresenter.getIsFilterENfiles();
-        CustomDialog.show(this, R.layout.dialog_add_book_rule, new CustomDialog.OnBindView() {
-            @Override
-            public void onBind(final CustomDialog dialog, View v) {
-                fileFilterSwitch = v.findViewById(R.id.fileFilterSwitch);
-                radioGroup = v.findViewById(R.id.radioGroup);
+        CustomDialog.show(this, R.layout.dialog_add_book_rule, (dialog, v) -> {
+            fileFilterSwitch = v.findViewById(R.id.fileFilterSwitch);
+            radioGroup = v.findViewById(R.id.radioGroup);
 
-                fileFilterSwitch.setChecked(isFilterENfile);
-                if (currentFilterSize == 0) {
-                    radioGroup.check(R.id.size0);
-                } else if (currentFilterSize == 30 * 1024) {
-                    radioGroup.check(R.id.size30);
-                } else if (currentFilterSize == 50 * 1024) {
-                    radioGroup.check(R.id.size50);
-                } else if (currentFilterSize == 100 * 1024) {
-                    radioGroup.check(R.id.size100);
-                } else {
-                    radioGroup.check(R.id.size10);
-                }
-
-                v.findViewById(R.id.tvOk).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.doDismiss();
-                        onRuleSetting();
-                    }
-                });
-                v.findViewById(R.id.tvCancel).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.doDismiss();
-                    }
-                });
+            fileFilterSwitch.setChecked(isFilterENfile);
+            if (currentFilterSize == 0) {
+                radioGroup.check(R.id.size0);
+            } else if (currentFilterSize == 30 * 1024) {
+                radioGroup.check(R.id.size30);
+            } else if (currentFilterSize == 50 * 1024) {
+                radioGroup.check(R.id.size50);
+            } else if (currentFilterSize == 100 * 1024) {
+                radioGroup.check(R.id.size100);
+            } else {
+                radioGroup.check(R.id.size10);
             }
+
+            v.findViewById(R.id.tvOk).setOnClickListener(v1 -> {
+                dialog.doDismiss();
+                onRuleSetting();
+            });
+            v.findViewById(R.id.tvCancel).setOnClickListener(v12 -> dialog.doDismiss());
         })
-        .setAlign(CustomDialog.ALIGN.BOTTOM);
+                .setAlign(CustomDialog.ALIGN.BOTTOM);
     }
 
     private void onRuleSetting() {
@@ -213,7 +195,7 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
         if (filterSize != currentFilterSize || isFilter != isFilterENfile) {
             mPresenter.setFilterSize(filterSize);
             mPresenter.setIsFilterENfiles(isFilter);
-            EventBusUtil.sendEvent(new BaseEvent(EventConstants.RESEARCH_BOOK));
+            EventBusUtil.sendEvent(new BaseEvent<>(EventConstants.RESEARCH_BOOK));
         }
     }
 

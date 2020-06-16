@@ -25,7 +25,7 @@ public class WebdavBookAdapter extends BaseQuickAdapter<DavResource, BaseViewHol
 
     SparseBooleanArray mSelectedPositions = new SparseBooleanArray();
 
-    public WebdavBookAdapter(@Nullable List<DavResource> books) {
+    public WebdavBookAdapter( List<DavResource> books) {
         super(R.layout.item_webdav_book, books);
         for (int i = 0; i < books.size(); i++) {
             setItemSelected(i, false);

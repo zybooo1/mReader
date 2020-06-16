@@ -85,6 +85,9 @@ public abstract class MyLazyFragment extends UILazyFragment implements BaseView 
         return getString(id);
     }
 
+    @Override
+    protected void initData() {
+    }
 
     /*----------显示吐司 Begin------------*/
     @Override

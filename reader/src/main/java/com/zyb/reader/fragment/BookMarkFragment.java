@@ -48,7 +48,7 @@ public class BookMarkFragment extends MyLazyFragment {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             pageFactory.changeChapter(bookMarksList.get(position).getBegin());
-            EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_CLOSE_READ_DRAWER));
+            EventBusUtil.sendEvent(new BaseEvent<>(EventConstants.EVENT_CLOSE_READ_DRAWER));
         }
     };
     private BaseQuickAdapter.OnItemLongClickListener onItemLongClickListener = new BaseQuickAdapter.OnItemLongClickListener() {

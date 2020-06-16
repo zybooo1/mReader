@@ -43,19 +43,6 @@ public class AboutActivity extends MyActivity {
         tvVersion.setText(CommonUtils.getVersionName(this));
     }
 
-    @Override
-    protected void initData() {
-
-    }
-
-//    private void copy(String string) {
-//        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-//        ClipData mClipData = ClipData.newPlainText("内容", string);
-//        assert cm != null;
-//        cm.setPrimaryClip(mClipData);
-//        showSuccess("已复制");
-//    }
-
     @OnClick({R.id.tvPrivacy})
     public void clickPrivacy(View view) {
         RouterUtils.getInstance().build(RouterConstants.PATH_BASE_ATY_WEB_VIEW)

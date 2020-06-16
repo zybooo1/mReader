@@ -89,10 +89,6 @@ public class LauncherActivity extends MyActivity
         return R.color.colorPrimary;
     }
 
-    @Override
-    protected void initData() {
-    }
-
     private void requestPermission() {
         XXPermissions.with(this)
                 .permission(Permission.Group.STORAGE)
@@ -176,7 +172,7 @@ public class LauncherActivity extends MyActivity
     public void noPermission(List<String> denied, boolean quick) {
         if (quick) {
             ToastUtils.show("缺少必要权限，请手动授予权限");
-            XXPermissions.gotoPermissionSettings(LauncherActivity.this, true);
+            XXPermissions.startPermissionActivity(LauncherActivity.this, true);
         } else {
             ToastUtils.show("请先授予应用权限");
             getWindow().getDecorView().postDelayed(this::checkIsShowDialog, DELAY_TIME);

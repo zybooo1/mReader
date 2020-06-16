@@ -305,7 +305,7 @@ public class BookUtil {
                     }
                 }
             }
-            EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_ON_CATALOGS_LOADED));
+            EventBusUtil.sendEvent(new BaseEvent<>(EventConstants.EVENT_ON_CATALOGS_LOADED));
             for (BookCatalogue bookCatalogue : directoryList) {
                 LogUtil.e("bookCatalogue===" + bookCatalogue.getBookCatalogue());
             }

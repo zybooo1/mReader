@@ -342,7 +342,6 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         String filePath = books.get(bookPosition).getPath();
         LogUtil.e("onItemClick---" + filePath);
         File file = new File(filePath);
-//                File file = new File("/storage/emulated/0/iBook/三体全集.txt");
         Book book = DBFactory.getInstance().getBooksManage().query(filePath);
         if (book == null) {
             book = new Book();
@@ -444,7 +443,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
 
         float horScale = screenWidth / viewWidth;
         float verScale = screenHeight / viewHeight;
-        float scale = horScale > verScale ? horScale : verScale;
+        float scale = Math.max(horScale, verScale);
 
         scaleAnimation = new ContentScaleAnimation(viewWidth, viewHeight,
                 location[0], location[1], scale, false);

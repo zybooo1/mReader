@@ -40,7 +40,7 @@ public class CatalogFragment extends MyLazyFragment {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             pageFactory.changeChapter(catalogueList.get(position).getBookCatalogueStartPos());
-            EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_CLOSE_READ_DRAWER));
+            EventBusUtil.sendEvent(new BaseEvent<>(EventConstants.EVENT_CLOSE_READ_DRAWER));
         }
     };
     private CatalogueAdapter catalogueAdapter;

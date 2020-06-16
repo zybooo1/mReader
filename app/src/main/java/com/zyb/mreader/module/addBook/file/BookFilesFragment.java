@@ -30,9 +30,6 @@ import butterknife.OnClick;
 
 public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implements BookFilesContract.View {
 
-    private long currentFilterSize;
-    private boolean isFilterENfile;
-
     @BindView(R.id.rv_books)
     RecyclerView rvBooks;
     public List<BookFiles> bookList = new ArrayList<>();
@@ -56,9 +53,9 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
             super.onScrolled(recyclerView, dx, dy);
 //            LogUtil.e("onScrolled dy:" + dy);
             if (dy <= 0) {
-                EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_SHOW_STATUS_BAR));
+                EventBusUtil.sendEvent(new BaseEvent<>(EventConstants.EVENT_SHOW_STATUS_BAR));
             } else {
-                EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_HIDE_STATUS_BAR));
+                EventBusUtil.sendEvent(new BaseEvent<>(EventConstants.EVENT_HIDE_STATUS_BAR));
             }
         }
 
@@ -90,14 +87,9 @@ public class BookFilesFragment extends MVPFragment<BookFilesPresenter> implement
         }
     }
 
-    @Override
-    protected void initData() {
-
-    }
-
     private void loadDatas() {
-        currentFilterSize = mPresenter.getFilterSize();
-        isFilterENfile = mPresenter.getIsFilterENfiles();
+       long currentFilterSize = mPresenter.getFilterSize();
+        boolean isFilterENfile = mPresenter.getIsFilterENfiles();
         mPresenter.scanFiles(currentFilterSize, isFilterENfile);
     }
 

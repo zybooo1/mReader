@@ -45,12 +45,11 @@ public class BookFilesPresenter extends AbstractPresenter<BookFilesContract.View
     @Override
     public void addBook(Book book) {
         mDataManager.addBook(book);
-        EventBusUtil.sendStickyEvent(new BaseEvent(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
+        EventBusUtil.sendStickyEvent(new BaseEvent<>(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
     }
 
     @Override
     public void scanFiles(long filterSize,boolean isFilterENfile) {
-
         addSubscribe(FileUtils.scanTxtFile( filterSize, isFilterENfile)
                 .flatMap(new Function<List<File>, Publisher<List<BookFiles>>>() {
                     @Override

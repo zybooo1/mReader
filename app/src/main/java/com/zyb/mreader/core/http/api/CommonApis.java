@@ -7,5 +7,4 @@ package com.zyb.mreader.core.http.api;
 
 public interface CommonApis {
 
-
 }

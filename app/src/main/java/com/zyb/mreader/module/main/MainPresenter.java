@@ -102,21 +102,18 @@ public class MainPresenter extends AbstractPresenter<MainContract.View, AppDataM
             return;
         }
         addSubscribe(FileUtils.scanTxtFile( FileUtils.MIN_TXT_FILE_SIZE, FileUtils.IS_FILTER_EN_FILES)
-                .flatMap(new Function<List<File>, Publisher<List<BookFiles>>>() {
-                    @Override
-                    public Publisher<List<BookFiles>> apply(List<File> files) throws Exception {
-                        Collections.sort(files, new FileSizeComparator());
-                        List<BookFiles> books = new ArrayList<>();
-                        for (File file : files) {
-                            BookFiles book = new BookFiles();
-                            book.setId(file.getAbsolutePath());
-                            book.setPath(file.getAbsolutePath());
-                            book.setSize(FileUtils.getFileSize(file.length()));
-                            book.setTitle(FileUtils.getSimpleName(file));
-                            books.add(book);
-                        }
-                        return RxUtil.createFlowableData(books);
+                .flatMap((Function<List<File>, Publisher<List<BookFiles>>>) files -> {
+                    Collections.sort(files, new FileSizeComparator());
+                    List<BookFiles> books = new ArrayList<>();
+                    for (File file : files) {
+                        BookFiles book = new BookFiles();
+                        book.setId(file.getAbsolutePath());
+                        book.setPath(file.getAbsolutePath());
+                        book.setSize(FileUtils.getFileSize(file.length()));
+                        book.setTitle(FileUtils.getSimpleName(file));
+                        books.add(book);
                     }
+                    return RxUtil.createFlowableData(books);
                 })
                 .compose(RxUtil.rxSchedulerHelper())
                 .subscribeWith(new CommonSubscriber<List<BookFiles>>(mView) {

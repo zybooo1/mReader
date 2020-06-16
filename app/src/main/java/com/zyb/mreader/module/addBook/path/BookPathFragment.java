@@ -56,7 +56,7 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
                 //保存当前信息。
                 FileStack.FileSnapshot snapshot = new FileStack.FileSnapshot();
                 snapshot.filePath = tvPath.getText().toString();
-                snapshot.files = new ArrayList<File>(booksAdapter.getAllFiles());
+                snapshot.files = new ArrayList<>(booksAdapter.getAllFiles());
                 snapshot.scrollOffset = rvBooks.computeVerticalScrollOffset();
                 mFileStack.push(snapshot);
                 //切换下一个文件
@@ -84,17 +84,16 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
             super.onScrolled(recyclerView, dx, dy);
             LogUtil.e("onScrolled dy:" + dy);
             if (dy <= 0) {
-                EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_SHOW_STATUS_BAR));
+                EventBusUtil.sendEvent(new BaseEvent<>(EventConstants.EVENT_SHOW_STATUS_BAR));
             } else {
-                EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_HIDE_STATUS_BAR));
+                EventBusUtil.sendEvent(new BaseEvent<>(EventConstants.EVENT_HIDE_STATUS_BAR));
             }
         }
 
     };
 
     public static BookPathFragment newInstance() {
-        BookPathFragment fragment = new BookPathFragment();
-        return fragment;
+        return new BookPathFragment();
     }
 
     private void toggleFileTree(File file) {
@@ -113,8 +112,6 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
 
     /**
      * 添加文件数据
-     *
-     * @param files
      */
     private void addFiles(List<File> files) {
         mFileBeans.clear();
@@ -160,11 +157,6 @@ public class BookPathFragment extends MVPFragment<BookPathPresenter> implements 
 
         File root = Environment.getExternalStorageDirectory();
         toggleFileTree(root);
-    }
-
-    @Override
-    protected void initData() {
-
     }
 
     @OnClick(R.id.file_category_tv_back_last)

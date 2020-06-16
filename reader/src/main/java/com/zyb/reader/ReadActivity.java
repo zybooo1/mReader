@@ -151,9 +151,9 @@ public class ReadActivity extends MyActivity {
                     pauseSpeech();
                 }
             } else if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
-                int i = intent.getIntExtra("state", 0);
+                int state = intent.getIntExtra("state", 0);
                 //正在朗读读且拔出耳机 则暂停朗读
-                if (isSpeaking && intent.getIntExtra("state", 0) == 0) {
+                if (isSpeaking && state == 0) {
                     pauseSpeech();
                 }
             }
@@ -375,7 +375,7 @@ public class ReadActivity extends MyActivity {
             bookMarks.setBookpath(pageFactory.getBookPath());
             DBFactory.getInstance().getBookMarksManage().insertOrUpdate(bookMarks);
             showToast("书签添加成功");
-            EventBusUtil.sendEvent(new BaseEvent(EventConstants.EVENT_MARKS_REFRESH));
+            EventBusUtil.sendEvent(new BaseEvent<>(EventConstants.EVENT_MARKS_REFRESH));
         }
     }
 
@@ -552,9 +552,7 @@ public class ReadActivity extends MyActivity {
             pageFactory.changeChapter(searchResultList.get(position).getBegin());
         }
     };
-    OnLoadMoreListener loadMoreListener = refreshLayout -> {
-        search(true);
-    };
+    OnLoadMoreListener loadMoreListener = refreshLayout -> search(true);
     BookUtil.OnSearchResult onSearchResult = new BookUtil.OnSearchResult() {
 
         @Override
@@ -786,7 +784,7 @@ public class ReadActivity extends MyActivity {
 
     @Override
     protected void onDestroy() {
-        EventBusUtil.sendStickyEvent(new BaseEvent(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
+        EventBusUtil.sendStickyEvent(new BaseEvent<>(EventConstants.EVENT_MAIN_REFRESH_BOOK_SHELF));
         pageFactory.clear();
         pageWidget = null;
         unregisterReceiver(myReceiver);

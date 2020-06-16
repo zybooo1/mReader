@@ -172,9 +172,12 @@ public class WebdavActivity extends MVPActivity<WebdavPresenter> implements
         booksList.addAll(books);
         booksAdapter.notifyDataSetChanged();
 
-        smartRefresh.finishRefresh();
-
         layoutEmpty.setVisibility(booksList.size() <= 0 ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onBooksLoadComplete() {
+        smartRefresh.finishRefresh();
     }
 
     @Override

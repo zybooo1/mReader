@@ -6,7 +6,6 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.zyb.common.db.bean.BookFiles;
 import com.zyb.mreader.R;
-import com.zyb.mreader.module.addBook.path.BookPathContract;
 
 import java.io.File;
 import java.util.ArrayList;

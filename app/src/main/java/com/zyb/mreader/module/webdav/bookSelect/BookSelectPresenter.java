@@ -37,20 +37,17 @@ public class BookSelectPresenter extends AbstractPresenter<BookSelectContract.Vi
     @Override
     public void getWebDavBooks() {
         addSubscribe(RxUtil.createFlowableData(getSardine())
-                .map(new Function<Sardine, List<DavResource>>() {
-                    @Override
-                    public List<DavResource> apply(Sardine sardine) throws Exception {
-                        String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
-                        List<DavResource> list = sardine.list(serverHostUrl);
-                        Iterator<DavResource> it = list.iterator();
-                        while (it.hasNext()) {
-                            DavResource davResource = it.next();
-                            if (davResource.isDirectory()) {
-                                it.remove();
-                            }
+                .map(sardine -> {
+                    String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
+                    List<DavResource> list = sardine.list(serverHostUrl);
+                    Iterator<DavResource> it = list.iterator();
+                    while (it.hasNext()) {
+                        DavResource davResource = it.next();
+                        if (davResource.isDirectory()) {
+                            it.remove();
                         }
-                        return list;
                     }
+                    return list;
                 })
                 .compose(RxUtil.rxSchedulerHelper())
                 .subscribeWith(new CommonSubscriber<List<DavResource>>(mView) {

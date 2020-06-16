@@ -25,10 +25,10 @@
 -keep class android.support.v7.**{
     public *;
 }
-# baidu tts
--keep class com.baidu.tts.**{*;}
--keep class com.baidu.speechsynthesizer.**{*;}
 
+# XmlResourceParser
+-keep class org.xmlpull.v1.** { *;}
+-dontwarn org.xmlpull.v1.**
 
 # immersionbar
  -keep class com.gyf.immersionbar.* {*;}
@@ -47,10 +47,6 @@
   -dontwarn com.tencent.bugly.**
   -keep public class com.tencent.bugly.**{*;}
 
-# tinker混淆规则
--dontwarn com.tencent.tinker.**
--keep class com.tencent.tinker.** { *; }
--keep public class * extends com.tencent.tinker.entry.DefaultApplicationLike{*;}
 
   # xxpermissions
 -keep class com.hjq.permissions.** {*;}
