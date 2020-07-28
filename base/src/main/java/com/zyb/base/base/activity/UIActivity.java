@@ -1,7 +1,5 @@
 package com.zyb.base.base.activity;
 
-import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -32,7 +30,6 @@ public abstract class UIActivity extends BaseActivity
         //初始化沉浸式状态栏
         if (isStatusBarEnabled()) {
             statusBarConfig().init();
-
             //设置标题栏
             if (getTitleBarId() > 0) {
                 ImmersionBar.setTitleBar(this, findViewById(getTitleBarId()));
@@ -61,7 +58,7 @@ public abstract class UIActivity extends BaseActivity
         //在BaseActivity里初始化
         mImmersionBar = ImmersionBar.with(this)
                 .statusBarDarkFont(statusBarDarkFont())    //默认状态栏字体颜色为黑色
-                .navigationBarColor(navigationBarColor())
+                .navigationBarColor(navigationBarColor())  //默认虚拟导航栏背景颜色为窗口颜色
                 .navigationBarDarkIcon(true)
                 .keyboardEnable(false, WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
                         | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);  //解决软键盘与底部输入框冲突问题，默认为false，还有一个重载方法，可以指定软键盘mode
@@ -84,9 +81,11 @@ public abstract class UIActivity extends BaseActivity
         //返回false表示白色字体
         return true;
     }
+
     public @ColorRes int navigationBarColor() {
         return R.color.windowBackground;
     }
+
     protected void gone(final View... views) {
         if (views != null && views.length > 0) {
             for (View view : views) {
@@ -106,12 +105,11 @@ public abstract class UIActivity extends BaseActivity
             }
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mImmersionBar != null) mImmersionBar.destroy();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        }
+        getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
     }
 }

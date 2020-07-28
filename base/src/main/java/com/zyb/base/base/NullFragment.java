@@ -16,11 +16,6 @@ public class NullFragment extends MyLazyFragment {
     }
 
     @Override
-    protected int getTitleBarId() {
-        return 0;
-    }
-
-    @Override
     protected void initView() {
 
     }

@@ -61,11 +61,6 @@ public class LauncherActivity extends MyActivity
     }
 
     @Override
-    protected int getTitleBarId() {
-        return 0;
-    }
-
-    @Override
     protected void initView() {
         preferenceHelper = new PreferenceHelperImpl();
 

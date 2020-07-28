@@ -72,7 +72,6 @@ dependencies {
     api rootProject.ext.dependencies["okhttp"]
     api rootProject.ext.dependencies["okhttp-logging-interceptor"]
     api rootProject.ext.dependencies["sardine_webdav"]
-    //image
     //rx
     api rootProject.ext.dependencies["rxjava"]
     api rootProject.ext.dependencies["rxandroid"]
