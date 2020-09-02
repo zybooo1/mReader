@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.gyf.barlibrary.BarHide;
 import com.gyf.barlibrary.ImmersionBar;
 import com.hjq.bar.OnTitleBarListener;
 import com.hjq.bar.TitleBar;
@@ -124,11 +125,6 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
-    }
-
-    @Override
-    protected int getTitleBarId() {
-        return R.id.titleBar;
     }
 
     @Override
@@ -662,7 +658,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
             if (book.isSelected()) deleteBooks.add(book);
         }
         if (deleteBooks.size() <= 0) {
-            showToast("请选择书本");
+            toast("请选择书本");
             return;
         }
         showDialog(true, "是否移除这些书本？", "取消", "移除",
@@ -683,11 +679,11 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
             if (book.isSelected()) deleteBooks.add(book);
         }
         if (deleteBooks.size() <= 0) {
-            showToast("请选择书本");
+            toast("请选择书本");
             return;
         }
         if (deleteBooks.size() > 1) {
-            showToast("只能分享单个文件哦~");
+            toast("只能分享单个文件哦~");
             return;
         }
         File file =new File(deleteBooks.get(0).getPath());

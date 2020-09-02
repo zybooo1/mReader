@@ -27,16 +27,6 @@ public class AboutActivity extends MyActivity {
         return R.layout.activity_about;
     }
 
-    @Override
-    protected int getTitleBarId() {
-        return R.id.titleBar;
-    }
-
-
-    @Override
-    public boolean statusBarDarkFont() {
-        return true;
-    }
 
     @Override
     protected void initView() {
@@ -70,7 +60,7 @@ public class AboutActivity extends MyActivity {
     void clickLogo() {
         if (isCount) count++;
         if (count > 23) {
-            showToast("恭喜你找到了彩蛋！");
+            toast("恭喜你找到了彩蛋！");
             CrashReport.postCatchedException(new Throwable("竟然有人找到了彩蛋！"));
             count = 0;
         }

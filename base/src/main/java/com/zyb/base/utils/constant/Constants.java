@@ -58,4 +58,16 @@ public class Constants {
     public static final String SHARED_READ_IS_TEXT_DEFAULT = "shared_read_text_default";
     public static final String SHARED_READ_PAGE_MODE = "shared_read_mode";
     public static final String SHARED_READ_NIGHT_MODE = "shared_night_mode";
+
+    /**
+     * 一个通用的跳转参数名称
+     */
+    public static final String JUMP_PARAM_FLAG_DATA = "dataFlag";  //数据
+    public static final String JUMP_PARAM_FLAG_DATA2 = "dataFlag2";  //数据2
+    public static final String JUMP_PARAM_FLAG_DATA3 = "dataFlag3";  //数据3
+    public static final String JUMP_PARAM_FLAG_STRING = "stringFlag";   //字符串
+    public static final String JUMP_PARAM_FLAG_STRING2 = "stringFlag2";   //字符串2
+    public static final String JUMP_PARAM_FLAG_STRING3 = "stringFlag3";   //字符串3
+    public static final String JUMP_PARAM_FLAG_STRING4= "stringFlag4";   //字符串4
+
 }

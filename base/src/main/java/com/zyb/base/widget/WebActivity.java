@@ -49,11 +49,6 @@ public class WebActivity extends MyActivity {
     }
 
     @Override
-    protected int getTitleBarId() {
-        return R.id.tb_web_title;
-    }
-
-    @Override
     protected void initView() {
         // 不显示滚动条
         mWebView.setVerticalScrollBarEnabled(false);

@@ -76,11 +76,6 @@ public class AddBookActivity extends MVPActivity<AddBookPresenter> implements Ad
     }
 
     @Override
-    protected int getTitleBarId() {
-        return R.id.titleBar;
-    }
-
-    @Override
     protected void initView() {
         tabLayout.addOnTabSelectedListener(onTabSelectedListener);
         for (int tabText : tabTexts) {

@@ -232,10 +232,10 @@ public class PageFactory {
 //                    mContext.getResources(), R.drawable.main_bg, mWidth, mHeight));
             Bitmap bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.RGB_565);
             Canvas canvas = new Canvas(bitmap);
-            canvas.drawColor(Color.rgb(13, 13, 11));
+            canvas.drawColor(mContext.getResources().getColor(R.color.reader_read_bg_night));
             setBgBitmap(bitmap);
             //设置字体颜色
-            setmTextColor(Color.rgb(91, 89, 82));
+            setmTextColor(ContextCompat.getColor(mContext,R.color.reader_read_font_night));
             setBookPageBg(Color.BLACK);
         } else {
             //设置背景

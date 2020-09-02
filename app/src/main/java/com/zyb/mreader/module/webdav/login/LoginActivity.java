@@ -67,11 +67,6 @@ public class LoginActivity extends MVPActivity<LoginPresenter> implements
     }
 
     @Override
-    protected int getTitleBarId() {
-        return R.id.titleBar;
-    }
-
-    @Override
     protected void initView() {
         etUserName.addTextChangedListener(watcher);
         etPassword.addTextChangedListener(watcher);

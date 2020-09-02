@@ -30,7 +30,7 @@ import java.util.Random;
 public abstract class BaseLazyFragment extends Fragment {
 
     // Activity对象
-    public AppCompatActivity mActivity;
+    public FragmentActivity mActivity;
     // 根布局
     private View mRootView;
     // 是否进行过懒加载
@@ -46,13 +46,13 @@ public abstract class BaseLazyFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.mActivity = (AppCompatActivity) context;
+        this.mActivity = (FragmentActivity) context;
     }
 
     /**
      * 获取Activity，防止出现 getActivity() 为空
      */
-    public AppCompatActivity getFragmentActivity() {
+    public FragmentActivity getFragmentActivity() {
         return mActivity;
     }
 
@@ -69,9 +69,6 @@ public abstract class BaseLazyFragment extends Fragment {
             parent.removeView(mRootView);
         }
 
-        if (isRegisterEventBus()) {
-            EventBusUtil.register(this);
-        }
         return mRootView;
     }
 
@@ -107,6 +104,7 @@ public abstract class BaseLazyFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initNormal();
+        //
         if (isReplaceFragment) {
             if (isFragmentVisible) {
                 initLazyLoad();
@@ -181,6 +179,12 @@ public abstract class BaseLazyFragment extends Fragment {
     protected void initFragment() {
         initView();
         initData();
+        if (isRegisterEventBus()) {
+            // 懒加载时变量可能为null
+            // 注册时最好放到各变量初始化最后，否则可能会出现一些变量空指针异常。
+            // 更新到主框架
+            EventBusUtil.register(this);
+        }
     }
 
     //引入布局

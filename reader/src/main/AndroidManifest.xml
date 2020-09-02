@@ -14,10 +14,19 @@
     <application>
         <activity
             android:name=".ReadActivity"
+            android:theme="@style/AppTheme_DarkBg"
             android:screenOrientation="portrait" >
-
         </activity>
-        <service android:name=".SpeechService" />
+
+        <activity
+            android:name=".ActionActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <activity
+            android:name=".TextImageActivity"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

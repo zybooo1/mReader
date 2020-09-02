@@ -7,6 +7,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -16,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -36,6 +39,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.gyf.barlibrary.BarHide;
 import com.gyf.barlibrary.ImmersionBar;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
 import com.kongzue.dialog.util.BaseDialog;
@@ -52,6 +56,7 @@ import com.zyb.base.utils.EventBusUtil;
 import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.QMUIViewHelper;
 import com.zyb.base.utils.TimeUtil;
+import com.zyb.base.utils.constant.Constants;
 import com.zyb.base.widget.ClearEditText;
 import com.zyb.base.widget.RoundButton;
 import com.zyb.base.widget.decoration.VerticalItemLineDecoration;
@@ -64,6 +69,7 @@ import com.zyb.reader.bean.SearchResultBean;
 import com.zyb.reader.dialog.SettingDialog;
 import com.zyb.reader.fragment.BookMarkFragment;
 import com.zyb.reader.fragment.CatalogFragment;
+import com.zyb.reader.util.BitmapUtil;
 import com.zyb.reader.util.BookUtil;
 import com.zyb.reader.util.BrightnessUtil;
 import com.zyb.reader.util.PageFactory;
@@ -238,7 +244,7 @@ public class ReadActivity extends MyActivity {
             } catch (IOException e) {
                 e.printStackTrace();
                 CrashReport.postCatchedException(e);
-                showToast("打开电子书失败");
+                toast("打开电子书失败");
             }
 
             pageWidget.setPageMode(config.getPageMode());
@@ -317,6 +323,11 @@ public class ReadActivity extends MyActivity {
             }
 
             @Override
+            public void longClick() {
+                toActionActivity();
+            }
+
+            @Override
             public Boolean prePage() {
                 if (getMenuIsShowing() || isSpeaking) {
                     return false;
@@ -344,12 +355,26 @@ public class ReadActivity extends MyActivity {
         });
     }
 
+    private void toActionActivity() {
+        // TODO: 2020/8/11  此功能正式版暂时隐藏
+        if(!BuildConfig.DEBUG)return;
+        Intent intent = new Intent(this,ActionActivity.class);
+        intent.putExtra(Constants.JUMP_PARAM_FLAG_STRING,pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence());
+        intent.putExtra(Constants.JUMP_PARAM_FLAG_STRING2,book.getTitle());
+        startActivity(intent);
+    }
+
     private void hideSystemUI() {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
+        getStatusBarConfig().hideBar(BarHide.FLAG_HIDE_BAR).init();
     }
 
     private void showSystemUI() {
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //显示状态栏
+        getStatusBarConfig().hideBar(BarHide.FLAG_SHOW_BAR).init();
+    }
+
+    @Override
+    public int navigationBarColor() {
+        return R.color.reader_MenucolorReadMenu;
     }
 
     @OnClick(R2.id.btnAddBookMark)
@@ -360,7 +385,7 @@ public class ReadActivity extends MyActivity {
                     .where(BookMarksDao.Properties.Bookpath.eq(pageFactory.getBookPath()), BookMarksDao.Properties.Begin.eq(pageFactory.getCurrentPage().getBegin()))
                     .list();
             if (!bookMarksList.isEmpty()) {
-                showToast("该书签已存在");
+                toast("该书签已存在");
                 return;
             }
             BookMarks bookMarks = new BookMarks();
@@ -374,7 +399,7 @@ public class ReadActivity extends MyActivity {
             bookMarks.setText(word.toString());
             bookMarks.setBookpath(pageFactory.getBookPath());
             DBFactory.getInstance().getBookMarksManage().insertOrUpdate(bookMarks);
-            showToast("书签添加成功");
+            toast("书签添加成功");
             EventBusUtil.sendEvent(new BaseEvent<>(EventConstants.EVENT_MARKS_REFRESH));
         }
     }
@@ -559,7 +584,7 @@ public class ReadActivity extends MyActivity {
         public void onEmpty(boolean isLoadMore) {
             if (isLoadMore) {
                 smartRefresh.finishLoadMore();
-                showToast("没有更多了");
+                toast("没有更多了");
             } else {
                 searchResultList.clear();
                 searchAdapter.notifyDataSetChanged();
@@ -738,7 +763,7 @@ public class ReadActivity extends MyActivity {
             }
             sbTiming.setProgress(trueProgress);
             if (trueProgress != 0) {
-                ReadActivity.this.showToast(trueProgress + "分钟后停止");
+                ReadActivity.this.toast(trueProgress + "分钟后停止");
                 config.setTimingTime(trueProgress);
             }
             showTimer(trueProgress);
@@ -849,7 +874,7 @@ public class ReadActivity extends MyActivity {
             pageFactory.nextPage();
             if (pageFactory.islastPage()) {
                 stopSpeech();
-                showToast("小说已经读完了");
+                toast("小说已经读完了");
             } else {
                 playSpeech(false);
             }
@@ -859,7 +884,7 @@ public class ReadActivity extends MyActivity {
         public void onError(String utteranceId) {
             LogUtil.e("onError");
 
-            showToast("语音朗读出现了错误~");
+            toast("语音朗读出现了错误~");
             stopSpeech();
         }
     };
@@ -881,7 +906,7 @@ public class ReadActivity extends MyActivity {
                     textToSpeech.setLanguage(Locale.CHINA);
                     playSpeech(true);
                 } else {
-                    showToast("语音引擎初始化失败");
+                    toast("语音引擎初始化失败");
                     stopSpeech();
                 }
             }
@@ -890,7 +915,7 @@ public class ReadActivity extends MyActivity {
 
     private void playSpeech(boolean isFirstPage) {
         if (textToSpeech == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            showToast("暂不支持语音播放");
+            toast("暂不支持语音播放");
             stopSpeech();
             return;
         }

@@ -81,7 +81,7 @@ public class LauncherActivity extends MyActivity
 
     @Override
     public int navigationBarColor() {
-        return R.color.colorPrimary;
+        return R.color.white;
     }
 
     private void requestPermission() {
@@ -167,7 +167,7 @@ public class LauncherActivity extends MyActivity
     public void noPermission(List<String> denied, boolean quick) {
         if (quick) {
             ToastUtils.show("缺少必要权限，请手动授予权限");
-            XXPermissions.startPermissionActivity(LauncherActivity.this, true);
+            XXPermissions.startPermissionActivity(LauncherActivity.this);
         } else {
             ToastUtils.show("请先授予应用权限");
             getWindow().getDecorView().postDelayed(this::checkIsShowDialog, DELAY_TIME);

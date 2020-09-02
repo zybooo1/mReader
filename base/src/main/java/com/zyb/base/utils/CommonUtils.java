@@ -2,6 +2,8 @@ package com.zyb.base.utils;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -18,8 +20,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.hjq.toast.ToastUtils;
 import com.zyb.base.R;
 import com.zyb.base.base.app.BaseApplication;
 
@@ -240,7 +242,6 @@ public class CommonUtils {
 
     /**
      * 获取屏幕原始尺寸高度，包括虚拟功能键高度
-     *
      */
     public static int getOriginScreenHight() {
         int dpi = getScreenHeight();
@@ -260,6 +261,7 @@ public class CommonUtils {
         }
         return dpi;
     }
+
     /**
      * 获得屏幕高度,单位是px
      *
@@ -285,6 +287,7 @@ public class CommonUtils {
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.heightPixels;
     }
+
     public static String subString(String text, int num) {
         String content = "";
         if (text.length() > num) {
@@ -295,6 +298,7 @@ public class CommonUtils {
 
         return content;
     }
+
     /**
      * 隐藏软键盘(只适用于Activity，不适用于Fragment)
      */
@@ -364,5 +368,23 @@ public class CommonUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * copy
+     */
+    public static void copy(String content, String lable) {
+        //获取剪贴板管理器：
+        ClipboardManager cm = (ClipboardManager) BaseApplication.getInstance().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData mClipData = ClipData.newPlainText(lable, content);
+        if (cm != null) cm.setPrimaryClip(mClipData);
+        ToastUtils.show("已复制");
+    }
+
+    /**
+     * copy
+     */
+    public static void copy(String content) {
+        copy(content, "内容");
     }
 }

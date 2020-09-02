@@ -4,6 +4,10 @@
     <string name="base_select_hint">请选择</string>
 
 
+    <string name="base_data_empty_tip">数据为空</string>
+    <string name="base_search_empty_tip">暂无数据，请换个关键词试试~</string>
+    <string name="base_data_erro_tip">页面发生了点错误</string>
+
     <string name="base_date_year">年</string>
     <string name="base_date_month">月</string>
     <string name="base_date_day">日</string>

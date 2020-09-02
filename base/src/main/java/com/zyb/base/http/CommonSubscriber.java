@@ -92,15 +92,15 @@ public abstract class CommonSubscriber<T> extends ResourceSubscriber<T> {
     private void showToast(Throwable e) {
         if (mView != null) {
             if (mErrorMsg != null && !TextUtils.isEmpty(mErrorMsg)) {
-                mView.showToast(mErrorMsg);
+                mView.toast(mErrorMsg);
             } else if (e instanceof ApiException) {
-                mView.showToast(e.toString());
+                mView.toast(e.toString());
             } else if (e instanceof HttpException) {
-                mView.showToast(handleHttpExceptionTips(e));
+                mView.toast(handleHttpExceptionTips(e));
             } else if (e instanceof SocketTimeoutException) {
-                mView.showToast(R.string.msg_error_time_out);
+                mView.toast(R.string.msg_error_time_out);
             } else {
-                mView.showToast(R.string.msg_error_unknown);
+                mView.toast(R.string.msg_error_unknown);
             }
         } else if (mContext != null) {
             if (mErrorMsg != null && !TextUtils.isEmpty(mErrorMsg)) {

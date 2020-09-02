@@ -12,6 +12,16 @@
         <!--暂时注释，否则NavView Menu显示可能有问题-->
         <!--<item name="android:selectableItemBackground">@drawable/touch_bg</item>-->
     </style>
+    <style name="AppTheme_DarkBg" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Set menu background and text color -->
+        <item name="android:windowBackground">@color/reader_read_bg_night</item>
+        <item name="android:windowAnimationStyle">@style/windowAnimation</item>
+        <!--<item name="android:selectableItemBackground">@drawable/touch_bg</item>-->
+    </style>
     <style name="windowAnimation">
         <!--当我们从 A1 启动 A2 时，A2 出现在屏幕上，这个动画叫做 android:activityOpenEnterAnimation-->
         <!--当我们从 A1 启动 A2 时，A1 从屏幕上消失，这个动画叫做 android:activityOpenExitAnimation-->

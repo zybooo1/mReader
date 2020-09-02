@@ -1,6 +1,5 @@
 package com.zyb.mreader.module.webdav;
 
-import android.support.annotation.Nullable;
 import android.util.SparseBooleanArray;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -25,7 +24,7 @@ public class WebdavBookAdapter extends BaseQuickAdapter<DavResource, BaseViewHol
 
     SparseBooleanArray mSelectedPositions = new SparseBooleanArray();
 
-    public WebdavBookAdapter( List<DavResource> books) {
+    public WebdavBookAdapter(List<DavResource> books) {
         super(R.layout.item_webdav_book, books);
         for (int i = 0; i < books.size(); i++) {
             setItemSelected(i, false);
@@ -91,16 +90,16 @@ public class WebdavBookAdapter extends BaseQuickAdapter<DavResource, BaseViewHol
                 .setText(R.id.tvInfo, book.getPath())
                 .setChecked(R.id.cbSelect, isItemSelected(position))
                 .setGone(R.id.cbSelect, isCanSelect())
-                .setGone(R.id.tvDownloaded, !isCanSelect()&&fileDownloaded)
-                .setGone(R.id.btnDownload, !isCanSelect()&&!fileDownloaded)
+                .setGone(R.id.tvDownloaded, !isCanSelect() && fileDownloaded)
+                .setGone(R.id.btnDownload, !isCanSelect() && !fileDownloaded)
                 .addOnClickListener(R.id.btnDownload);
     }
 
-    public static String getDavResourceName(DavResource davResource){
-        String name =davResource.getDisplayName();
-        if(!name.contains("."))return name;
+    public static String getDavResourceName(DavResource davResource) {
+        String name = davResource.getDisplayName();
+        if (!name.contains(".")) return name;
         String[] split = name.split("\\.");
-        if(split.length<=0)return name;
+        if (split.length <= 0) return name;
         return split[0];
     }
 }

@@ -62,11 +62,6 @@ public class BookSelectActivity extends MVPActivity<BookSelectPresenter> impleme
     }
 
     @Override
-    protected int getTitleBarId() {
-        return R.id.titleBar;
-    }
-
-    @Override
     protected void initView() {
         mPresenter.getWebDavBooks();
     }
@@ -87,7 +82,7 @@ public class BookSelectActivity extends MVPActivity<BookSelectPresenter> impleme
                 iterator.remove();
         }
         if (selectedBooks.size() == 0) {
-            showToast("请选择书籍");
+            toast("请选择书籍");
             return;
         }
         Intent intent = new Intent();

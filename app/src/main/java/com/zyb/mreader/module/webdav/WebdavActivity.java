@@ -86,11 +86,6 @@ public class WebdavActivity extends MVPActivity<WebdavPresenter> implements
     }
 
     @Override
-    protected int getTitleBarId() {
-        return R.id.titleBar;
-    }
-
-    @Override
     protected void initView() {
         ImmersionBar.setTitleBar(this, layoutActionTop);
         layoutActionTop.setOnTitleBarListener(onTopActionBarListener);
@@ -270,7 +265,7 @@ public class WebdavActivity extends MVPActivity<WebdavPresenter> implements
             if (booksAdapter.isItemSelected(i)) deleteBooks.add(booksList.get(i));
         }
         if (deleteBooks.size() <= 0) {
-            showToast("请选择书本");
+            toast("请选择书本");
             return;
         }
         showDialog(true, "将从云盘里删除这些书本", "取消", "删除",

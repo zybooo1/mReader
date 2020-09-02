@@ -68,7 +68,7 @@ public class BookSelectPresenter extends AbstractPresenter<BookSelectContract.Vi
 
                     @Override
                     protected void onErrorWithViewAlive(Throwable e) {
-                        mView.showToast("抱歉，获取书籍失败了");
+                        mView.toast("抱歉，获取书籍失败了");
                         mView.hideDialogLoading();
                     }
                 }));

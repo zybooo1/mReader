@@ -30,7 +30,6 @@ import io.reactivex.disposables.Disposable;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
-
     private CompositeDisposable compositeDisposable;
 
     protected void addSubscribe(Disposable disposable) {
@@ -96,7 +95,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         return getBaseContext();
     }
 
-
     /**
      * 获取当前 Activity 对象
      */
@@ -104,11 +102,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         return (A) this;
     }
 
-
     /**
      * startActivity 方法优化
      */
-
     public void startActivity(Class<? extends Activity> cls) {
         startActivity(new Intent(this, cls));
     }
@@ -125,7 +121,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * setResult 方法优化
      */
-
     public void finishResult(int resultCode) {
         finishResult(resultCode, null);
     }
@@ -138,8 +133,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * startActivityForResult 方法优化
      */
-
     private ActivityCallback mActivityCallback;
+
     private int mActivityRequestCode;
 
     public void startActivityForResult(Class<? extends Activity> cls, ActivityCallback callback) {
@@ -175,7 +170,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 防 Activity 多重跳转：https://www.jianshu.com/p/579f1f118161
      */
-
     @Override
     public void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options) {
         if (startActivitySelfCheck(intent)) {
@@ -250,7 +244,10 @@ public abstract class BaseActivity extends AppCompatActivity {
             EventBusUtil.unregister(this);
         }
         if (compositeDisposable != null) {
-            compositeDisposable.clear();
+            // Using clear will clear all, but can accept new disposable
+            //compositeDisposable.clear();
+            // Using dispose will clear all and set isDisposed = true, so it will not accept any new disposable
+            compositeDisposable.dispose();
         }
     }
 }

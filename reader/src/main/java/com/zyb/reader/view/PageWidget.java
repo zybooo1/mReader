@@ -12,6 +12,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
 import com.zyb.base.utils.LogUtil;
+import com.zyb.base.utils.RxUtil;
 import com.zyb.reader.Config;
 import com.zyb.reader.util.PageFactory;
 import com.zyb.reader.view.animation.AnimationProvider;
@@ -19,6 +20,14 @@ import com.zyb.reader.view.animation.CoverAnimation;
 import com.zyb.reader.view.animation.NoneAnimation;
 import com.zyb.reader.view.animation.SimulationAnimation;
 import com.zyb.reader.view.animation.SlideAnimation;
+
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 
 /**
@@ -45,6 +54,9 @@ public class PageWidget extends View {
     private int moveY = 0;
     //翻页动画是否在执行
     private Boolean isRuning = false;
+
+    //长按判断时间
+    private static final long LONG_PRESS_TIME = 500;
 
     Bitmap mCurPageBitmap = null; // 当前页
     Bitmap mNextPageBitmap = null;
@@ -137,6 +149,8 @@ public class PageWidget extends View {
 
         mAnimationProvider.setTouchPoint(x, y);
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            doLongClick();
+
             downX = (int) event.getX();
             downY = (int) event.getY();
             moveX = 0;
@@ -150,6 +164,8 @@ public class PageWidget extends View {
             abortAnimation();
             Log.e(TAG, "ACTION_DOWN");
         } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            clearSubscribe();
+            if(hasPerformedLongPress) return true;
 
             final int slop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
             //判断是否移动了
@@ -215,6 +231,9 @@ public class PageWidget extends View {
                 this.postInvalidate();
             }
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            clearSubscribe();
+            if(hasPerformedLongPress) return true;
+
             Log.e(TAG, "ACTION_UP");
             if (!isMove) {
                 cancelPage = false;
@@ -265,6 +284,38 @@ public class PageWidget extends View {
         return true;
     }
 
+    private CompositeDisposable compositeDisposable;
+    private boolean hasPerformedLongPress =false;
+
+    private void addSubscribe(Disposable disposable) {
+        if (compositeDisposable == null) {
+            compositeDisposable = new CompositeDisposable();
+        }
+        compositeDisposable.add(disposable);
+    }
+
+    private void clearSubscribe() {
+        if (compositeDisposable != null) {
+            compositeDisposable.clear();
+        }
+    }
+
+    private void doLongClick() {
+        hasPerformedLongPress =false;
+        addSubscribe(Observable.timer(LONG_PRESS_TIME, TimeUnit.MILLISECONDS)
+                .compose(RxUtil.rxObservableSchedulerHelper())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        if (mTouchListener != null) {
+                            hasPerformedLongPress =true;
+                            mTouchListener.longClick();
+                        }
+                    }
+                }, throwable -> {
+                }));
+    }
+
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
@@ -297,6 +348,8 @@ public class PageWidget extends View {
 
     public interface TouchListener {
         void center();
+
+        void longClick();
 
         Boolean prePage();
 

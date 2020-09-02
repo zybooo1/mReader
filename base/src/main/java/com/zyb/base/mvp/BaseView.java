@@ -16,9 +16,10 @@ public interface BaseView {
     /**
      * 显示消息提示
      */
-    void showToast(CharSequence s);
+    void toast(CharSequence s);
 
-    void showToast(int id);
+    void toast(int id);
+
 
     /**
      * 页面加载中
@@ -28,6 +29,8 @@ public interface BaseView {
     /**
      * 空白页面
      */
+    void showPageEmpty(String message);
+
     void showPageEmpty();
 
     /**
@@ -42,14 +45,21 @@ public interface BaseView {
 
 
     void showDialog(boolean canCancel, String title, String confirmText,
-                    String cancelText,  OnDialogButtonClickListener cancelListener,
+                    String cancelText, OnDialogButtonClickListener cancelListener,
                     OnDialogButtonClickListener confirmListener);
 
+    void showDialog(boolean canCancel, String title, String msg, String confirmText,
+                    String cancelText, OnDialogButtonClickListener cancelListener,
+                    OnDialogButtonClickListener confirmListener);
+
+
+    void showDialogLoading(boolean canCancel);
 
     void showDialogLoading(String msg);
 
     void showDialogLoading();
 
     void hideDialogLoading();
+
 
 }

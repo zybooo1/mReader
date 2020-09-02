@@ -80,17 +80,17 @@ public class LoginPresenter extends AbstractPresenter<LoginContract.View, AppDat
                                     mDataManager.setWebDavUserName(userName);
                                     mDataManager.setWebDavPassword(password);
                                     mDataManager.setWebDavHost(host);
-                                    mView.showToast("登录成功");
+                                    mView.toast("登录成功");
                                     mView.loginSuccess();
                                 } else {
-                                    mView.showToast("登录失败");
+                                    mView.toast("登录失败");
                                 }
                             }
 
                             @Override
                             protected void onErrorWithViewAlive(Throwable e) {
                                 mView.hideDialogLoading();
-                                mView.showToast("登录失败");
+                                mView.toast("登录失败");
                             }
                         }));
     }

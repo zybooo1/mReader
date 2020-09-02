@@ -63,7 +63,7 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                         String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
                         List<DavResource> list = sardine.list(serverHostUrl);
 
-                        if(list==null||list.isEmpty()) return new ArrayList<>();
+                        if (list == null || list.isEmpty()) return new ArrayList<>();
 
                         Iterator<DavResource> it = list.iterator();
                         while (it.hasNext()) {
@@ -95,7 +95,7 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
 
                     @Override
                     protected void onErrorWithViewAlive(Throwable e) {
-                        mView.showToast("抱歉，获取书籍失败了");
+                        mView.toast("抱歉，获取书籍失败了");
                         mView.hideDialogLoading();
                         mView.onBooksLoadComplete();
                     }
@@ -136,7 +136,7 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
 
                     @Override
                     protected void onCompleteWithViewAlive() {
-                        mView.showToast("已上传至\"" + Constants.WEBDAV_BACKUP_PATH + "\"文件夹");
+                        mView.toast("已上传至\"" + Constants.WEBDAV_BACKUP_PATH + "\"文件夹");
                         mView.hideDialogLoading();
                         getWebDavBooks();
                     }
@@ -149,7 +149,7 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                     @Override
                     protected void onErrorWithViewAlive(Throwable e) {
                         mView.hideDialogLoading();
-                        mView.showToast("抱歉，上传失败了");
+                        mView.toast("抱歉，上传失败了");
                     }
                 }));
     }
@@ -168,7 +168,7 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                 if (!file.exists()) {
                     if (!file.mkdirs()) {//若创建文件夹不成功
                         System.out.println("Unable to create external cache directory");
-                        mView.showToast("无法创建本地文件夹");
+                        mView.toast("无法创建本地文件夹");
                         return;
                     }
                 }
@@ -198,7 +198,7 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                     @Override
                     protected void onNextWithViewAlive(Boolean isSaved) {
                         if (!isSaved) {
-                            mView.showToast("抱歉，下载失败了~");
+                            mView.toast("抱歉，下载失败了~");
                             return;
                         }
                         mView.onBookDownloaded(position);
@@ -208,7 +208,7 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                     protected void onErrorWithViewAlive(Throwable e) {
                         e.printStackTrace();
                         mView.hideDialogLoading();
-                        mView.showToast("抱歉，下载失败了");
+                        mView.toast("抱歉，下载失败了");
                     }
                 }));
     }
@@ -252,7 +252,7 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                         e.printStackTrace();
                         if (mView == null) return;
                         mView.hideDialogLoading();
-                        mView.showToast("抱歉，删除失败了");
+                        mView.toast("抱歉，删除失败了");
                     }
                 }));
     }
