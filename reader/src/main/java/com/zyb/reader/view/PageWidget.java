@@ -21,7 +21,6 @@ import com.zyb.reader.view.animation.NoneAnimation;
 import com.zyb.reader.view.animation.SimulationAnimation;
 import com.zyb.reader.view.animation.SlideAnimation;
 
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -53,13 +52,13 @@ public class PageWidget extends View {
     private int moveX = 0;
     private int moveY = 0;
     //翻页动画是否在执行
-    private Boolean isRuning = false;
+    private Boolean isAnimating = false;
 
     //长按判断时间
     private static final long LONG_PRESS_TIME = 500;
 
     Bitmap mCurPageBitmap = null; // 当前页
-    Bitmap mNextPageBitmap = null;
+    Bitmap mNextPageBitmap = null;// 下一页
     private AnimationProvider mAnimationProvider;
 
     Scroller mScroller;
@@ -95,6 +94,8 @@ public class PageWidget extends View {
         mScroller = new Scroller(getContext(), new LinearInterpolator());
         mAnimationProvider = new SimulationAnimation(mCurPageBitmap, mNextPageBitmap, mScreenWidth, mScreenHeight);
 
+        //解决视图更新(onSizeChanged)后页面黑色(没绘制当前页面)
+        if(PageFactory.getInstance()!=null)PageFactory.getInstance().updateCurrentPage();
     }
 
     public void setPageMode(int pageMode) {
@@ -129,8 +130,8 @@ public class PageWidget extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(mBgColor);
-        Log.e("onDraw", "isNext:" + isNext + "          isRuning:" + isRuning);
-        if (isRuning) {
+        Log.e("onDraw", "isNext:" + isNext + "          isRuning:" + isAnimating);
+        if (isAnimating) {
             mAnimationProvider.drawMove(canvas);
         } else {
             mAnimationProvider.drawStatic(canvas);
@@ -159,13 +160,13 @@ public class PageWidget extends View {
 //            cancelPage = false;
             noNext = false;
             isNext = false;
-            isRuning = false;
+            isAnimating = false;
             mAnimationProvider.setStartPoint(downX, downY);
             abortAnimation();
             Log.e(TAG, "ACTION_DOWN");
         } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
             clearSubscribe();
-            if(hasPerformedLongPress) return true;
+            if (hasPerformedLongPress) return true;
 
             final int slop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
             //判断是否移动了
@@ -227,12 +228,12 @@ public class PageWidget extends View {
 
                 moveX = x;
                 moveY = y;
-                isRuning = true;
+                isAnimating = true;
                 this.postInvalidate();
             }
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
             clearSubscribe();
-            if(hasPerformedLongPress) return true;
+            if (hasPerformedLongPress) return true;
 
             Log.e(TAG, "ACTION_UP");
             if (!isMove) {
@@ -275,7 +276,7 @@ public class PageWidget extends View {
 
             Log.e(TAG, "isNext:" + isNext);
             if (!noNext) {
-                isRuning = true;
+                isAnimating = true;
                 mAnimationProvider.startAnimation(mScroller);
                 this.postInvalidate();
             }
@@ -285,7 +286,7 @@ public class PageWidget extends View {
     }
 
     private CompositeDisposable compositeDisposable;
-    private boolean hasPerformedLongPress =false;
+    private boolean hasPerformedLongPress = false;
 
     private void addSubscribe(Disposable disposable) {
         if (compositeDisposable == null) {
@@ -301,14 +302,14 @@ public class PageWidget extends View {
     }
 
     private void doLongClick() {
-        hasPerformedLongPress =false;
+        hasPerformedLongPress = false;
         addSubscribe(Observable.timer(LONG_PRESS_TIME, TimeUnit.MILLISECONDS)
                 .compose(RxUtil.rxObservableSchedulerHelper())
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) throws Exception {
                         if (mTouchListener != null) {
-                            hasPerformedLongPress =true;
+                            hasPerformedLongPress = true;
                             mTouchListener.longClick();
                         }
                     }
@@ -323,7 +324,7 @@ public class PageWidget extends View {
             float y = mScroller.getCurrY();
             mAnimationProvider.setTouchPoint(x, y);
             if (mScroller.getFinalX() == x && mScroller.getFinalY() == y) {
-                isRuning = false;
+                isAnimating = false;
             }
             postInvalidate();
         }
@@ -339,7 +340,7 @@ public class PageWidget extends View {
     }
 
     public boolean isRunning() {
-        return isRuning;
+        return isAnimating;
     }
 
     public void setTouchListener(TouchListener mTouchListener) {

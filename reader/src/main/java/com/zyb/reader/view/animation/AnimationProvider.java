@@ -9,20 +9,8 @@ import android.widget.Scroller;
  * Created by Administrator on 2016/8/1 0001.
  */
 public abstract class AnimationProvider {
-//    static enum Mode {
-//        NoScrolling(false),
-//        ManualScrolling(false),
-//        AnimatedScrollingForward(true),
-//        AnimatedScrollingBackward(true);
-//
-//        final boolean Auto;
-//
-//        Mode(boolean auto) {
-//            Auto = auto;
-//        }
-//    }
 
-    public static enum Direction {
+    public  enum Direction {
         none(true),next(true), pre(true), up(false), down(false);
 
         public final boolean IsHorizontal;
@@ -32,19 +20,9 @@ public abstract class AnimationProvider {
         }
     };
 
-    public static enum Animation {
-        none, curl, slide, shift
-    }
-
-//    private Mode myMode = Mode.NoScrolling;
-
     protected Bitmap mCurPageBitmap,mNextPageBitmap;
     protected float myStartX;
     protected float myStartY;
-    protected int myEndX;
-    protected int myEndY;
-    protected Direction myDirection;
-    protected float mySpeed;
 
     protected int mScreenWidth;
     protected int mScreenHeight;

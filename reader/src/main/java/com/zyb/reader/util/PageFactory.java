@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -31,8 +32,10 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 /**
  *
@@ -43,10 +46,6 @@ public class PageFactory {
 
     private Context mContext;
     private Config config;
-    //当前的书本
-//    private File book_file = null;
-    // 默认背景颜色
-    private int m_backColor = 0xffff9e85;
     //页面宽
     private int mWidth;
     //页面高
@@ -95,20 +94,6 @@ public class PageFactory {
     private Paint mBatterryPaint;
     //背景图片
     private Bitmap m_book_bg = null;
-    //当前显示的文字
-//    private StringBuilder word = new StringBuilder();
-    //当前总共的行
-//    private Vector<String> m_lines = new Vector<>();
-//    // 当前页起始位置
-//    private long m_mbBufBegin = 0;
-//    // 当前页终点位置
-//    private long m_mbBufEnd = 0;
-//    // 之前页起始位置
-//    private long m_preBegin = 0;
-//    // 之前页终点位置
-//    private long m_preEnd = 0;
-    // 图书总长度
-//    private long m_mbBufLen = 0;
     private Intent batteryInfoIntent;
     //电池电量百分比
     private float mBatteryPercentage;
@@ -116,22 +101,12 @@ public class PageFactory {
     private RectF batteryBorderRect = new RectF();
     //电池内边框
     private RectF batteryRect = new RectF();
-    //文件编码
-//    private String m_strCharsetName = "GBK";
     //当前是否为第一页
     private boolean m_isfirstPage;
     //当前是否为最后一页
     private boolean m_islastPage;
     //书本widget
     private PageWidget mBookPageWidget;
-    //    //书本所有段
-//    List<String> allParagraph;
-//    //书本所有行
-//    List<String> allLines = new ArrayList<>();
-    //现在的进度
-    private float currentProgress;
-    //目录
-//    private List<BookCatalogue> directoryList = new ArrayList<>();
     //书本路径
     private String bookPath = "";
     //书本名字
@@ -176,7 +151,7 @@ public class PageFactory {
         mHeight = CommonUtils.getOriginScreenHight();
 
         sdf = new SimpleDateFormat("HH:mm", Locale.CHINA);//HH:mm为24小时制,hh:mm为12小时制
-        date = sdf.format(new java.util.Date());
+        date = sdf.format(new Date());
         df = new DecimalFormat("#0.0");
 
         marginWidth = mContext.getResources().getDimension(R.dimen.reader_readingMarginWidth);
@@ -193,6 +168,10 @@ public class PageFactory {
         mPaint.setTextSize(m_fontSize);// 字体大小
         mPaint.setColor(mTextColor);// 字体颜色
         mPaint.setSubpixelText(true);// 设置该项为true，将有助于文本在LCD屏幕上的显示效果
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mPaint.setLetterSpacing(0.15f);//字间距
+        }
+
 
         calculateLineCount();
 
@@ -221,7 +200,6 @@ public class PageFactory {
         float wordWidth = mPaint.measureText("\u3000");
         float width = mVisibleWidth % wordWidth;
         measureMarginWidth = marginWidth + width / 2;
-
     }
 
     //初始化背景
@@ -295,10 +273,14 @@ public class PageFactory {
         }
 
         float y = marginHeight + statusMarginBottom;
+        //绘制内容
         for (String strLine : m_lines) {
             y += m_fontSize + lineSpace;
             canvas.drawText(strLine, measureMarginWidth, y, mPaint);
 //                word.append(strLine);
+//            if(strLine.contains("\r")){
+//                y+=paragraphSpace;
+//            }
         }
 
         mBatterryBorderPaint.setColor(getTipTextColor());
@@ -335,7 +317,6 @@ public class PageFactory {
 
         //画时间及进度
         float fPercent = (float) (currentPage.getBegin() * 1.0 / mBookUtil.getBookLen());//进度
-        currentProgress = fPercent;
         if (mPageEvent != null) {
             mPageEvent.changeProgress(fPercent);
         }
@@ -545,21 +526,26 @@ public class PageFactory {
     public List<String> getNextLines() {
         List<String> lines = new ArrayList<>();
         float width = 0;
-        float height = 0;
         String line = "";
         while (mBookUtil.next(true) != -1) {
             char word = (char) mBookUtil.next(false);
-            //判断是否换行
-            if ((word + "").equals("\r") && (((char) mBookUtil.next(true)) + "").equals("\n")) {
+            char pre = (char) mBookUtil.pre(true);
+            //判断是否为换行
+            // TODO: 2020/9/3 尝试消除错误断行 失败
+//            if (BookUtil.isSentenceEnd(pre+"")&&(word + "").equals("\r") &&
+//                    (((char) mBookUtil.next(true)) + "").equals("\n")) {
+            if ((word + "").equals("\r") &&
+                    (((char) mBookUtil.next(true)) + "").equals("\n")) {
                 mBookUtil.next(false);
                 if (!line.isEmpty()) {
                     lines.add(line);
                     line = "";
                     width = 0;
-//                    height +=  paragraphSpace;
                     if (lines.size() == mLineCount) {
                         break;
                     }
+                    //在后面再加一行 相当于段间距
+                    lines.add("");
                 }
             } else {
                 float widthChar = mPaint.measureText(word + "");
@@ -715,6 +701,16 @@ public class PageFactory {
                 date = mDate;
                 currentPage(false);
             }
+        }
+    }
+
+    /**
+     * 绘制当前页
+     * 解决视图更新(onSizeChanged)后页面黑色(没绘制当前页面)
+     */
+    public void updateCurrentPage() {
+        if (currentPage != null && mBookPageWidget != null && !mBookPageWidget.isRunning()) {
+                currentPage(false);
         }
     }
 

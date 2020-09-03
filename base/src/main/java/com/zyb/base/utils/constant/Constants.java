@@ -29,7 +29,7 @@ public class Constants {
     public static final String WEBDAV_USER_NAME = "webdev_user_name";
     public static final String WEBDAV_PASSWORD = "webdev_psw";
     public static final String WEBDAV_HOST = "webdev_host";
-    public static final String WEBDAV_BACKUP_PATH = "猫豆阅读";
+    public static final String WEBDAV_BACKUP_PATH = "MaodouReader";
 
     //用户隐私html资源  如果是本地资源file:///android_asset/xxx.html
     public static final String PRIVACY_HTML = "https://zybooo1.github.io/zybooo1/mReader/mreader_privacy.html";

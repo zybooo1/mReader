@@ -382,7 +382,7 @@ public class BookUtil {
                 List<SearchResultBean> searchResultBeanList = new ArrayList<>();
                 long size = 0;
 
-                for (int i = 0; i <index; i++) {
+                for (int i = 0; i < index; i++) {
                     size += myArray.get(i).getSize();
                 }
 
@@ -414,7 +414,7 @@ public class BookUtil {
 
                     if (canBreak) {
                         //不是最后一组
-                        if (i != myArray.size() - 1) index = i+1;
+                        if (i != myArray.size() - 1) index = i + 1;
                         break;
                     }
                 }
@@ -455,5 +455,29 @@ public class BookUtil {
         Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
         Matcher m = p.matcher(str);
         return m.find();
+    }
+
+    /**
+     * 该函数判断一个字符串是否包含标点符号（中文英文标点符号）。
+     * 原理是原字符串做一次清洗，清洗掉所有标点符号。
+     * 此时，如果原字符串包含标点符号，那么清洗后的长度和原字符串长度不同。返回true。
+     * 如果原字符串未包含标点符号，则清洗后长度不变。返回false。
+     */
+    public static boolean hasMark(String s) {
+        String tmp = s;
+        tmp = tmp.replaceAll("\\p{P}", "");
+        //长度变化了 说明有标点符号
+        return s.length() != tmp.length();
+
+    }
+
+    /**
+     * 是否是句子结尾
+     * 通过匹配特定标点符号判断是否是句子结尾
+     */
+    public static boolean isSentenceEnd(String s) {
+        String str = "[\"”。!！：:？?…]";
+        boolean matched =Pattern.compile(str).matcher(s).matches();
+        return matched;
     }
 }

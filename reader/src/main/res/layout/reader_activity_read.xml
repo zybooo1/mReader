@@ -78,6 +78,29 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="visible">
 
+            <com.xw.repo.VectorCompatTextView
+                android:id="@+id/tvSpeechEngine"
+                app:drawableLeftCompat="@drawable/svg_speech_engine"
+                android:text="语音引擎"
+                app:layout_constraintBottom_toTopOf="@+id/tv1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:drawableWidth="20dp"
+                android:drawablePadding="5dp"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:drawableHeight="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                app:layout_constraintTop_toTopOf="@+id/tvSpeechEngine"
+                app:layout_constraintBottom_toBottomOf="@+id/tvSpeechEngine"
+                app:layout_constraintRight_toRightOf="parent"
+                android:id="@+id/switchSpeechEngine"
+                style="@style/reader_setting_dialog_button"
+                android:text="切换" />
+
             <TextView
                 android:id="@+id/tvSpeed"
                 android:layout_width="wrap_content"
@@ -312,6 +335,7 @@
                 android:id="@+id/bookpop_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                tools:visibility="gone"
                 android:background="@drawable/reader_bg_reader_menu"
                 android:baselineAligned="false"
                 android:orientation="vertical"

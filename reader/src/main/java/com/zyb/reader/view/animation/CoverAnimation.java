@@ -28,8 +28,6 @@ public class CoverAnimation extends AnimationProvider {
     @Override
     public void drawMove(Canvas canvas) {
         if (getDirection().equals(AnimationProvider.Direction.next)){
-//            mSrcRect.left = (int) ( - (mScreenWidth - mTouch.x));
-//            mSrcRect.right =  mSrcRect.left + mScreenWidth;
             int dis = (int) (mScreenWidth - myStartX + mTouch.x);
             if (dis > mScreenWidth){
                 dis = mScreenWidth;
@@ -77,7 +75,6 @@ public class CoverAnimation extends AnimationProvider {
                 }
                 dx = mScreenWidth - dis;
             }else{
-//                dx = (int) - (mTouch.x + myStartX);
                 dx = (int) - (mTouch.x + (mScreenWidth - myStartX));
             }
         }else{

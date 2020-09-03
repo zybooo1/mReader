@@ -9,11 +9,11 @@
     <!-- 状态栏离底部距离 -->
     <dimen name="reader_reading_status_margin_bottom">3dp</dimen>
     <!-- 行间距 -->
-    <dimen name="reader_reading_line_spacing">10dp</dimen>
+    <dimen name="reader_reading_line_spacing">15dp</dimen>
     <!-- 段间距 -->
-    <dimen name="reader_reading_paragraph_spacing">30dp</dimen>
+    <dimen name="reader_reading_paragraph_spacing">20dp</dimen>
     <!-- 书本字体默认大小 -->
-    <dimen name="reader_reading_default_text_size">20sp</dimen>
+    <dimen name="reader_reading_default_text_size">22sp</dimen>
     <!-- 书本字体最小大小 -->
     <dimen name="reader_reading_min_text_size">10sp</dimen>
     <!-- 书本字体最大大小 -->

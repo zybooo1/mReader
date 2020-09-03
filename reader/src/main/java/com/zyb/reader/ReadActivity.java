@@ -38,11 +38,15 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.barlibrary.BarHide;
 import com.gyf.barlibrary.ImmersionBar;
 import com.kongzue.dialog.interfaces.OnDialogButtonClickListener;
+import com.kongzue.dialog.interfaces.OnMenuItemClickListener;
 import com.kongzue.dialog.util.BaseDialog;
+import com.kongzue.dialog.util.DialogSettings;
+import com.kongzue.dialog.v3.BottomMenu;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -51,11 +55,13 @@ import com.zyb.base.base.activity.MyActivity;
 import com.zyb.base.base.fragment.BaseFragmentStateAdapter;
 import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
+import com.zyb.base.router.RouterConstants;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.EventBusUtil;
 import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.QMUIViewHelper;
 import com.zyb.base.utils.TimeUtil;
+import com.zyb.base.utils.constant.ApiConstants;
 import com.zyb.base.utils.constant.Constants;
 import com.zyb.base.widget.ClearEditText;
 import com.zyb.base.widget.RoundButton;
@@ -130,6 +136,8 @@ public class ReadActivity extends MyActivity {
     ConstraintLayout rl_read_bottom;
     @BindView(R2.id.layoutRoot)
     ConstraintLayout layoutRoot;
+    @BindView(R2.id.tvSpeechEngine)
+    TextView tvSpeechEngine;
 
     private Config config;
     private Book book;
@@ -858,6 +866,7 @@ public class ReadActivity extends MyActivity {
 
     //------------------ System TTS Start -------------------
     private TextToSpeech textToSpeech;
+    List<TextToSpeech.EngineInfo> speechEngines =new ArrayList<>();
     private boolean isSpeechPause;
     private boolean isSpeaking = false;
 
@@ -904,6 +913,8 @@ public class ReadActivity extends MyActivity {
                     textToSpeech.setSpeechRate(config.getSpeedForTTS());//速度 0<speed<2
                     textToSpeech.setOnUtteranceProgressListener(ttsListener);
                     textToSpeech.setLanguage(Locale.CHINA);
+                    speechEngines.addAll(textToSpeech.getEngines());
+                    if(speechEngines.size()>0)tvSpeechEngine.setText(textToSpeech.getEngines().get(0).label);
                     playSpeech(true);
                 } else {
                     toast("语音引擎初始化失败");
@@ -948,6 +959,36 @@ public class ReadActivity extends MyActivity {
         isSpeechPause = false;
         isSpeaking = false;
         if (textToSpeech != null) textToSpeech.shutdown();
+    }
+
+
+    @OnClick(R2.id.switchSpeechEngine)
+    public void switchSpeechEngine() {
+        if(speechEngines.size()<=1){
+            toast("没有更多选择啦~");
+        }
+        List<String> engines =new ArrayList<>();
+        for (TextToSpeech.EngineInfo speechEngine : speechEngines) {
+            engines.add(speechEngine.label);
+        }
+        BottomMenu.build(this)
+                .setStyle(DialogSettings.STYLE.STYLE_IOS)
+                .setMenuTextList(engines)
+                .setTitle("选择语音引擎")
+                .setCancelable(true)
+                .setOnCancelButtonClickListener(new OnDialogButtonClickListener() {
+                    @Override
+                    public boolean onClick(BaseDialog baseDialog, View v) {
+                        return false;
+                    }
+                })
+                .setOnMenuItemClickListener(new OnMenuItemClickListener() {
+                    @Override
+                    public void onClick(String text, int index) {
+
+                    }
+                })
+                .show();
     }
     //------------------ System TTS End -------------------
 
