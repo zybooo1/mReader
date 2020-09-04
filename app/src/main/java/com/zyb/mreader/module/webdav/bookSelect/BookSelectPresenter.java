@@ -39,6 +39,9 @@ public class BookSelectPresenter extends AbstractPresenter<BookSelectContract.Vi
         addSubscribe(RxUtil.createFlowableData(getSardine())
                 .map(sardine -> {
                     String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
+                    if (!sardine.exists(serverHostUrl)) {
+                        sardine.createDirectory(serverHostUrl);
+                    }
                     List<DavResource> list = sardine.list(serverHostUrl);
                     Iterator<DavResource> it = list.iterator();
                     while (it.hasNext()) {

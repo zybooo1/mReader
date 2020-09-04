@@ -11,12 +11,13 @@ import com.zyb.base.utils.LogUtil;
  */
 public class Config {
     private final static String SP_NAME = "config";
-    private final static String BOOK_BG_KEY = "bookbg";
-    private final static String FONT_SIZE_KEY = "fontsize";
+    private final static String BOOK_BG_KEY = "book_bg";
+    private final static String FONT_SIZE_KEY = "font_size";
     private final static String NIGHT_KEY = "night";
     private final static String LIGHT_KEY = "light";
-    private final static String SYSTEM_LIGHT_KEY = "systemlight";
-    private final static String PAGE_MODE_KEY = "pagemode";
+    private final static String SYSTEM_LIGHT_KEY = "system_light";
+    private final static String PAGE_MODE_KEY = "page_mode";
+    private final static String SPEECH_ENGINE_KEY = "speech_engine";
 
 
     public final static int BOOK_BG_DEFAULT = 0;
@@ -70,6 +71,14 @@ public class Config {
 
     public void setPageMode(int pageMode) {
         sp.edit().putInt(PAGE_MODE_KEY, pageMode).apply();
+    }
+
+    public String getSpeechEngine() {
+        return sp.getString(SPEECH_ENGINE_KEY, "");
+    }
+
+    public void setSpeechEngine(String speechEngine) {
+        sp.edit().putString(SPEECH_ENGINE_KEY, speechEngine).apply();
     }
 
     public int getBookBgType() {

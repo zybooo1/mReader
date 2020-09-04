@@ -211,7 +211,7 @@ public abstract class MyActivity extends BaseActivity
 
     public @ColorRes
     int navigationBarColor() {
-        return R.color.windowBackground;
+        return R.color.white;
     }
 
     public void setNavigationBarColor(int color) {

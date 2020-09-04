@@ -61,8 +61,15 @@ public class WebdavPresenter extends AbstractPresenter<WebdavContract.View, AppD
                     @Override
                     public List<DavResource> apply(Sardine sardine) throws Exception {
                         String serverHostUrl = mDataManager.getWebDavHost() + Constants.WEBDAV_BACKUP_PATH + "/";
+                        if (!sardine.exists(serverHostUrl)) {
+                            sardine.createDirectory(serverHostUrl);
+                        }
+
                         List<DavResource> list = sardine.list(serverHostUrl);
 
+                        if (!sardine.exists(serverHostUrl)) {
+                            sardine.createDirectory(serverHostUrl);
+                        }
                         if (list == null || list.isEmpty()) return new ArrayList<>();
 
                         Iterator<DavResource> it = list.iterator();

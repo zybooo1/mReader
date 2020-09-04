@@ -142,6 +142,10 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         }
     }
 
+    @Override
+    public int navigationBarColor() {
+        return R.color.windowBackground;
+    }
 
     @Override
     protected void initView() {

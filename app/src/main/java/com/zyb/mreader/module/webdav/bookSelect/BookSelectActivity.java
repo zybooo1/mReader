@@ -101,6 +101,9 @@ public class BookSelectActivity extends MVPActivity<BookSelectPresenter> impleme
                 .inject(this);
     }
 
+    /**
+     * 获取所有WebDav上的书籍，判断本地书籍是否已上传
+     */
     @Override
     public void onBooksLoaded(List<DavResource> davResources) {
         this.davResources.addAll(davResources);

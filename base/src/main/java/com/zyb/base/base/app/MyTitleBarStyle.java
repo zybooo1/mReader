@@ -18,27 +18,27 @@ public class MyTitleBarStyle extends BaseTitleBarStyle {
 
     @Override
     public Drawable getBackground() {
-        return getDrawable(R.color.colorPrimary);
+        return null;
     }
 
     @Override
     public Drawable getBackIcon() {
-        return getDrawable(com.hjq.bar.R.mipmap.bar_icon_back_black);
+        return null;
     }
 
     @Override
     public int getLeftColor() {
-        return getColor(R.color.white);
+        return 0;
     }
 
     @Override
     public int getTitleColor() {
-        return getColor(R.color.white);
+        return 0;
     }
 
     @Override
     public int getRightColor() {
-        return getColor(R.color.white);
+        return 0;
     }
 
     @Override
@@ -48,26 +48,16 @@ public class MyTitleBarStyle extends BaseTitleBarStyle {
 
     @Override
     public Drawable getLineDrawable() {
-        return getDrawable(R.color.colorLine);
-    }
-
-    @Override
-    public int getLineSize() {
-        return 1;
-    }
-
-    @Override
-    public float getTitleSize() {
-        return sp2px(18);
+        return null;
     }
 
     @Override
     public Drawable getLeftBackground() {
-        return getDrawable(R.drawable.titlebar_back_bg);
+        return null;
     }
 
     @Override
     public Drawable getRightBackground() {
-        return getDrawable(R.drawable.titlebar_back_bg);
+        return null;
     }
 }

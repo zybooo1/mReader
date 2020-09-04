@@ -79,11 +79,6 @@ public class LauncherActivity extends MyActivity
                 });
     }
 
-    @Override
-    public int navigationBarColor() {
-        return R.color.white;
-    }
-
     private void requestPermission() {
         XXPermissions.with(this)
                 .permission(Permission.Group.STORAGE)

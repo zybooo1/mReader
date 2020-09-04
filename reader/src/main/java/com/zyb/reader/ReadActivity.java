@@ -7,18 +7,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -38,7 +35,6 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.alibaba.android.arouter.launcher.ARouter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.barlibrary.BarHide;
 import com.gyf.barlibrary.ImmersionBar;
@@ -55,13 +51,11 @@ import com.zyb.base.base.activity.MyActivity;
 import com.zyb.base.base.fragment.BaseFragmentStateAdapter;
 import com.zyb.base.event.BaseEvent;
 import com.zyb.base.event.EventConstants;
-import com.zyb.base.router.RouterConstants;
 import com.zyb.base.utils.CommonUtils;
 import com.zyb.base.utils.EventBusUtil;
 import com.zyb.base.utils.LogUtil;
 import com.zyb.base.utils.QMUIViewHelper;
 import com.zyb.base.utils.TimeUtil;
-import com.zyb.base.utils.constant.ApiConstants;
 import com.zyb.base.utils.constant.Constants;
 import com.zyb.base.widget.ClearEditText;
 import com.zyb.base.widget.RoundButton;
@@ -75,7 +69,6 @@ import com.zyb.reader.bean.SearchResultBean;
 import com.zyb.reader.dialog.SettingDialog;
 import com.zyb.reader.fragment.BookMarkFragment;
 import com.zyb.reader.fragment.CatalogFragment;
-import com.zyb.reader.util.BitmapUtil;
 import com.zyb.reader.util.BookUtil;
 import com.zyb.reader.util.BrightnessUtil;
 import com.zyb.reader.util.PageFactory;
@@ -365,10 +358,10 @@ public class ReadActivity extends MyActivity {
 
     private void toActionActivity() {
         // TODO: 2020/8/11  此功能正式版暂时隐藏
-        if(!BuildConfig.DEBUG)return;
-        Intent intent = new Intent(this,ActionActivity.class);
-        intent.putExtra(Constants.JUMP_PARAM_FLAG_STRING,pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence());
-        intent.putExtra(Constants.JUMP_PARAM_FLAG_STRING2,book.getTitle());
+        if (!BuildConfig.DEBUG) return;
+        Intent intent = new Intent(this, ActionActivity.class);
+        intent.putExtra(Constants.JUMP_PARAM_FLAG_STRING, pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence());
+        intent.putExtra(Constants.JUMP_PARAM_FLAG_STRING2, book.getTitle());
         startActivity(intent);
     }
 
@@ -414,7 +407,7 @@ public class ReadActivity extends MyActivity {
 
     @OnClick(R2.id.btnStartSpeech)
     public void clickStartSpeech() {
-        initTTS();
+        initTTS(config.getSpeechEngine());
         toggleMenu();
         isSpeaking = true;
     }
@@ -866,7 +859,7 @@ public class ReadActivity extends MyActivity {
 
     //------------------ System TTS Start -------------------
     private TextToSpeech textToSpeech;
-    List<TextToSpeech.EngineInfo> speechEngines =new ArrayList<>();
+    List<TextToSpeech.EngineInfo> speechEngines = new ArrayList<>();
     private boolean isSpeechPause;
     private boolean isSpeaking = false;
 
@@ -898,30 +891,48 @@ public class ReadActivity extends MyActivity {
         }
     };
 
-    private void initTTS() {
+    private void initTTS(@Nullable String name) {
         cbAutoTiming.setChecked(config.getIsAutoTiming());
         if (config.getIsAutoTiming() && config.getTimingTime() > 0) {
             sbTiming.setProgress(config.getTimingTime());
             showTimer(config.getTimingTime());
         }
         sbSpeed.setProgress(config.getSpeakSpeed());
-        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int i) {
-                //系统语音初始化成功
-                if (i == TextToSpeech.SUCCESS) {
-                    textToSpeech.setSpeechRate(config.getSpeedForTTS());//速度 0<speed<2
-                    textToSpeech.setOnUtteranceProgressListener(ttsListener);
-                    textToSpeech.setLanguage(Locale.CHINA);
-                    speechEngines.addAll(textToSpeech.getEngines());
-                    if(speechEngines.size()>0)tvSpeechEngine.setText(textToSpeech.getEngines().get(0).label);
-                    playSpeech(true);
-                } else {
-                    toast("语音引擎初始化失败");
-                    stopSpeech();
+        TextToSpeech.OnInitListener onInitListener = i -> {
+            //系统语音初始化成功
+            if (i == TextToSpeech.SUCCESS) {
+                textToSpeech.setSpeechRate(config.getSpeedForTTS());//速度 0<speed<2
+                textToSpeech.setOnUtteranceProgressListener(ttsListener);
+                textToSpeech.setLanguage(Locale.CHINA);
+                playSpeech(true);
+
+                //保存获取到的语音引擎列表
+                speechEngines.clear();
+                speechEngines.addAll(textToSpeech.getEngines());
+
+                //播放成功，为用户保存当前语音引擎选择
+                config.setSpeechEngine(name);
+
+                //显示语音引擎名称
+                String engineLabel = "";
+                for (TextToSpeech.EngineInfo speechEngine : speechEngines) {
+                    if (speechEngine.name.equals(name)) engineLabel = speechEngine.label;
                 }
+                if(!engineLabel.isEmpty()){
+                    tvSpeechEngine.setText(engineLabel);
+                }else {
+                    if(speechEngines.size()>0)tvSpeechEngine.setText(speechEngines.get(0).label);
+                }
+            } else {
+                toast("语音引擎初始化失败");
+                stopSpeech();
             }
-        });
+        };
+        if (name != null && !name.isEmpty()) {
+            textToSpeech = new TextToSpeech(this, onInitListener, name);
+        } else {
+            textToSpeech = new TextToSpeech(this, onInitListener);
+        }
     }
 
     private void playSpeech(boolean isFirstPage) {
@@ -964,10 +975,10 @@ public class ReadActivity extends MyActivity {
 
     @OnClick(R2.id.switchSpeechEngine)
     public void switchSpeechEngine() {
-        if(speechEngines.size()<=1){
+        if (speechEngines.size() <= 1) {
             toast("没有更多选择啦~");
         }
-        List<String> engines =new ArrayList<>();
+        List<String> engines = new ArrayList<>();
         for (TextToSpeech.EngineInfo speechEngine : speechEngines) {
             engines.add(speechEngine.label);
         }
@@ -985,7 +996,8 @@ public class ReadActivity extends MyActivity {
                 .setOnMenuItemClickListener(new OnMenuItemClickListener() {
                     @Override
                     public void onClick(String text, int index) {
-
+                        stopSpeech();
+                        initTTS(speechEngines.get(index).name);
                     }
                 })
                 .show();

@@ -106,7 +106,7 @@ ext {
             // 吐司工具类：https://github.com/getActivity/ToastUtils
             "toast-util"                : "com.hjq:toast:latest.integration",
             // 标题栏：https://github.com/getActivity/TitleBar
-            "titlebar"                  : "com.hjq:titlebar:6.0",
+            "titlebar"                  : "com.hjq:titlebar:6.5",
             // File Picker
             "FilePicker"                : "cn.imlibo:FilePicker:v0.0.5_alpha",
             "smartrefresh"              : "com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-21",

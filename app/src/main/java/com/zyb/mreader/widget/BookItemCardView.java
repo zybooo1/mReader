@@ -28,7 +28,7 @@ public class BookItemCardView extends CardView {
         int childWidthSize = getMeasuredWidth();
         // 高度和宽度
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(
-                (int) (childWidthSize*1.5), MeasureSpec.EXACTLY);
+                (int) (childWidthSize*1.33), MeasureSpec.EXACTLY);
         widthMeasureSpec = MeasureSpec.makeMeasureSpec(
                 childWidthSize, MeasureSpec.EXACTLY);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
