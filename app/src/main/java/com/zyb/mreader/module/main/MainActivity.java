@@ -201,7 +201,7 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
         layoutBooksEmpty.setVisibility(this.books.size() > 0 ? View.GONE : View.VISIBLE);
     }
 
-    @OnClick({R.id.addBook, R.id.feedBack, R.id.about, R.id.share, R.id.backup})
+    @OnClick({R.id.addBook, R.id.feedBack, R.id.about, R.id.share, R.id.backup,R.id.donate})
     public void addBookClick(View view) {
         drawerLayout.closeDrawers();
         switch (view.getId()) {
@@ -219,6 +219,9 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
                 break;
             case R.id.backup:
                 mPresenter.drawerAction(MainContract.DRAWER_ACTION.TO_BACKUP);
+                break;
+            case R.id.donate:
+                mPresenter.drawerAction(MainContract.DRAWER_ACTION.TO_DONATE);
                 break;
         }
     }
@@ -257,6 +260,14 @@ public class MainActivity extends MVPActivity<MainPresenter> implements
     @Override
     public void toBackup() {
         startActivity(WebdavActivity.class);
+    }
+
+    @Override
+    public void toDonate() {
+        RouterUtils.getInstance().build(RouterConstants.PATH_BASE_ATY_WEB_VIEW)
+                .withString(WebActivity.URL_FLAG, Constants.DONATE_HTML)
+                .withBoolean(WebActivity.MORE_ACTION_FLAG,true)
+                .navigation();
     }
 
     @Override

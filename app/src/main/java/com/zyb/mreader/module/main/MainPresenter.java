@@ -66,6 +66,9 @@ public class MainPresenter extends AbstractPresenter<MainContract.View, AppDataM
                     case TO_BACKUP:
                         mView.toBackup();
                         break;
+                    case TO_DONATE:
+                        mView.toDonate();
+                        break;
                 }
             }
             @Override

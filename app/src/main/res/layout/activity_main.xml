@@ -74,14 +74,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="40dp"
                 android:ellipsize="end"
-                android:gravity="center_horizontal"
-                android:lineSpacingExtra="4dp"
+                android:gravity="left"
+                android:lineSpacingExtra="2dp"
                 android:maxLines="3"
-                android:textColor="@color/gray60" />
+                android:textColor="@color/gray70" />
         </RelativeLayout>
 
         <android.support.constraint.ConstraintLayout

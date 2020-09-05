@@ -58,18 +58,26 @@
             app:bar_rightColor="@color/gray60"
             app:bar_rightIcon="@mipmap/ico_go_black" />
         <com.zyb.base.widget.SettingBar
-            android:id="@+id/about"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:bar_leftText="关于"
-            app:bar_rightColor="@color/gray60"
-            app:bar_rightIcon="@mipmap/ico_go_black" />
-        <com.zyb.base.widget.SettingBar
             android:id="@+id/share"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:bar_leftText="推荐给朋友"
             app:bar_lineVisible="false"
+            app:bar_rightColor="@color/gray60"
+            app:bar_rightIcon="@mipmap/ico_go_black" />
+        <com.zyb.base.widget.SettingBar
+            android:id="@+id/donate"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:bar_leftText="捐赠"
+            app:bar_rightColor="@color/gray60"
+            app:bar_rightIcon="@mipmap/ico_go_black" />
+        <com.zyb.base.widget.SettingBar
+            android:id="@+id/about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:bar_leftText="关于"
             app:bar_rightColor="@color/gray60"
             app:bar_rightIcon="@mipmap/ico_go_black" />
     </LinearLayout>

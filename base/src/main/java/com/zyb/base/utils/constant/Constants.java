@@ -32,8 +32,9 @@ public class Constants {
     public static final String WEBDAV_BACKUP_PATH = "MaoDouReader";
 
     //用户隐私html资源  如果是本地资源file:///android_asset/xxx.html
-    public static final String PRIVACY_HTML = "https://zybooo1.github.io/zybooo1/mReader/mreader_privacy.html";
-    public static final String PROTOCOL_HTML = "https://zybooo1.github.io/zybooo1/mReader/mreader_protocol.html";
+    public static final String PRIVACY_HTML = "https://739758058.gitee.io/zybooo1/mReader/mreader_privacy.html";
+    public static final String PROTOCOL_HTML = "https://739758058.gitee.io/zybooo1/mReader/mreader_protocol.html";
+    public static final String DONATE_HTML = "https://739758058.gitee.io/zybooo1/donate/donate.html";
 
     //坚果云
     public static final String JIANGUOYUN_HELP_URL = "http://help.jianguoyun.com/?p=2064";
