@@ -357,10 +357,14 @@ public class ReadActivity extends MyActivity {
     }
 
     private void toActionActivity() {
-        // TODO: 2020/8/11  此功能正式版暂时隐藏
-        if (!BuildConfig.DEBUG) return;
+        if(isSpeaking){
+            toast("清先退出朗读");
+            return;
+        }
         Intent intent = new Intent(this, ActionActivity.class);
-        intent.putExtra(Constants.JUMP_PARAM_FLAG_STRING, pageFactory.getCurPageWithoutFirstSentence() + pageFactory.getNextPageFirstSentence());
+        intent.putExtra(Constants.JUMP_PARAM_FLAG_STRING,
+                pageFactory.getCurrentPage().getLineToString()
+                        + pageFactory.getNextPage().getLineToString());
         intent.putExtra(Constants.JUMP_PARAM_FLAG_STRING2, book.getTitle());
         startActivity(intent);
     }
@@ -918,10 +922,11 @@ public class ReadActivity extends MyActivity {
                 for (TextToSpeech.EngineInfo speechEngine : speechEngines) {
                     if (speechEngine.name.equals(name)) engineLabel = speechEngine.label;
                 }
-                if(!engineLabel.isEmpty()){
+                if (!engineLabel.isEmpty()) {
                     tvSpeechEngine.setText(engineLabel);
-                }else {
-                    if(speechEngines.size()>0)tvSpeechEngine.setText(speechEngines.get(0).label);
+                } else {
+                    if (speechEngines.size() > 0)
+                        tvSpeechEngine.setText(speechEngines.get(0).label);
                 }
             } else {
                 toast("语音引擎初始化失败");

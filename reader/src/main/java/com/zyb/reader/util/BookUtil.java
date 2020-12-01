@@ -79,7 +79,6 @@ public class BookUtil {
     public synchronized void openBook(Book book) throws IOException {
         this.book = book;
         //如果当前缓存不是要打开的书本就缓存书本同时删除缓存
-
         if (bookPath == null || !bookPath.equals(book.getPath())) {
             cleanCacheFile();
             this.bookPath = book.getPath();
@@ -133,6 +132,7 @@ public class BookUtil {
         return line.toCharArray();
     }
 
+    //上一句
     public char[] preLine() {
         if (position <= 0) {
             return null;

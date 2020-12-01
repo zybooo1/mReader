@@ -10,12 +10,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.hjq.toast.ToastUtils;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -35,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 /**
  *
@@ -213,7 +210,7 @@ public class PageFactory {
             canvas.drawColor(mContext.getResources().getColor(R.color.reader_read_bg_night));
             setBgBitmap(bitmap);
             //设置字体颜色
-            setmTextColor(ContextCompat.getColor(mContext,R.color.reader_read_font_night));
+            setmTextColor(ContextCompat.getColor(mContext, R.color.reader_read_font_night));
             setBookPageBg(Color.BLACK);
         } else {
             //设置背景
@@ -297,18 +294,18 @@ public class PageFactory {
         float batteryWidth = CommonUtils.dp2px(20);//电池宽
         float batteryHeight = CommonUtils.dp2px(10);//电池高
         float batteryLeft = measureMarginWidth;//电池外框left位置
-        float batteryTop = mHeight - batteryHeight - statusMarginBottom;//电池外框Top位置
-        float batteryBottom = mHeight - statusMarginBottom;//电池外框Bottom位置
+        float batteryTop = mHeight - batteryHeight - (statusMarginBottom/2);//电池外框Top位置
+        float batteryBottom = mHeight - (statusMarginBottom/2);//电池外框Bottom位置
         batteryBorderRect.set(batteryLeft, batteryTop, batteryLeft + batteryWidth, batteryBottom);
         canvas.drawRoundRect(batteryBorderRect, batteryHeight / 2, batteryHeight / 2, mBatterryBorderPaint);
         //画电量部分
         Path path = new Path();
         float radius = batteryRect.height() / 2;
         float[] radiusArray = new float[]{radius, radius, radius, radius, radius, radius, radius, radius};
-        RectF clipRect = new RectF(batteryLeft + mBorderWidth, batteryTop + mBorderWidth, batteryLeft + batteryWidth - mBorderWidth, mHeight - statusMarginBottom - mBorderWidth);
+        RectF clipRect = new RectF(batteryLeft + mBorderWidth, batteryTop + mBorderWidth, batteryLeft + batteryWidth - mBorderWidth, mHeight - statusMarginBottom/2 - mBorderWidth);
         path.addRoundRect(clipRect, radiusArray, Path.Direction.CW);
         //这个rect大小根据电量变化
-        batteryRect.set(batteryLeft + mBorderWidth, batteryTop + mBorderWidth, batteryLeft + batteryWidth * mBatteryPercentage - mBorderWidth, mHeight - statusMarginBottom - mBorderWidth);
+        batteryRect.set(batteryLeft + mBorderWidth, batteryTop + mBorderWidth, batteryLeft + batteryWidth * mBatteryPercentage - mBorderWidth, mHeight - statusMarginBottom/2 - mBorderWidth);
         //根据电量值裁剪
         canvas.save();
         canvas.clipPath(path);
@@ -523,6 +520,7 @@ public class PageFactory {
         return trPage;
     }
 
+    //下一页 行集合
     public List<String> getNextLines() {
         List<String> lines = new ArrayList<>();
         float width = 0;
@@ -576,10 +574,12 @@ public class PageFactory {
         return lines;
     }
 
+    //上一页 行集合
     public List<String> getPreLines() {
         List<String> lines = new ArrayList<>();
         float width = 0;
         String line = "";
+        boolean canAddedEmptyLine=false;//第一段不加段距
 
         char[] par = mBookUtil.preLine();
         while (par != null) {
@@ -598,6 +598,11 @@ public class PageFactory {
             }
             if (!line.isEmpty()) {
                 preLines.add(line);
+                if (canAddedEmptyLine) {
+                    //在后面再加一行 相当于段间距
+                    preLines.add("");
+                }
+                canAddedEmptyLine=true;
             }
 
             lines.addAll(0, preLines);
@@ -610,6 +615,7 @@ public class PageFactory {
             par = mBookUtil.preLine();
         }
 
+        //获取不超过行数限制的行
         List<String> reLines = new ArrayList<>();
         int num = 0;
         for (int i = lines.size() - 1; i >= 0; i--) {
@@ -710,7 +716,7 @@ public class PageFactory {
      */
     public void updateCurrentPage() {
         if (currentPage != null && mBookPageWidget != null && !mBookPageWidget.isRunning()) {
-                currentPage(false);
+            currentPage(false);
         }
     }
 
@@ -864,8 +870,8 @@ public class PageFactory {
 
     //获取 //时间、标题等颜色
     public int getTipTextColor() {
-        return Color.argb(Color.alpha(this.mTextColor)-51,Color.red(mTextColor),
-                Color.green(mTextColor),Color.blue(mTextColor));
+        return Color.argb(Color.alpha(this.mTextColor) - 51, Color.red(mTextColor),
+                Color.green(mTextColor), Color.blue(mTextColor));
     }
 
     //获取文字大小

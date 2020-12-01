@@ -42,39 +42,8 @@ public class ActionActivity extends MyActivity {
         tvContent.setText(content);
         tvContent.setTextSize(CommonUtils.px2dp(Config.getInstance().getFontSize()));
 
-        initColor();
     }
 
-    private void initColor() {
-        if (Config.getInstance().getDayOrNight()) {
-            layoutRoot.setBackgroundResource(android.R.color.black);
-            tvContent.setTextColor(ContextCompat.getColor(this, R.color.reader_read_font_night));
-            return;
-        }
-
-        switch (Config.getInstance().getBookBgType()) {
-            case Config.BOOK_BG_DEFAULT:
-                layoutRoot.setBackgroundResource(R.drawable.reader_paper);
-                tvContent.setTextColor(ContextCompat.getColor(this, R.color.reader_read_font_default));
-                break;
-            case Config.BOOK_BG_1:
-                layoutRoot.setBackgroundResource(R.color.reader_read_bg_1);
-                tvContent.setTextColor(ContextCompat.getColor(this, R.color.reader_read_font_1));
-                break;
-            case Config.BOOK_BG_2:
-                layoutRoot.setBackgroundResource(R.color.reader_read_bg_2);
-                tvContent.setTextColor(ContextCompat.getColor(this, R.color.reader_read_font_2));
-                break;
-            case Config.BOOK_BG_3:
-                layoutRoot.setBackgroundResource(R.color.reader_read_bg_3);
-                tvContent.setTextColor(ContextCompat.getColor(this, R.color.reader_read_font_3));
-                break;
-            case Config.BOOK_BG_4:
-                layoutRoot.setBackgroundResource(R.color.reader_read_bg_4);
-                tvContent.setTextColor(ContextCompat.getColor(this, R.color.reader_read_font_4));
-                break;
-        }
-    }
 
     @OnClick(R2.id.btnCopy)
     public void btnCopy() {
@@ -88,7 +57,7 @@ public class ActionActivity extends MyActivity {
 
     @OnClick(R2.id.btnTextImage)
     public void btnTextImage() {
-        if (tvContent.getSelectionStart() <= 0 || tvContent.getSelectionEnd() <= 0) {
+        if (!tvContent.hasSelection()) {
             toast("请长按选中文字");
             return;
         }
@@ -98,18 +67,6 @@ public class ActionActivity extends MyActivity {
         intent.putExtra(Constants.JUMP_PARAM_FLAG_STRING,text);
         intent.putExtra(Constants.JUMP_PARAM_FLAG_STRING2,title);
         startActivity(intent);
-    }
-
-    public Bitmap convertViewToBitmap(View view){
-
-        view.setDrawingCacheEnabled(true);
-
-        view.buildDrawingCache();
-
-        Bitmap bitmap=view.getDrawingCache();
-
-        return bitmap;
-
     }
 
 }

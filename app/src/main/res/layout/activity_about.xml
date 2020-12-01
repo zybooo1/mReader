@@ -103,6 +103,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
-        android:text="Created by zybooo1" />
+        android:text="Designed by zybooo1" />
 
 </android.support.constraint.ConstraintLayout>

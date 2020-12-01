@@ -14,53 +14,107 @@
         app:barStyle="transparent"
         app:layout_constraintTop_toTopOf="parent"
         app:lineVisible="false"
+        app:rightTitle="分享"
         app:title="文字图片" />
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+        android:layout_height="0dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/btnChange"
         app:layout_constraintTop_toBottomOf="@+id/titleBar">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/layoutImage"
+        <ScrollView
+            android:scrollbars="none"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/reader_paper">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tvContent"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/layoutImage"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginRight="50dp"
-                app:layout_constraintBottom_toTopOf="@+id/tvBookName"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="packed"
-                tools:text="一个人知道自己为什么而活，就可以忍受任何一种生活。" />
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingTop="20dp"
+                android:paddingRight="20dp">
 
-            <TextView
-                android:id="@+id/tvBookName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginRight="50dp"
-                android:layout_marginBottom="50dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvContent"
-                tools:text="—— 《查拉斯图拉如是说》" />
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/layoutText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/reader_text_img_text_bg"
+                    android:minHeight="300dp"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-        </android.support.constraint.ConstraintLayout>
-    </ScrollView>
+                    <TextView
+                        android:id="@+id/tvContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:lineSpacingExtra="10dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:textSize="18sp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="@string/reader_test_content" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvBookName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:paddingStart="50dp"
+                        android:textSize="15sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvContent"
+                        tools:text="@string/reader_test_title" />
+                </android.support.constraint.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="15dp">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        app:srcCompat="@drawable/reader_svg_qr_code" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="分享自猫豆阅读"
+                        android:textColor="@color/gray40"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <com.zyb.base.widget.RoundButton
+        android:visibility="invisible"
+        android:id="@+id/btnChange"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_marginBottom="20dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="6dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="6dp"
+        android:text="换一换"
+        android:textColor="@color/white70"
+        app:btnStrokeColor="@color/white70"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
